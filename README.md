@@ -2,11 +2,21 @@
 
 # vkusvill-green-labels
 
-A Python package that ...
+Telegram bot which notifies a user when there are new items with green labels available
 
 ## Using
 
 To add and install this package as a dependency of your project, run `poetry add vkusvill-green-labels`.
+
+Lint:
+```shell
+poe lint
+```
+
+Test
+```shell
+poe test
+```
 
 ## Contributing
 
