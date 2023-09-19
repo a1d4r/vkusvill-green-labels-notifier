@@ -30,7 +30,14 @@ def test_fetch_green_labels(app_settings):
         == "https://img.vkusvill.ru/pim/images/m_thumb/dde28adb-e96b-494a-b23a-64590f55234f.jpg?1674590621.2754"
     )
     assert green_labels_items[0].timestamp == datetime.datetime(
-        2023, 9, 13, 10, 8, 0, 47000, tzinfo=zoneinfo.ZoneInfo("Europe/Moscow")
+        2023,
+        9,
+        13,
+        10,
+        8,
+        0,
+        47000,
+        tzinfo=zoneinfo.ZoneInfo("Europe/Moscow"),
     )
     assert green_labels_items[0].unit_of_measurement == "шт"
     assert green_labels_items[0].weight == decimal.Decimal("0.23")

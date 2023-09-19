@@ -28,7 +28,8 @@ class GreenLabelItem(pydantic.BaseModel):
     name: str = pydantic.Field(validation_alias="Name_tov")
     rating: str | None = None
     photo_url: pydantic.HttpUrl | None = pydantic.Field(
-        default=None, validation_alias="mini_photo_url"
+        default=None,
+        validation_alias="mini_photo_url",
     )
     timestamp: MoscowDatetime = pydantic.Field(validation_alias="ex_date")
     unit_of_measurement: str = pydantic.Field(validation_alias="ed_izm")
@@ -41,6 +42,7 @@ class GreenLabelItem(pydantic.BaseModel):
 
 class VkusvillApi:
     BONUS_CARD_NUMBER = "&832893"
+    _TIMEOUT = 3
 
     def __init__(self, settings: VkusvillSettings) -> None:
         self.settings = settings
@@ -51,15 +53,13 @@ class VkusvillApi:
             "number": self.BONUS_CARD_NUMBER,
         }
         response = requests.get(
-            str(self.settings.green_labels_endpoint), params=params, headers=self.settings.headers
+            str(self.settings.green_labels_endpoint),
+            params=params,
+            headers=self.settings.headers,
+            timeout=self._TIMEOUT,
         )
         logger.debug(response.request.headers)
         logger.debug(response.request.url)
-
-        assert (
-            response.request.url
-            == "https://mobile.vkusvill.ru/api/takeaway/getGreenLabelsShop?shop_id=5266&number=%26832893"
-        )
 
         if response.status_code != 200:
             try:
@@ -72,7 +72,7 @@ class VkusvillApi:
 
         try:
             return pydantic.TypeAdapter(list[GreenLabelItem]).validate_python(
-                response.json()["payload"]
+                response.json()["payload"],
             )
         except (pydantic.ValidationError, KeyError) as exc:
             msg = f"Could not validate payload: {exc}"
