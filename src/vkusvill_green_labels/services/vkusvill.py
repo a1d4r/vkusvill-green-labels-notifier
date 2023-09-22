@@ -7,8 +7,6 @@ from loguru import logger
 from vkusvill_green_labels.settings import VkusvillSettings
 from vkusvill_green_labels.validators import MoscowDatetime
 
-SHOP_ID = 5266  # TODO: Move to settings
-
 
 class VkusvillError(Exception):
     pass
@@ -58,8 +56,12 @@ class VkusvillApi:
             headers=self.settings.headers,
             timeout=self._TIMEOUT,
         )
-        logger.debug(response.request.headers)
-        logger.debug(response.request.url)
+        logger.debug(
+            "{} {} - {} ",
+            response.request.method,
+            response.request.url,
+            response.status_code,
+        )
 
         if response.status_code != 200:
             try:
@@ -84,4 +86,4 @@ if __name__ == "__main__":
     from vkusvill_green_labels.settings import settings
 
     vkusvill = VkusvillApi(settings.vkusvill)
-    logger.info(vkusvill.fetch_green_labels(SHOP_ID))
+    logger.info(vkusvill.fetch_green_labels(5266))
