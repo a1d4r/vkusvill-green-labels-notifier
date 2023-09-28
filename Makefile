@@ -10,6 +10,10 @@ VERSION := latest
 CODE = vkusvill_green_labels tests
 TESTS = tests
 
+# Application
+up:
+	python -m vkusvill_green_labels.bot
+
 #* Poetry
 .PHONY: poetry-download
 poetry-download:

@@ -81,7 +81,7 @@ RUN --mount=type=cache,target=/root/.cache \
 # will become mountpoint of our code
 WORKDIR /app
 
-CMD ["python", "-m", "vkusvill_green_labels.example"]
+CMD ["python", "-m", "vkusvill_green_labels.bot"]
 
 
 ################################
@@ -92,4 +92,4 @@ FROM python-base as production
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 COPY ./vkusvill_green_labels /app/vkusvill_green_labels
 WORKDIR /app
-CMD ["python", "-m", "vkusvill_green_labels.example"]
+CMD ["python", "-m", "vkusvill_green_labels.bot"]

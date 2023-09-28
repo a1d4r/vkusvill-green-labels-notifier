@@ -5,8 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: vkusvill-green-labels-notifier:latest
+    env_file:
+      - .env
     volumes:
       - ./vkusvill_green_labels:/app/vkusvill_green_labels
-volumes:
-  db-data: {}
-  cache-data: {}

@@ -1,14 +1,24 @@
+import sys
+
 from pathlib import Path
 
 from pydantic import BaseModel, Field, HttpUrl, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-ROOT_DIR = Path(__file__).parent.parent
+ROOT_DIR = Path(__file__).parent
 
 
 def load_vkusvill_settings() -> "VkusvillSettings":
     with (ROOT_DIR / "vkusvill_settings.json").open() as file:
         return VkusvillSettings.model_validate_json(file.read())
+
+
+def load_test_vkusvill_settings() -> "VkusvillSettings":
+    return VkusvillSettings(
+        headers={},
+        query={},
+        green_labels_endpoint=HttpUrl("http://test/endpoint"),
+    )
 
 
 class VkusvillSettings(BaseModel):
@@ -28,9 +38,12 @@ class TelegramSettings(BaseModel):
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
-    vkusvill: VkusvillSettings = Field(default_factory=load_vkusvill_settings)
+    vkusvill: VkusvillSettings
     telegram: TelegramSettings
     update_interval: int = Field(..., description="Update interval in seconds")
 
 
-settings = Settings()
+if "pytest" in sys.modules:
+    settings = Settings(vkusvill=load_test_vkusvill_settings())
+else:
+    settings = Settings(vkusvill=load_vkusvill_settings())
