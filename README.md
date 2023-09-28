@@ -4,12 +4,13 @@ Telegram bot which notifies a user when there are new items with green labels av
 
 ## Getting started
 
-### Initialize your code
+### Development
 
-1. Initialize `git` inside your repo:
+1. Clone repo
 
 ```bash
-cd vkusvill-green-labels-notifier && git init
+git clone git@github.com:a1d4r/vkusvill-green-labels-notifier.git
+cd vkusvill-green-labels-notifier
 ```
 
 2. If you don't have `Poetry` installed run:
@@ -29,22 +30,6 @@ make pre-commit-install
 
 ```bash
 make format lint test
-```
-
-5. Upload initial code to GitHub:
-
-```bash
-git add .
-git commit -m "Initial commit"
-git branch -M master
-git remote add origin https://github.com/a1d4r/vkusvill-green-labels-notifier.git
-git push -u origin master
-```
-
-## Installation
-
-```bash
-poetry add vkusvill-green-labels-notifier
 ```
 
 ### Makefile usage
