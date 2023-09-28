@@ -1,85 +1,58 @@
 [build-system]  # https://python-poetry.org/docs/pyproject/#poetry-and-pep-517
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]  # https://python-poetry.org/docs/pyproject/
-name = "vkusvill-green-labels"
-version = "0.0.0"
-description = "A Python package that ..."
-authors = ["Aidar Garikhanov <a1d4r@yandex.ru>"]
+name = "vkusvill-green-labels-notifier"
+version = "0.1.0"
+description = "Telegram bot which notifies a user when there are new items with green labels available."
 readme = "README.md"
+authors = ["a1d4r <a1d4r@yandex.ru>"]
 repository = "https://github.com/a1d4r/vkusvill-green-labels-notifier"
-
-[tool.commitizen]  # https://commitizen-tools.github.io/commitizen/config/
-bump_message = "bump(release): v$current_version → v$new_version"
-tag_format = "v$version"
-update_changelog_on_bump = true
-version = "0.0.0"
-version_files = ["pyproject.toml:version"]
+homepage = "https://github.com/a1d4r/vkusvill-green-labels-notifier"
 
 [tool.poetry.dependencies]  # https://python-poetry.org/docs/dependency-specification/
-pydantic = ">=1.10.7"
-python = ">=3.11,<4.0"
+python = "^3.11"
+pydantic = "^2.4.2"
 requests = "^2.31.0"
 loguru = "^0.7.2"
 pydantic-settings = "^2.0.3"
 pytelegrambotapi = "^4.14.0"
 apscheduler = "^3.10.4"
 
-[tool.poetry.group.test.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
-black = ">=23.3.0"
-commitizen = ">=3.2.1"
-coverage = { extras = ["toml"], version = ">=7.2.5" }
-mypy = ">=1.2.0"
-poethepoet = ">=0.20.0"
-pre-commit = ">=3.3.1"
-pytest = ">=7.3.1"
-pytest-clarity = ">=1.0.1"
-pytest-mock = ">=3.10.0"
-pytest-xdist = ">=3.2.1"
-ruff = ">=0.0.270"
-safety = ">=2.3.4,!=2.3.5"
-shellcheck-py = ">=0.9.0"
-typeguard = ">=3.0.2"
-requests-mock = "^1.11.0"
-
 [tool.poetry.group.dev.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
-cruft = ">=2.14.0"
-pdoc = ">=13.1.1"
-types-requests = "^2.31.0.2"
+black = "^23.9.1"
+mypy = "^1.5.1"
+pre-commit = "^3.4.0"
+pytest = "^7.4.2"
+coverage = "^7.3.1"
+safety = "^2.3.5"
+typeguard = "^4.1.5"
+ruff = "^0.0.291"
+requests-mock = "^1.11.0"
 pytest-dotenv = "^0.5.2"
 
 [tool.black]  # https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-via-a-file
-line-length = 100
 target-version = ["py311"]
+line-length = 100
+color = true
 
-[tool.coverage.report]  # https://coverage.readthedocs.io/en/latest/config.html#report
-precision = 1
-show_missing = true
-skip_covered = true
-
-[tool.coverage.run]  # https://coverage.readthedocs.io/en/latest/config.html#run
-branch = true
-command_line = "--module pytest"
-data_file = "reports/.coverage"
-source = ["src"]
-
-[tool.coverage.xml]  # https://coverage.readthedocs.io/en/latest/config.html#xml
-output = "reports/coverage.xml"
-
-[tool.mypy]  # https://mypy.readthedocs.io/en/latest/config_file.html
+[tool.mypy]  # https://mypy.readthedocs.io/en/latest/config_file.html#using-a-pyproject-toml-file
 junit_xml = "reports/mypy.xml"
-plugins = "pydantic.mypy"
-strict = true
-disallow_subclassing_any = false
-disallow_untyped_decorators = false
-warn_return_any = false
-ignore_missing_imports = true
+python_version = "3.11"
 pretty = true
 show_column_numbers = true
 show_error_codes = true
 show_error_context = true
-warn_unreachable = true
+show_traceback = true
+color_output = true
+plugins = [
+  "pydantic.mypy"
+]
+
+strict = true  # https://mypy.readthedocs.io/en/stable/existing_code.html#introduce-stricter-options
+disallow_untyped_decorators = false  # telebot decorators are not typed
+ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "tests.*"
@@ -92,12 +65,48 @@ init_typed = true
 warn_required_dynamic_aliases = true
 warn_untyped_fields = true
 
-[tool.pytest.ini_options]  # https://docs.pytest.org/en/latest/reference/reference.html#ini-options-ref
-addopts = "--color=yes --doctest-modules --exitfirst --failed-first --strict-config --strict-markers --typeguard-packages=vkusvill_green_labels --verbosity=2 --junitxml=reports/pytest.xml"
+[tool.pytest.ini_options]
+# https://docs.pytest.org/en/6.2.x/customize.html#pyproject-toml
+# https://docs.pytest.org/en/latest/reference/reference.html#ini-options-ref
 filterwarnings = ["error", "ignore::DeprecationWarning"]
-testpaths = ["src", "tests"]
+testpaths = ["vkusvill_green_labels", "tests"]
 xfail_strict = true
 
+# Extra options:
+addopts = [
+  "--color=yes",
+  "--failed-first",
+  "--strict-config",
+  "--strict-markers",
+  "--tb=short",
+  "--verbosity=2",
+  "--doctest-modules",
+  "--doctest-continue-on-failure",
+  "--typeguard-packages=vkusvill_green_labels",
+  "--junitxml=reports/pytest.xml"
+]
+
+[tool.coverage.run]  # https://coverage.readthedocs.io/en/latest/config.html#run
+branch = true
+command_line = "--module pytest"
+data_file = "reports/.coverage"
+source = ["vkusvill_green_labels"]
+
+[tool.coverage.report]  # https://coverage.readthedocs.io/en/latest/config.html#report
+precision = 1
+show_missing = true
+skip_covered = true
+
+[tool.coverage.xml]  # https://coverage.readthedocs.io/en/latest/config.html#xml
+output = "reports/coverage.xml"
+
+[tool.pylint.basic]
+class-attribute-naming-style = "any"
+class-const-naming-style = "any"
+good-names=["i", "j", "k", "e", "x", "id", "_", "pk"]
+
+[tool.pylint.exceptions]
+overgeneral-exceptions = ["builtins.BaseException", "builtins.Exception"]
 
 [tool.ruff]  # https://github.com/charliermarsh/ruff
 fix = true
@@ -117,10 +126,8 @@ ignore = [
   "D105", # pydocstyle - Missing docstring in magic method
   "D106", # pydocstyle - Missing docstring in public nested class
   "D107", # pydocstyle - Missing docstring in __init__
-  "PLR2004", # pylint - Magic value used in comparison (used for status codes)
 ]
 unfixable = []
-src = ["src", "tests"]
 target-version = "py311"
 
 [tool.ruff.per-file-ignores]
@@ -128,59 +135,23 @@ target-version = "py311"
     "S101", # Use of assert detected (assert allowed in tests)
 ]
 
-[tool.ruff.flake8-tidy-imports]
+[tool.ruff.flake8-tidy-imports]  # https://docs.astral.sh/ruff/settings/#flake8-tidy-imports
 ban-relative-imports = "all"
 
-[tool.ruff.pycodestyle]
+[tool.ruff.isort]  # https://docs.astral.sh/ruff/settings/#isort
+section-order = ["future", "typing", "standard-library", "third-party", "first-party", "local-folder"]
+lines-between-types = 1
+
+[tool.ruff.isort.sections]
+"typing" = ["typing", "types", "typing_extensions", "mypy", "mypy_extensions"]
+
+[tool.ruff.pycodestyle]  # https://docs.astral.sh/ruff/settings/#pycodestyle
 max-doc-length = 100
 
-[tool.ruff.pydocstyle]
+[tool.ruff.pydocstyle]  # https://docs.astral.sh/ruff/settings/#pydocstyle
 convention = "google"
 
-[tool.poe.tasks]  # https://github.com/nat-n/poethepoet
-
-  [tool.poe.tasks.docs]
-  help = "Generate this package's docs"
-  cmd = """
-    pdoc
-      --docformat $docformat
-      --output-directory $outputdirectory
-      vkusvill_green_labels
-    """
-
-    [[tool.poe.tasks.docs.args]]
-    help = "The docstring style (default: google)"
-    name = "docformat"
-    options = ["--docformat"]
-    default = "google"
-
-    [[tool.poe.tasks.docs.args]]
-    help = "The output directory (default: docs)"
-    name = "outputdirectory"
-    options = ["--output-directory"]
-    default = "docs"
-
-  [tool.poe.tasks.lint]
-  help = "Lint this package"
-
-    [[tool.poe.tasks.lint.sequence]]
-    cmd = """
-      pre-commit run
-        --all-files
-        --color always
-      """
-
-    [[tool.poe.tasks.lint.sequence]]
-    shell = "safety check --continue-on-error --full-report"
-
-  [tool.poe.tasks.test]
-  help = "Test this package"
-
-    [[tool.poe.tasks.test.sequence]]
-    cmd = "coverage run"
-
-    [[tool.poe.tasks.test.sequence]]
-    cmd = "coverage report"
-
-    [[tool.poe.tasks.test.sequence]]
-    cmd = "coverage xml"
+[tool.ruff.pylint]  # https://docs.astral.sh/ruff/settings/#pylint
+allow-magic-value-types = ["int", "str", "bytes"]
+max-args = 10
+max-statements = 30

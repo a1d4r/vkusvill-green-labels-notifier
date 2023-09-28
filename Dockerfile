@@ -1,104 +1,95 @@
-# syntax=docker/dockerfile:1
-ARG PYTHON_VERSION=3.11
-FROM python:$PYTHON_VERSION-slim AS base
+# Source: https://gist.github.com/usr-ein/c42d98abca3cb4632ab0c2c6aff8c88a
 
-# Configure Python to print tracebacks on crash [1], and to not buffer stdout and stderr [2].
-# [1] https://docs.python.org/3/using/cmdline.html#envvar-PYTHONFAULTHANDLER
-# [2] https://docs.python.org/3/using/cmdline.html#envvar-PYTHONUNBUFFERED
-ENV PYTHONFAULTHANDLER 1
-ENV PYTHONUNBUFFERED 1
+################################
+# PYTHON-BASE
+# Sets up all our shared environment variables
+################################
+FROM python:3.11-slim as python-base
 
-# Install Poetry.
-ENV POETRY_VERSION 1.6.1
-RUN --mount=type=cache,target=/root/.cache/pip/ \
-    pip install poetry~=$POETRY_VERSION
-
-# Install compilers that may be required for certain packages or platforms.
-RUN rm /etc/apt/apt.conf.d/docker-clean
-RUN --mount=type=cache,target=/var/cache/apt/ \
-    --mount=type=cache,target=/var/lib/apt/ \
-    apt-get update && \
-    apt-get install --no-install-recommends --yes build-essential
-
-# Create a non-root user and switch to it [1].
-# [1] https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user
-ARG UID=1000
-ARG GID=$UID
-RUN groupadd --gid $GID user && \
-    useradd --create-home --gid $GID --uid $UID user --no-log-init && \
-    chown user /opt/
-USER user
-
-# Create and activate a virtual environment.
-RUN python -m venv /opt/vkusvill-green-labels-env
-ENV PATH /opt/vkusvill-green-labels-env/bin:$PATH
-ENV VIRTUAL_ENV /opt/vkusvill-green-labels-env
-
-# Set the working directory.
-WORKDIR /workspaces/vkusvill-green-labels/
-
-# Install the run time Python dependencies in the virtual environment.
-COPY --chown=user:user poetry.lock* pyproject.toml /workspaces/vkusvill-green-labels/
-RUN mkdir -p /home/user/.cache/pypoetry/ && mkdir -p /home/user/.config/pypoetry/ && \
-    mkdir -p src/vkusvill_green_labels/ && touch src/vkusvill_green_labels/__init__.py && touch README.md
-RUN --mount=type=cache,uid=$UID,gid=$GID,target=/home/user/.cache/pypoetry/ \
-    poetry install --only main --no-interaction
+    # python
+ENV PYTHONUNBUFFERED=1 \
+    # prevents python creating .pyc files
+    PYTHONDONTWRITEBYTECODE=1 \
+    \
+    # pip
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    \
+    # poetry
+    # https://python-poetry.org/docs/configuration/#using-environment-variables
+    POETRY_VERSION=1.6.1 \
+    # make poetry install to this location
+    POETRY_HOME="/opt/poetry" \
+    # make poetry create the virtual environment in the project's root
+    # it gets named `.venv`
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    # do not ask any interactive question
+    POETRY_NO_INTERACTION=1 \
+    \
+    # paths
+    # this is where our requirements + virtual environment will live
+    PYSETUP_PATH="/opt/pysetup" \
+    VENV_PATH="/opt/pysetup/.venv"
 
 
-
-FROM base as ci
-
-# Allow CI to run as root.
-USER root
-
-# Install git so we can run pre-commit.
-RUN --mount=type=cache,target=/var/cache/apt/ \
-    --mount=type=cache,target=/var/lib/apt/ \
-    apt-get update && \
-    apt-get install --no-install-recommends --yes git
-
-# Install the CI/CD Python dependencies in the virtual environment.
-RUN --mount=type=cache,target=/root/.cache/pypoetry/ \
-    poetry install --only main,test --no-interaction
+# prepend poetry and venv to path
+ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
 
+################################
+# BUILDER-BASE
+# Used to build deps + create our virtual environment
+################################
+FROM python-base as builder-base
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+        # deps for installing poetry
+        curl \
+        # deps for building python deps
+        build-essential
 
-FROM base as dev
+# install poetry - respects $POETRY_VERSION & $POETRY_HOME
+# The --mount will mount the buildx cache directory to where
+# Poetry and Pip store their cache so that they can re-use it
+RUN --mount=type=cache,target=/root/.cache \
+    curl -sSL https://install.python-poetry.org | python3 -
 
-# Install development tools: curl, git, gpg, ssh, starship, sudo, vim, and zsh.
-USER root
-RUN --mount=type=cache,target=/var/cache/apt/ \
-    --mount=type=cache,target=/var/lib/apt/ \
-    apt-get update && \
-    apt-get install --no-install-recommends --yes curl git gnupg ssh sudo vim zsh && \
-    sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- "--yes" && \
-    usermod --shell /usr/bin/zsh user && \
-    echo 'user ALL=(root) NOPASSWD:ALL' > /etc/sudoers.d/user && chmod 0440 /etc/sudoers.d/user
-USER user
+# copy project requirement files here to ensure they will be cached.
+WORKDIR $PYSETUP_PATH
+COPY poetry.lock pyproject.toml ./
 
-# Install the development Python dependencies in the virtual environment.
-RUN --mount=type=cache,uid=$UID,gid=$GID,target=/home/user/.cache/pypoetry/ \
-    poetry install --no-interaction
+# install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
+RUN --mount=type=cache,target=/root/.cache \
+    poetry install --without=dev
 
-# Persist output generated during docker build so that we can restore it in the dev container.
-COPY --chown=user:user .pre-commit-config.yaml /workspaces/vkusvill-green-labels/
-RUN mkdir -p /opt/build/poetry/ && cp poetry.lock /opt/build/poetry/ && \
-    git init && pre-commit install --install-hooks && \
-    mkdir -p /opt/build/git/ && cp .git/hooks/commit-msg .git/hooks/pre-commit /opt/build/git/
 
-# Configure the non-root user's shell.
-ENV ANTIDOTE_VERSION 1.8.6
-RUN git clone --branch v$ANTIDOTE_VERSION --depth=1 https://github.com/mattmc3/antidote.git ~/.antidote/ && \
-    echo 'zsh-users/zsh-syntax-highlighting' >> ~/.zsh_plugins.txt && \
-    echo 'zsh-users/zsh-autosuggestions' >> ~/.zsh_plugins.txt && \
-    echo 'source ~/.antidote/antidote.zsh' >> ~/.zshrc && \
-    echo 'antidote load' >> ~/.zshrc && \
-    echo 'eval "$(starship init zsh)"' >> ~/.zshrc && \
-    echo 'HISTFILE=~/.history/.zsh_history' >> ~/.zshrc && \
-    echo 'HISTSIZE=1000' >> ~/.zshrc && \
-    echo 'SAVEHIST=1000' >> ~/.zshrc && \
-    echo 'setopt share_history' >> ~/.zshrc && \
-    echo 'bindkey "^[[A" history-beginning-search-backward' >> ~/.zshrc && \
-    echo 'bindkey "^[[B" history-beginning-search-forward' >> ~/.zshrc && \
-    mkdir ~/.history/ && \
-    zsh -c 'source ~/.zshrc'
+################################
+# DEVELOPMENT
+# Image used during development / testing
+################################
+FROM python-base as development
+WORKDIR $PYSETUP_PATH
+
+# copy in our built poetry + venv
+COPY --from=builder-base $POETRY_HOME $POETRY_HOME
+COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
+
+# quicker install as runtime deps are already installed
+RUN --mount=type=cache,target=/root/.cache \
+    poetry install --with=dev
+
+# will become mountpoint of our code
+WORKDIR /app
+
+CMD ["python", "-m", "vkusvill_green_labels.example"]
+
+
+################################
+# PRODUCTION
+# Final image used for runtime
+################################
+FROM python-base as production
+COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
+COPY ./vkusvill_green_labels /app/vkusvill_green_labels
+WORKDIR /app
+CMD ["python", "-m", "vkusvill_green_labels.example"]

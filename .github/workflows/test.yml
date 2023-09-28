@@ -1,4 +1,4 @@
-name: Test
+name: app
 
 on:
   push:
@@ -8,42 +8,39 @@ on:
   pull_request:
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.11"]
-
-    name: Python ${{ matrix.python-version }}
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+    - name: Check out repository
+      uses: actions/checkout@v4
 
-      - name: Install @devcontainers/cli
-        run: npm install --location=global @devcontainers/cli@0.41.0
+    - name: Set up Python
+      id: setup-python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
 
-      - name: Start Dev Container
-        env:
-          DOCKER_BUILDKIT: 1
-        run: |
-          git config --global init.defaultBranch main
-          PYTHON_VERSION=${{ matrix.python-version }} devcontainer up --workspace-folder .
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+        installer-parallel: true
 
-      - name: Lint package
-        run: devcontainer exec --workspace-folder . poe lint
+    - name: Load cache
+      id: cached-poetry-dependencies
+      uses: actions/cache@v3
+      with:
+        path: .venv
+        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
-      - name: Test package
-        run: devcontainer exec --workspace-folder . poe test
+    - name: Install dependencies if cache does not exist
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      run: poetry install --no-interaction --no-root
 
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
-        with:
-          files: reports/coverage.xml
+    - name: Run linters
+      run: make lint
+
+    - name: Run tests
+      run: make test

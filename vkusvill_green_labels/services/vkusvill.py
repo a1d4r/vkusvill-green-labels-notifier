@@ -1,8 +1,10 @@
-import decimal
 import typing
+
+import decimal
 
 import pydantic
 import requests
+
 from loguru import logger
 
 from vkusvill_green_labels.settings import VkusvillSettings

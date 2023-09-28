@@ -18,7 +18,7 @@ def static_path() -> pathlib.Path:
 
 @pytest.fixture()
 def load_json(static_path):
-    def _load_json(filename: str) -> pathlib.Path:
+    def _load_json(filename: str):
         with (static_path / filename).open("r") as file:
             return json.load(file)
 
