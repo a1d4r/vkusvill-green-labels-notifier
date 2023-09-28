@@ -1,4 +1,5 @@
 import decimal
+import typing
 
 import pydantic
 import requests
@@ -46,7 +47,8 @@ class VkusvillApi:
         self.settings = settings
 
     def fetch_green_labels(self, shop_id: int) -> list[GreenLabelItem]:
-        params: dict[str, str | int] = {
+        params: dict[str, typing.Any] = self.settings.query
+        params |= {
             "shop_id": shop_id,
             "number": self.BONUS_CARD_NUMBER,
         }
