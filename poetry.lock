@@ -1130,6 +1130,21 @@ pytest = ">=3.5.0"
 rich = ">=8.0.0"
 
 [[package]]
+name = "pytest-dotenv"
+version = "0.5.2"
+description = "A py.test plugin that parses environment files before running tests"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pytest-dotenv-0.5.2.tar.gz", hash = "sha256:2dc6c3ac6d8764c71c6d2804e902d0ff810fa19692e95fe138aefc9b1aa73732"},
+    {file = "pytest_dotenv-0.5.2-py3-none-any.whl", hash = "sha256:40a2cece120a213898afaa5407673f6bd924b1fa7eafce6bda0e8abffe2f710f"},
+]
+
+[package.dependencies]
+pytest = ">=5.0.0"
+python-dotenv = ">=0.9.1"
+
+[[package]]
 name = "pytest-mock"
 version = "3.11.1"
 description = "Thin-wrapper around the mock package for easier use with pytest"
@@ -1750,4 +1765,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<4.0"
-content-hash = "7c63296132646e017b10124bc12560152780ef032c57bca57a4f70fb4bd62700"
+content-hash = "88f52fb32983c183e0e1e27221196ec8e8364af953e940d4f96a42f712eee947"

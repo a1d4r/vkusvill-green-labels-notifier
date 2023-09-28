@@ -56,6 +56,7 @@ def check_green_labels() -> None:
     bot.send_message(settings.telegram.user_id, text, parse_mode="MarkdownV2")
 
 
-scheduler.add_job(check_green_labels, trigger="interval", seconds=settings.update_interval)
-scheduler.start()
-bot.infinity_polling()
+if __name__ == '__main__':
+    scheduler.add_job(check_green_labels, trigger="interval", seconds=settings.update_interval)
+    scheduler.start()
+    bot.infinity_polling()

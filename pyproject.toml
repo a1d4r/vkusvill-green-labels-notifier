@@ -47,6 +47,7 @@ requests-mock = "^1.11.0"
 cruft = ">=2.14.0"
 pdoc = ">=13.1.1"
 types-requests = "^2.31.0.2"
+pytest-dotenv = "^0.5.2"
 
 [tool.black]  # https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-via-a-file
 line-length = 100
@@ -96,6 +97,7 @@ addopts = "--color=yes --doctest-modules --exitfirst --failed-first --strict-con
 filterwarnings = ["error", "ignore::DeprecationWarning"]
 testpaths = ["src", "tests"]
 xfail_strict = true
+
 
 [tool.ruff]  # https://github.com/charliermarsh/ruff
 fix = true
