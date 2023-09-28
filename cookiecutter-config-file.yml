@@ -1,0 +1,13 @@
+# This file contains values from Cookiecutter
+
+default_context:
+  project_name: "vkusvill-green-labels-notifier"
+  project_description: "Telegram bot which notifies a user when there are new items with green labels available."
+  package_name: "vkusvill_green_labels"
+  git_platform: "github"
+  username: "a1d4r"
+  git_repo_url: "https://github.com/a1d4r/vkusvill-green-labels-notifier"
+  email: "a1d4r@yandex.ru"
+  version: "0.1.0"
+  python_version: "3.11"
+  line_length: "100"

@@ -1,4 +1,5 @@
 import pytest
+
 from requests_mock import Mocker
 
 from vkusvill_green_labels.services.vkusvill import VkusvillApi
