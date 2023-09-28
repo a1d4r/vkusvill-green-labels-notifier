@@ -8,7 +8,7 @@ from vkusvill_green_labels.settings import Settings, settings
 
 @pytest.fixture()
 def app_settings() -> Settings:
-    return settings
+    return settwings
 
 
 @pytest.fixture()

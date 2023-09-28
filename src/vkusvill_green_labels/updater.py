@@ -28,18 +28,3 @@ class GreenLabelsUpdater:
         """Return green label items which only appears in `new_items` list."""
         old_item_ids = {item.item_id for item in old_items}
         return [item for item in new_items if item.item_id not in old_item_ids]
-
-
-if __name__ == "__main__":
-    from loguru import logger
-
-    from vkusvill_green_labels.settings import settings
-    from vkusvill_green_labels.storage import InMemoryGreenLabelsStorage
-
-    updater = GreenLabelsUpdater(
-        vkusvill_api=VkusvillApi(settings.vkusvill),
-        storage=InMemoryGreenLabelsStorage(),
-        shop_id=5266,
-    )
-
-    logger.info(updater.update())
