@@ -71,6 +71,7 @@ warn_untyped_fields = true
 filterwarnings = ["error", "ignore::DeprecationWarning"]
 testpaths = ["vkusvill_green_labels", "tests"]
 xfail_strict = true
+env_files = [".test.env"]
 
 # Extra options:
 addopts = [

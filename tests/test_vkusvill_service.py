@@ -10,9 +10,9 @@ from vkusvill_green_labels.services.vkusvill import VkusvillApi
 
 
 @pytest.fixture()
-def _mock_vkusvill_api(requests_mock: Mocker, load_json):
+def _mock_vkusvill_api(requests_mock: Mocker, load_json, app_settings):
     response = load_json("green_labels_response.json")
-    requests_mock.get("https://mobile.vkusvill.ru/api/takeaway/getGreenLabelsShop", json=response)
+    requests_mock.get(str(app_settings.vkusvill.green_labels_endpoint), json=response)
 
 
 @pytest.mark.usefixtures("_mock_vkusvill_api")

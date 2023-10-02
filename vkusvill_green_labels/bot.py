@@ -58,6 +58,8 @@ def check_green_labels() -> None:
 
 
 if __name__ == "__main__":
+    logger.info("Starting background task...")
     scheduler.add_job(check_green_labels, trigger="interval", seconds=settings.update_interval)
     scheduler.start()
+    logger.info("Starting bot...")
     bot.infinity_polling()

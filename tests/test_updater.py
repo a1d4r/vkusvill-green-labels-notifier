@@ -8,7 +8,7 @@ from vkusvill_green_labels.updater import GreenLabelsUpdater
 
 
 @pytest.fixture()
-def _mock_vkusvill_api(requests_mock: Mocker, load_json):
+def _mock_vkusvill_api(requests_mock: Mocker, load_json, app_settings):
     base_response = load_json("green_labels_response.json")
 
     responses = [{"status": "success"} for _ in range(4)]
@@ -18,7 +18,7 @@ def _mock_vkusvill_api(requests_mock: Mocker, load_json):
     responses[3]["payload"] = base_response["payload"][5:6]
 
     requests_mock.get(
-        "https://mobile.vkusvill.ru/api/takeaway/getGreenLabelsShop",
+        str(app_settings.vkusvill.green_labels_endpoint),
         response_list=[
             {
                 "json": response,
