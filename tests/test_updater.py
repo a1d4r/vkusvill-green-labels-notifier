@@ -7,7 +7,7 @@ from vkusvill_green_labels.storage import InMemoryGreenLabelsStorage
 from vkusvill_green_labels.updater import GreenLabelsUpdater
 
 
-@pytest.fixture()
+@pytest.fixture
 def _mock_vkusvill_api(requests_mock: Mocker, load_json, app_settings):
     base_response = load_json("green_labels_response.json")
 
@@ -19,13 +19,7 @@ def _mock_vkusvill_api(requests_mock: Mocker, load_json, app_settings):
 
     requests_mock.get(
         str(app_settings.vkusvill.green_labels_endpoint),
-        response_list=[
-            {
-                "json": response,
-                "status_code": 200,
-            }
-            for response in responses
-        ],
+        response_list=[{"json": response, "status_code": 200} for response in responses],
     )
 
 

@@ -4,10 +4,7 @@ from vkusvill_green_labels.storage import GreenLabelsStorage
 
 class GreenLabelsUpdater:
     def __init__(
-        self,
-        vkusvill_api: VkusvillApi,
-        storage: GreenLabelsStorage,
-        shop_id: int,
+        self, vkusvill_api: VkusvillApi, storage: GreenLabelsStorage, shop_id: int
     ) -> None:
         self.api = vkusvill_api
         self.items_storage = storage
@@ -22,8 +19,7 @@ class GreenLabelsUpdater:
 
     @staticmethod
     def _get_items_difference(
-        new_items: list[GreenLabelItem],
-        old_items: list[GreenLabelItem],
+        new_items: list[GreenLabelItem], old_items: list[GreenLabelItem]
     ) -> list[GreenLabelItem]:
         """Return green label items which only appears in `new_items` list."""
         old_item_ids = {item.item_id for item in old_items}

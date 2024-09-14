@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 import telebot
 import telebot.formatting as fmt
 
@@ -10,9 +12,7 @@ from vkusvill_green_labels.storage import InMemoryGreenLabelsStorage
 from vkusvill_green_labels.updater import GreenLabelsUpdater
 
 updater = GreenLabelsUpdater(
-    vkusvill_api=VkusvillApi(settings.vkusvill),
-    storage=InMemoryGreenLabelsStorage(),
-    shop_id=5266,
+    vkusvill_api=VkusvillApi(settings.vkusvill), storage=InMemoryGreenLabelsStorage(), shop_id=5266
 )
 scheduler = BackgroundScheduler()
 bot = telebot.TeleBot(settings.telegram.bot_token.get_secret_value())
@@ -45,9 +45,7 @@ def check_green_labels() -> None:
             + "Цена: "
             + fmt.mstrikethrough(fmt.escape_markdown(str(item.price)))
             + " "
-            + fmt.mitalic(
-                fmt.escape_markdown(str(item.price_discount)),
-            )
+            + fmt.mitalic(fmt.escape_markdown(str(item.price_discount)))
             + "\n"
             + "Доступно: "
             + fmt.escape_markdown(str(int(item.units_available)))
@@ -59,7 +57,12 @@ def check_green_labels() -> None:
 
 if __name__ == "__main__":
     logger.info("Starting background task...")
-    scheduler.add_job(check_green_labels, trigger="interval", seconds=settings.update_interval)
+    scheduler.add_job(
+        check_green_labels,
+        trigger="interval",
+        seconds=settings.update_interval,
+        next_run_time=datetime.now(UTC),
+    )
     scheduler.start()
     logger.info("Starting bot...")
     bot.infinity_polling()

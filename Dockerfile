@@ -4,7 +4,7 @@
 # PYTHON-BASE
 # Sets up all our shared environment variables
 ################################
-FROM python:3.11-slim as python-base
+FROM python:3.12-slim AS python-base
 
     # python
 ENV PYTHONUNBUFFERED=1 \
@@ -17,7 +17,7 @@ ENV PYTHONUNBUFFERED=1 \
     \
     # poetry
     # https://python-poetry.org/docs/configuration/#using-environment-variables
-    POETRY_VERSION=1.6.1 \
+    POETRY_VERSION=1.8.1 \
     # make poetry install to this location
     POETRY_HOME="/opt/poetry" \
     # make poetry create the virtual environment in the project's root
@@ -40,7 +40,7 @@ ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 # BUILDER-BASE
 # Used to build deps + create our virtual environment
 ################################
-FROM python-base as builder-base
+FROM python-base AS builder-base
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         # deps for installing poetry
@@ -67,7 +67,7 @@ RUN --mount=type=cache,target=/root/.cache \
 # DEVELOPMENT
 # Image used during development / testing
 ################################
-FROM python-base as development
+FROM python-base AS development
 WORKDIR $PYSETUP_PATH
 
 # copy in our built poetry + venv
@@ -88,7 +88,7 @@ CMD ["python", "-m", "vkusvill_green_labels.bot"]
 # PRODUCTION
 # Final image used for runtime
 ################################
-FROM python-base as production
+FROM python-base AS production
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 COPY ./vkusvill_green_labels /app/vkusvill_green_labels
 WORKDIR /app

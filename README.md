@@ -2,15 +2,13 @@
 
 Telegram bot which notifies a user when there are new items with green labels available.
 
-## Getting started
+## Installation
 
-### Development
-
-1. Clone repo
+1. Clone `git` repo:
 
 ```bash
-git clone git@github.com:a1d4r/vkusvill-green-labels-notifier.git
-cd vkusvill-green-labels-notifier
+git clone https://github.com/a1d4r/vkusvill-green-labels-notifier.git
+cd vkusvill-green-labels
 ```
 
 2. If you don't have `Poetry` installed run:
@@ -26,7 +24,7 @@ make install
 make pre-commit-install
 ```
 
-4. Run formatters, linters, and tests
+4. Run formatters, linters, and tests. Make sure there is no errors.
 
 ```bash
 make format lint test
@@ -78,7 +76,7 @@ make pre-commit-install
 <summary>3. Codestyle</summary>
 <p>
 
-Automatic formatting uses `pyupgrade`, `isort` and `black`.
+Automatic formatting uses `ruff`.
 
 ```bash
 make codestyle
@@ -93,9 +91,7 @@ Codestyle checks only, without rewriting files:
 make check-codestyle
 ```
 
-> Note: `check-codestyle` uses `isort`, `black` and `darglint` library
-
-Update all dev libraries to the latest version using one comand
+Update all dev libraries to the latest version using one command
 
 ```bash
 make update-dev-deps
@@ -108,17 +104,14 @@ make update-dev-deps
 <summary>4. Code security</summary>
 <p>
 
-```bash
-make check-security
-```
-
-This command identifies security issues with `Safety` and `Bandit`.
+This command identifies security issues with `Safety`:
 
 ```bash
-make check-security
+make check-safety
 ```
 
 To validate `pyproject.toml` use
+
 ```bash
 make check-poetry
 ```
@@ -130,7 +123,7 @@ make check-poetry
 <summary>5. Linting and type checks</summary>
 <p>
 
-Run static linting with `pylint` and `mypy`:
+Run static linting with `ruff` and `mypy`:
 
 ```bash
 make static-lint
@@ -143,7 +136,7 @@ make static-lint
 <summary>6. Tests with coverage</summary>
 <p>
 
-Run `pytest`
+Run tests:
 
 ```bash
 make test
@@ -160,12 +153,6 @@ Of course there is a command to ~~rule~~ run all linters in one:
 
 ```bash
 make lint
-```
-
-the same as:
-
-```bash
-make test && make check-codestyle && make static-lint && make check-safety
 ```
 
 </p>

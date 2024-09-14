@@ -5,19 +5,17 @@ from pathlib import Path
 from pydantic import BaseModel, Field, HttpUrl, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-ROOT_DIR = Path(__file__).parent
+PROJECT_ROOT = Path(__file__).parent.parent
 
 
 def load_vkusvill_settings() -> "VkusvillSettings":
-    with (ROOT_DIR / "vkusvill_settings.json").open() as file:
+    with (PROJECT_ROOT / "vkusvill_settings.json").open() as file:
         return VkusvillSettings.model_validate_json(file.read())
 
 
 def load_test_vkusvill_settings() -> "VkusvillSettings":
     return VkusvillSettings(
-        headers={},
-        query={},
-        green_labels_endpoint=HttpUrl("http://test/endpoint"),
+        headers={}, query={}, green_labels_endpoint=HttpUrl("http://test/endpoint")
     )
 
 
@@ -25,8 +23,7 @@ class VkusvillSettings(BaseModel):
     headers: dict[str, str] = Field(..., description="Headers for the request")
     query: dict[str, str] = Field(..., description="Query parameters for the request")
     green_labels_endpoint: HttpUrl = Field(
-        ...,
-        description="URL of the endpoint for fetching green label items",
+        ..., description="URL of the endpoint for fetching green label items"
     )
 
 
@@ -44,6 +41,8 @@ class Settings(BaseSettings):
 
 
 if "pytest" in sys.modules:
-    settings = Settings(vkusvill=load_test_vkusvill_settings())
+    settings = Settings(
+        vkusvill=load_test_vkusvill_settings(), _env_file=PROJECT_ROOT / ".env.test"
+    )
 else:
-    settings = Settings(vkusvill=load_vkusvill_settings())
+    settings = Settings(vkusvill=load_vkusvill_settings(), _env_file=PROJECT_ROOT / ".env")

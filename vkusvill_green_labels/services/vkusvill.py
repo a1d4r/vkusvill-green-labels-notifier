@@ -29,8 +29,7 @@ class GreenLabelItem(pydantic.BaseModel):
     name: str = pydantic.Field(validation_alias="Name_tov")
     rating: str | None = None
     photo_url: pydantic.HttpUrl | None = pydantic.Field(
-        default=None,
-        validation_alias="mini_photo_url",
+        default=None, validation_alias="mini_photo_url"
     )
     timestamp: MoscowDatetime = pydantic.Field(validation_alias="ex_date")
     unit_of_measurement: str = pydantic.Field(validation_alias="ed_izm")
@@ -50,10 +49,7 @@ class VkusvillApi:
 
     def fetch_green_labels(self, shop_id: int) -> list[GreenLabelItem]:
         params: dict[str, typing.Any] = self.settings.query
-        params |= {
-            "shop_id": shop_id,
-            "number": self.BONUS_CARD_NUMBER,
-        }
+        params |= {"shop_id": shop_id, "number": self.BONUS_CARD_NUMBER}
         response = requests.get(
             str(self.settings.green_labels_endpoint),
             params=params,
@@ -61,10 +57,7 @@ class VkusvillApi:
             timeout=self._TIMEOUT,
         )
         logger.debug(
-            "{} {} - {} ",
-            response.request.method,
-            response.request.url,
-            response.status_code,
+            "{} {} - {} ", response.request.method, response.request.url, response.status_code
         )
 
         if response.status_code != 200:
@@ -78,7 +71,7 @@ class VkusvillApi:
 
         try:
             return pydantic.TypeAdapter(list[GreenLabelItem]).validate_python(
-                response.json()["payload"],
+                response.json()["payload"]
             )
         except (pydantic.ValidationError, KeyError) as exc:
             msg = f"Could not validate payload: {exc}"

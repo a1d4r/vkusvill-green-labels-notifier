@@ -1,9 +1,9 @@
 #* Variables
-SHELL := /usr/bin/env bash
+SHELL := /usr/bin/env bash -o pipefail
 PYTHON := python3
 
 #* Docker variables
-IMAGE := vkusvill-green-labels-notifier
+IMAGE := vkusvill-green-labels
 VERSION := latest
 
 #* Directories with source code
@@ -26,8 +26,8 @@ poetry-remove:
 #* Installation
 .PHONY: install
 install:
-	poetry lock --no-interaction
-	poetry install --no-interaction
+	poetry lock --no-interaction --no-update
+	poetry install --no-interaction --sync
 
 .PHONY: pre-commit-install
 pre-commit-install:
@@ -36,8 +36,8 @@ pre-commit-install:
 #* Formatters
 .PHONY: codestyle
 codestyle:
+	poetry run ruff format $(CODE)
 	poetry run ruff check $(CODE) --fix-only
-	poetry run black --config pyproject.toml $(CODE)
 
 .PHONY: format
 format: codestyle
@@ -45,28 +45,30 @@ format: codestyle
 #* Test
 .PHONY: test
 test:
-	poetry run coverage run
-	poetry run coverage report
+	poetry run pytest
 	poetry run coverage xml
 
-# Validate pyproject.toml
+# Validate dependencies
 .PHONY: check-poetry
 check-poetry:
 	poetry check
 
-#* Check code style
-.PHONY: check-black
-check-black:
-	poetry run black --diff --check --config pyproject.toml $(CODE)
+.PHONY: check-deptry
+check-deptry:
+	poetry run deptry .
 
-.PHONY: check-codestyle
-check-codestyle: check-black
+.PHONY: check-dependencies
+check-dependencies: check-poetry check-deptry
 
 #* Static linters
 
 .PHONY: check-ruff
 check-ruff:
 	poetry run ruff check $(CODE) --no-fix
+
+.PHONY: check-codestyle
+check-codestyle:
+	poetry run ruff format $(CODE) --check
 
 .PHONY: check-mypy
 check-mypy:
@@ -82,11 +84,11 @@ check-safety:
 	poetry run safety check --full-report
 
 .PHONY: lint
-lint: check-poetry check-codestyle static-lint check-safety
+lint: check-dependencies check-codestyle static-lint
 
 .PHONY: update-dev-deps
 update-dev-deps:
-	poetry add -G dev black@latest mypy@latest pre-commit@latest pytest@latest \
+	poetry add -G dev mypy@latest pre-commit@latest pytest@latest deptry@latest \
 										coverage@latest safety@latest typeguard@latest ruff@latest
 
 #* Docker
