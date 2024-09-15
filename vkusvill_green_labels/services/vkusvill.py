@@ -2,6 +2,8 @@ import typing
 
 import decimal
 
+from decimal import Decimal
+
 import pydantic
 import requests
 
@@ -43,9 +45,20 @@ class GreenLabelItem(pydantic.BaseModel):
 class TokenResponse(pydantic.BaseModel):
     email: str
     fullname: str
-    number: str
+    user_number: str = pydantic.Field(validation_alias="number")
     phone: str
     token: str
+
+
+class ShopInfo(pydantic.BaseModel):
+    shop_number: int = pydantic.Field(validation_alias="ShopNo")
+
+
+class AddressInfo(pydantic.BaseModel):
+    latitude: Decimal
+    longitude: Decimal
+    address: str
+    res: int
 
 
 class VkusvillApi:
@@ -67,15 +80,7 @@ class VkusvillApi:
         logger.debug(
             "{} {} - {} ", response.request.method, response.request.url, response.status_code
         )
-
-        if response.status_code != 200:
-            try:
-                response_body = response.json()
-            except requests.JSONDecodeError:
-                response_body = response.text
-            msg = f"Vkusvill API bad response: status_code={response.status_code}, response={response_body}"
-            logger.exception(msg)
-            raise VkusvillApiError(msg)
+        self._check_response_successful(response)
 
         try:
             return pydantic.TypeAdapter(list[GreenLabelItem]).validate_python(
@@ -97,6 +102,73 @@ class VkusvillApi:
         logger.debug(
             "{} {} - {} ", response.request.method, response.request.url, response.status_code
         )
+        self._check_response_successful(response)
+
+        try:
+            return TokenResponse.model_validate(response.json())
+        except (pydantic.ValidationError, KeyError) as exc:
+            msg = f"Could not validate payload: {exc}"
+            logger.exception(msg)
+            raise VkusvillApiError(msg) from exc
+
+    def get_shop_info(
+        self, latitude: decimal.Decimal, longitude: decimal.Decimal
+    ) -> ShopInfo | None:
+        params: dict[str, typing.Any] = self.settings.shop_info.query
+        params |= {"latitude": str(latitude), "longitude": str(longitude)}
+        logger.debug("params: {}", params)
+        logger.debug("headers: {}", self.settings.shop_info.headers)
+        response = requests.get(
+            str(self.settings.shop_info.url),
+            params=self.settings.shop_info.query,
+            headers=self.settings.shop_info.headers,
+            timeout=self._TIMEOUT,
+        )
+        logger.debug(
+            "{} {} - {} ", response.request.method, response.request.url, response.status_code
+        )
+        self._check_response_successful(response)
+
+        try:
+            shop_info_list = pydantic.TypeAdapter(list[ShopInfo]).validate_python(response.json())
+            if not shop_info_list:
+                return None
+            return shop_info_list[0]
+        except (pydantic.ValidationError, KeyError) as exc:
+            msg = f"Could not validate payload: {exc}"
+            logger.exception(msg)
+            raise VkusvillApiError(msg) from exc
+
+    def get_address_info(
+        self, latitude: decimal.Decimal, longitude: decimal.Decimal
+    ) -> AddressInfo | None:
+        params: dict[str, typing.Any] = self.settings.address_info.query
+        params |= {"latitude": str(latitude), "longitude": str(longitude)}
+        logger.debug("params: {}", params)
+        logger.debug("headers: {}", self.settings.address_info.headers)
+        response = requests.get(
+            str(self.settings.address_info.url),
+            params=self.settings.address_info.query,
+            headers=self.settings.address_info.headers,
+            timeout=self._TIMEOUT,
+        )
+        logger.debug(
+            "{} {} - {} ", response.request.method, response.request.url, response.status_code
+        )
+        self._check_response_successful(response)
+
+        try:
+            address_info = AddressInfo.model_validate(response.json())
+            if address_info.res < 0:
+                return None
+        except (pydantic.ValidationError, KeyError) as exc:
+            msg = f"Could not validate payload: {exc}"
+            logger.exception(msg)
+            raise VkusvillApiError(msg) from exc
+        else:
+            return address_info
+
+    def _check_response_successful(self, response: requests.Response) -> None:
         if response.status_code != 200:
             try:
                 response_body = response.json()
@@ -106,13 +178,6 @@ class VkusvillApi:
             logger.exception(msg)
             raise VkusvillApiError(msg)
 
-        try:
-            return TokenResponse.model_validate(response.json())
-        except (pydantic.ValidationError, KeyError) as exc:
-            msg = f"Could not validate payload: {exc}"
-            logger.exception(msg)
-            raise VkusvillApiError(msg) from exc
-
 
 if __name__ == "__main__":
     from vkusvill_green_labels.settings import settings
@@ -120,3 +185,5 @@ if __name__ == "__main__":
     vkusvill = VkusvillApi(settings.vkusvill)
     logger.info(vkusvill.create_token())
     logger.info(vkusvill.fetch_green_labels(5266))
+    logger.info(vkusvill.get_shop_info(Decimal("55.7267300"), Decimal("37.6221450")))
+    logger.info(vkusvill.get_address_info(Decimal("55.7267300"), Decimal("37.6221450")))

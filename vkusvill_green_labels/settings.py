@@ -21,6 +21,12 @@ def load_test_vkusvill_settings() -> "VkusvillSettings":
         create_token=EndpointSettings(
             headers={}, query={}, url=HttpUrl("http://test/endpoint/create-token")
         ),
+        shop_info=EndpointSettings(
+            headers={}, query={}, url=HttpUrl("http://test/endpoint/shop-info")
+        ),
+        address_info=EndpointSettings(
+            headers={}, query={}, url=HttpUrl("http://test/endpoint/address-info")
+        ),
     )
 
 
@@ -33,6 +39,8 @@ class EndpointSettings(BaseModel):
 class VkusvillSettings(BaseModel):
     green_labels: EndpointSettings
     create_token: EndpointSettings
+    shop_info: EndpointSettings
+    address_info: EndpointSettings
 
 
 class TelegramSettings(BaseModel):

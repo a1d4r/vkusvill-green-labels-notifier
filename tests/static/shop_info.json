@@ -1,0 +1,23 @@
+[
+  {
+    "Date_expiration": "2024-09-15 23:59:59.000",
+    "Date_expirationZ": "2024-09-15T23:59:59+03:00",
+    "Date_service": "2024-09-15",
+    "Number_button": "1",
+    "ShopNo": "8145",
+    "Text_long_today": "",
+    "Text_short_slot": "",
+    "Text_short_today": "Сегодня за 1 час",
+    "gettype": "4",
+    "id_service": "32",
+    "is_active": "1",
+    "not_need_slots": "0",
+    "other_parameters": "",
+    "price": null,
+    "slot_during": "01:00:00",
+    "slot_since": null,
+    "slot_until": null,
+    "text_long_header": "",
+    "type_service": 1
+  }
+]

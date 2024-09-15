@@ -2,31 +2,32 @@ import datetime
 import decimal
 import zoneinfo
 
+from decimal import Decimal
+
 import pytest
 
 from requests_mock import Mocker
 
 from vkusvill_green_labels.services.vkusvill import VkusvillApi
+from vkusvill_green_labels.settings import Settings
 
 
 @pytest.fixture
-def _mock_green_labels_api(requests_mock: Mocker, load_json, app_settings):
+def vkusvill_api(app_settings) -> VkusvillApi:
+    return VkusvillApi(app_settings.vkusvill)
+
+
+def test_fetch_green_labels(
+    app_settings: Settings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+):
+    # Arrange
     response = load_json("green_labels_response.json")
     requests_mock.get(str(app_settings.vkusvill.green_labels.url), json=response)
 
-
-@pytest.fixture
-def _mock_create_token_api(requests_mock: Mocker, load_json, app_settings):
-    response = load_json("token_response.json")
-    requests_mock.post(str(app_settings.vkusvill.create_token.url), json=response)
-
-
-@pytest.mark.usefixtures("_mock_green_labels_api")
-def test_fetch_green_labels(app_settings):
-    vkusvill_api = VkusvillApi(app_settings.vkusvill)
-
+    # Act
     green_labels_items = vkusvill_api.fetch_green_labels(5266)
 
+    # Assert
     assert len(green_labels_items) == 56
     assert green_labels_items[0].shop_id == 5266
     assert green_labels_items[0].item_id == 70127
@@ -47,10 +48,81 @@ def test_fetch_green_labels(app_settings):
     assert green_labels_items[0].price_discount == decimal.Decimal("149")
 
 
-@pytest.mark.usefixtures("_mock_create_token_api")
-def test_create_token(app_settings):
-    vkusvill_api = VkusvillApi(app_settings.vkusvill)
+def test_create_token(
+    app_settings: Settings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+):
+    # Arrange
+    response = load_json("token_response.json")
+    requests_mock.post(str(app_settings.vkusvill.create_token.url), json=response)
 
+    # Act
     token_data = vkusvill_api.create_token()
 
+    # Assert
     assert token_data.token == "jwt_token"
+    assert token_data.user_number == "&\\123456"
+
+
+def test_get_address_info(
+    app_settings: Settings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+):
+    # Arrange
+    response = load_json("address_info.json")
+    requests_mock.get(str(app_settings.vkusvill.address_info.url), json=response)
+    lat, lon = Decimal("55.72673"), Decimal("37.622145")
+
+    # Act
+    address_info = vkusvill_api.get_address_info(lat, lon)
+
+    # Assert
+    assert address_info is not None
+    assert address_info.latitude == lat
+    assert address_info.longitude == lon
+    assert address_info.address == "Москва, Люсиновская улица, 6"
+    assert address_info.res == 1
+
+
+def test_get_address_info_not_found(
+    app_settings: Settings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+):
+    # Arrange
+    response = load_json("address_info_not_found.json")
+    requests_mock.get(str(app_settings.vkusvill.address_info.url), json=response)
+    lat, lon = Decimal("0"), Decimal("0")
+
+    # Act
+    address_info = vkusvill_api.get_address_info(lat, lon)
+
+    # Assert
+    assert address_info is None
+
+
+def test_get_shop_info(
+    app_settings: Settings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+):
+    # Arrange
+    response = load_json("shop_info.json")
+    requests_mock.get(str(app_settings.vkusvill.shop_info.url), json=response)
+    lat, lon = Decimal("55.72673"), Decimal("37.622145")
+
+    # Act
+    shop_info = vkusvill_api.get_shop_info(lat, lon)
+
+    # Assert
+    assert shop_info is not None
+    assert shop_info.shop_number == 8145
+
+
+def test_get_shop_info_not_found(
+    app_settings: Settings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+):
+    # Arrange
+    response = load_json("shop_info_not_found.json")
+    requests_mock.get(str(app_settings.vkusvill.shop_info.url), json=response)
+    lat, lon = Decimal("0"), Decimal("0")
+
+    # Act
+    shop_info = vkusvill_api.get_shop_info(lat, lon)
+
+    # Assert
+    assert shop_info is None
