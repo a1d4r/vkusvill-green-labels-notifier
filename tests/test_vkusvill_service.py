@@ -10,12 +10,18 @@ from vkusvill_green_labels.services.vkusvill import VkusvillApi
 
 
 @pytest.fixture
-def _mock_vkusvill_api(requests_mock: Mocker, load_json, app_settings):
+def _mock_green_labels_api(requests_mock: Mocker, load_json, app_settings):
     response = load_json("green_labels_response.json")
-    requests_mock.get(str(app_settings.vkusvill.green_labels_endpoint), json=response)
+    requests_mock.get(str(app_settings.vkusvill.green_labels.url), json=response)
 
 
-@pytest.mark.usefixtures("_mock_vkusvill_api")
+@pytest.fixture
+def _mock_create_token_api(requests_mock: Mocker, load_json, app_settings):
+    response = load_json("token_response.json")
+    requests_mock.post(str(app_settings.vkusvill.create_token.url), json=response)
+
+
+@pytest.mark.usefixtures("_mock_green_labels_api")
 def test_fetch_green_labels(app_settings):
     vkusvill_api = VkusvillApi(app_settings.vkusvill)
 
@@ -39,3 +45,12 @@ def test_fetch_green_labels(app_settings):
     assert green_labels_items[0].units_available == decimal.Decimal("5")
     assert green_labels_items[0].price == decimal.Decimal("248")
     assert green_labels_items[0].price_discount == decimal.Decimal("149")
+
+
+@pytest.mark.usefixtures("_mock_create_token_api")
+def test_create_token(app_settings):
+    vkusvill_api = VkusvillApi(app_settings.vkusvill)
+
+    token_data = vkusvill_api.create_token()
+
+    assert token_data.token == "jwt_token"

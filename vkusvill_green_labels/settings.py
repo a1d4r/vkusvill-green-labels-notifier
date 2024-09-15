@@ -15,16 +15,24 @@ def load_vkusvill_settings() -> "VkusvillSettings":
 
 def load_test_vkusvill_settings() -> "VkusvillSettings":
     return VkusvillSettings(
-        headers={}, query={}, green_labels_endpoint=HttpUrl("http://test/endpoint")
+        green_labels=EndpointSettings(
+            headers={}, query={}, url=HttpUrl("http://test/endpoint/green-labels")
+        ),
+        create_token=EndpointSettings(
+            headers={}, query={}, url=HttpUrl("http://test/endpoint/create-token")
+        ),
     )
+
+
+class EndpointSettings(BaseModel):
+    headers: dict[str, str] = Field(..., description="Headers for the request")
+    query: dict[str, str] = Field(..., description="Query parameters for the request")
+    url: HttpUrl = Field(..., description="URL of the endpoint")
 
 
 class VkusvillSettings(BaseModel):
-    headers: dict[str, str] = Field(..., description="Headers for the request")
-    query: dict[str, str] = Field(..., description="Query parameters for the request")
-    green_labels_endpoint: HttpUrl = Field(
-        ..., description="URL of the endpoint for fetching green label items"
-    )
+    green_labels: EndpointSettings
+    create_token: EndpointSettings
 
 
 class TelegramSettings(BaseModel):

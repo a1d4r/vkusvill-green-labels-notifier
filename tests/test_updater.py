@@ -18,7 +18,7 @@ def _mock_vkusvill_api(requests_mock: Mocker, load_json, app_settings):
     responses[3]["payload"] = base_response["payload"][5:6]
 
     requests_mock.get(
-        str(app_settings.vkusvill.green_labels_endpoint),
+        str(app_settings.vkusvill.green_labels.url),
         response_list=[{"json": response, "status_code": 200} for response in responses],
     )
 

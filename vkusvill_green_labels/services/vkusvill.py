@@ -40,6 +40,14 @@ class GreenLabelItem(pydantic.BaseModel):
     price_discount: decimal.Decimal = pydantic.Field(validation_alias="price_spec")
 
 
+class TokenResponse(pydantic.BaseModel):
+    email: str
+    fullname: str
+    number: str
+    phone: str
+    token: str
+
+
 class VkusvillApi:
     BONUS_CARD_NUMBER = "&832893"
     _TIMEOUT = 3
@@ -48,12 +56,12 @@ class VkusvillApi:
         self.settings = settings
 
     def fetch_green_labels(self, shop_id: int) -> list[GreenLabelItem]:
-        params: dict[str, typing.Any] = self.settings.query
+        params: dict[str, typing.Any] = self.settings.green_labels.query
         params |= {"shop_id": shop_id, "number": self.BONUS_CARD_NUMBER}
         response = requests.get(
-            str(self.settings.green_labels_endpoint),
+            str(self.settings.green_labels.url),
             params=params,
-            headers=self.settings.headers,
+            headers=self.settings.green_labels.headers,
             timeout=self._TIMEOUT,
         )
         logger.debug(
@@ -78,9 +86,37 @@ class VkusvillApi:
             logger.exception(msg)
             raise VkusvillApiError(msg) from exc
 
+    def create_token(self) -> TokenResponse:
+        logger.info(self.settings.create_token)
+        response = requests.post(
+            str(self.settings.create_token.url),
+            params=self.settings.create_token.query,
+            headers=self.settings.create_token.headers,
+            timeout=self._TIMEOUT,
+        )
+        logger.debug(
+            "{} {} - {} ", response.request.method, response.request.url, response.status_code
+        )
+        if response.status_code != 200:
+            try:
+                response_body = response.json()
+            except requests.JSONDecodeError:
+                response_body = response.text
+            msg = f"Vkusvill API bad response: status_code={response.status_code}, response={response_body}"
+            logger.exception(msg)
+            raise VkusvillApiError(msg)
+
+        try:
+            return TokenResponse.model_validate(response.json())
+        except (pydantic.ValidationError, KeyError) as exc:
+            msg = f"Could not validate payload: {exc}"
+            logger.exception(msg)
+            raise VkusvillApiError(msg) from exc
+
 
 if __name__ == "__main__":
     from vkusvill_green_labels.settings import settings
 
     vkusvill = VkusvillApi(settings.vkusvill)
+    logger.info(vkusvill.create_token())
     logger.info(vkusvill.fetch_green_labels(5266))
