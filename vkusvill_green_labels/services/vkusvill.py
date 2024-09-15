@@ -116,8 +116,6 @@ class VkusvillApi:
     ) -> ShopInfo | None:
         params: dict[str, typing.Any] = self.settings.shop_info.query
         params |= {"latitude": str(latitude), "longitude": str(longitude)}
-        logger.debug("params: {}", params)
-        logger.debug("headers: {}", self.settings.shop_info.headers)
         response = requests.get(
             str(self.settings.shop_info.url),
             params=self.settings.shop_info.query,
@@ -144,8 +142,6 @@ class VkusvillApi:
     ) -> AddressInfo | None:
         params: dict[str, typing.Any] = self.settings.address_info.query
         params |= {"latitude": str(latitude), "longitude": str(longitude)}
-        logger.debug("params: {}", params)
-        logger.debug("headers: {}", self.settings.address_info.headers)
         response = requests.get(
             str(self.settings.address_info.url),
             params=self.settings.address_info.query,
