@@ -56,7 +56,7 @@ def test_create_token(
     requests_mock.post(str(app_settings.vkusvill.create_token.url), json=response)
 
     # Act
-    token_data = vkusvill_api.create_token()
+    token_data = vkusvill_api.create_new_user_token()
 
     # Assert
     assert token_data.token == "jwt_token"

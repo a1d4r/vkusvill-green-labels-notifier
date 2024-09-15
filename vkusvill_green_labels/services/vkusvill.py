@@ -1,13 +1,18 @@
+# ruff: noqa: ERA001
 import typing
 
 import decimal
 
+from datetime import UTC, datetime
 from decimal import Decimal
+from functools import partial
+from time import time
+from uuid import uuid4
 
-import pydantic
 import requests
 
 from loguru import logger
+from pydantic import BaseModel, Field, HttpUrl, TypeAdapter, ValidationError
 
 from vkusvill_green_labels.settings import VkusvillSettings
 from vkusvill_green_labels.validators import MoscowDatetime
@@ -25,36 +30,47 @@ class VkusvillValidationError(VkusvillError):
     pass
 
 
-class GreenLabelItem(pydantic.BaseModel):
-    shop_id: int = pydantic.Field(validation_alias="shop_no")
-    item_id: int = pydantic.Field(validation_alias="id_tov")
-    name: str = pydantic.Field(validation_alias="Name_tov")
+class VkusvillUserSettings(BaseModel):
+    device_id: str
+    user_number: str
+    token: str
+    created_at: datetime = Field(default_factory=partial(datetime.now, UTC))
+
+
+class GreenLabelItem(BaseModel):
+    shop_id: int = Field(validation_alias="shop_no")
+    item_id: int = Field(validation_alias="id_tov")
+    name: str = Field(validation_alias="Name_tov")
     rating: str | None = None
-    photo_url: pydantic.HttpUrl | None = pydantic.Field(
-        default=None, validation_alias="mini_photo_url"
-    )
-    timestamp: MoscowDatetime = pydantic.Field(validation_alias="ex_date")
-    unit_of_measurement: str = pydantic.Field(validation_alias="ed_izm")
-    weight: decimal.Decimal = pydantic.Field(validation_alias="ves")
-    discount_percents: decimal.Decimal = pydantic.Field(validation_alias="discount")
-    units_available: decimal.Decimal = pydantic.Field(validation_alias="ost")
+    photo_url: HttpUrl | None = Field(default=None, validation_alias="mini_photo_url")
+    timestamp: MoscowDatetime = Field(validation_alias="ex_date")
+    unit_of_measurement: str = Field(validation_alias="ed_izm")
+    weight: decimal.Decimal = Field(validation_alias="ves")
+    discount_percents: decimal.Decimal = Field(validation_alias="discount")
+    units_available: decimal.Decimal = Field(validation_alias="ost")
     price: decimal.Decimal
-    price_discount: decimal.Decimal = pydantic.Field(validation_alias="price_spec")
+    price_discount: decimal.Decimal = Field(validation_alias="price_spec")
 
 
-class TokenResponse(pydantic.BaseModel):
+class TokenResponse(BaseModel):
+    """Информация о токене и пользователе."""
+
     email: str
     fullname: str
-    user_number: str = pydantic.Field(validation_alias="number")
+    user_number: str = Field(validation_alias="number")
     phone: str
     token: str
 
 
-class ShopInfo(pydantic.BaseModel):
-    shop_number: int = pydantic.Field(validation_alias="ShopNo")
+class ShopInfo(BaseModel):
+    """Информация о магазине."""
+
+    shop_number: int = Field(validation_alias="ShopNo")
 
 
-class AddressInfo(pydantic.BaseModel):
+class AddressInfo(BaseModel):
+    """Информация об адресе."""
+
     latitude: Decimal
     longitude: Decimal
     address: str
@@ -65,8 +81,11 @@ class VkusvillApi:
     BONUS_CARD_NUMBER = "&832893"
     _TIMEOUT = 3
 
-    def __init__(self, settings: VkusvillSettings) -> None:
+    def __init__(
+        self, settings: VkusvillSettings, user_settings: VkusvillUserSettings | None = None
+    ) -> None:
         self.settings = settings
+        self.user_settings = user_settings
 
     def fetch_green_labels(self, shop_id: int) -> list[GreenLabelItem]:
         params: dict[str, typing.Any] = self.settings.green_labels.query
@@ -83,16 +102,26 @@ class VkusvillApi:
         self._check_response_successful(response)
 
         try:
-            return pydantic.TypeAdapter(list[GreenLabelItem]).validate_python(
-                response.json()["payload"]
-            )
-        except (pydantic.ValidationError, KeyError) as exc:
+            return TypeAdapter(list[GreenLabelItem]).validate_python(response.json()["payload"])
+        except (ValidationError, KeyError) as exc:
             msg = f"Could not validate payload: {exc}"
             logger.exception(msg)
             raise VkusvillApiError(msg) from exc
 
-    def create_token(self) -> TokenResponse:
-        logger.info(self.settings.create_token)
+    def create_new_user_token(self, device_id: str | None = None) -> TokenResponse:
+        if device_id is None:
+            device_id = str(uuid4())
+
+        str_params = self.settings.create_token.str_params
+        str_params["ts"] = str(int(time()))
+        str_params["device_id"] = str(device_id)
+        formatted_str_params = "".join(
+            ["{[" + key + "]}" + "{[" + value + "]}" for key, value in str_params.items()]
+        )
+
+        params: dict[str, typing.Any] = self.settings.create_token.query
+        params |= {"device_id": str(device_id), "str_param": formatted_str_params}
+
         response = requests.post(
             str(self.settings.create_token.url),
             params=self.settings.create_token.query,
@@ -106,10 +135,17 @@ class VkusvillApi:
 
         try:
             return TokenResponse.model_validate(response.json())
-        except (pydantic.ValidationError, KeyError) as exc:
+        except (ValidationError, KeyError) as exc:
             msg = f"Could not validate payload: {exc}"
             logger.exception(msg)
             raise VkusvillApiError(msg) from exc
+
+    def authorize(self) -> None:
+        device_id = str(uuid4())
+        user_token = self.create_new_user_token(device_id)
+        self.user_settings = VkusvillUserSettings(
+            device_id=device_id, user_number=user_token.user_number, token=user_token.token
+        )
 
     def get_shop_info(
         self, latitude: decimal.Decimal, longitude: decimal.Decimal
@@ -128,11 +164,11 @@ class VkusvillApi:
         self._check_response_successful(response)
 
         try:
-            shop_info_list = pydantic.TypeAdapter(list[ShopInfo]).validate_python(response.json())
+            shop_info_list = TypeAdapter(list[ShopInfo]).validate_python(response.json())
             if not shop_info_list:
                 return None
             return shop_info_list[0]
-        except (pydantic.ValidationError, KeyError) as exc:
+        except (ValidationError, KeyError) as exc:
             msg = f"Could not validate payload: {exc}"
             logger.exception(msg)
             raise VkusvillApiError(msg) from exc
@@ -157,7 +193,7 @@ class VkusvillApi:
             address_info = AddressInfo.model_validate(response.json())
             if address_info.res < 0:
                 return None
-        except (pydantic.ValidationError, KeyError) as exc:
+        except (ValidationError, KeyError) as exc:
             msg = f"Could not validate payload: {exc}"
             logger.exception(msg)
             raise VkusvillApiError(msg) from exc
@@ -179,7 +215,9 @@ if __name__ == "__main__":
     from vkusvill_green_labels.settings import settings
 
     vkusvill = VkusvillApi(settings.vkusvill)
-    logger.info(vkusvill.create_token())
-    logger.info(vkusvill.fetch_green_labels(5266))
-    logger.info(vkusvill.get_shop_info(Decimal("55.7267300"), Decimal("37.6221450")))
-    logger.info(vkusvill.get_address_info(Decimal("55.7267300"), Decimal("37.6221450")))
+    # logger.info(vkusvill.create_new_user_token())
+    vkusvill.authorize()
+    logger.info(vkusvill.user_settings)
+    # logger.info(vkusvill.fetch_green_labels(5266))
+    # logger.info(vkusvill.get_shop_info(Decimal("55.7267300"), Decimal("37.6221450")))
+    # logger.info(vkusvill.get_address_info(Decimal("55.7267300"), Decimal("37.6221450")))

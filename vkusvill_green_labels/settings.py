@@ -34,6 +34,7 @@ class EndpointSettings(BaseModel):
     headers: dict[str, str] = Field(..., description="Headers for the request")
     query: dict[str, str] = Field(..., description="Query parameters for the request")
     url: HttpUrl = Field(..., description="URL of the endpoint")
+    str_params: dict[str, str] = Field({}, description="Parameters to build str_par")
 
 
 class VkusvillSettings(BaseModel):
