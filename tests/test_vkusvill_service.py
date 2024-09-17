@@ -4,28 +4,24 @@ import zoneinfo
 
 from decimal import Decimal
 
-import pytest
-
 from requests_mock import Mocker
 
 from vkusvill_green_labels.services.vkusvill import VkusvillApi
-from vkusvill_green_labels.settings import Settings
-
-
-@pytest.fixture
-def vkusvill_api(app_settings) -> VkusvillApi:
-    return VkusvillApi(app_settings.vkusvill)
+from vkusvill_green_labels.settings import VkusvillSettings
 
 
 def test_fetch_green_labels(
-    app_settings: Settings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+    vkusvill_settings: VkusvillSettings,
+    authorized_vkusvill_api: VkusvillApi,
+    requests_mock: Mocker,
+    load_json,
 ):
     # Arrange
     response = load_json("green_labels_response.json")
-    requests_mock.get(str(app_settings.vkusvill.green_labels.url), json=response)
+    requests_mock.get(str(vkusvill_settings.green_labels.url), json=response)
 
     # Act
-    green_labels_items = vkusvill_api.fetch_green_labels(5266)
+    green_labels_items = authorized_vkusvill_api.fetch_green_labels(5266)
 
     # Assert
     assert len(green_labels_items) == 56
@@ -49,11 +45,11 @@ def test_fetch_green_labels(
 
 
 def test_create_token(
-    app_settings: Settings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+    vkusvill_settings: VkusvillSettings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
 ):
     # Arrange
     response = load_json("token_response.json")
-    requests_mock.post(str(app_settings.vkusvill.create_token.url), json=response)
+    requests_mock.post(str(vkusvill_settings.create_token.url), json=response)
 
     # Act
     token_data = vkusvill_api.create_new_user_token()
@@ -64,15 +60,18 @@ def test_create_token(
 
 
 def test_get_address_info(
-    app_settings: Settings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+    vkusvill_settings: VkusvillSettings,
+    authorized_vkusvill_api: VkusvillApi,
+    requests_mock: Mocker,
+    load_json,
 ):
     # Arrange
     response = load_json("address_info.json")
-    requests_mock.get(str(app_settings.vkusvill.address_info.url), json=response)
+    requests_mock.get(str(vkusvill_settings.address_info.url), json=response)
     lat, lon = Decimal("55.72673"), Decimal("37.622145")
 
     # Act
-    address_info = vkusvill_api.get_address_info(lat, lon)
+    address_info = authorized_vkusvill_api.get_address_info(lat, lon)
 
     # Assert
     assert address_info is not None
@@ -83,30 +82,36 @@ def test_get_address_info(
 
 
 def test_get_address_info_not_found(
-    app_settings: Settings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+    vkusvill_settings: VkusvillSettings,
+    authorized_vkusvill_api: VkusvillApi,
+    requests_mock: Mocker,
+    load_json,
 ):
     # Arrange
     response = load_json("address_info_not_found.json")
-    requests_mock.get(str(app_settings.vkusvill.address_info.url), json=response)
+    requests_mock.get(str(vkusvill_settings.address_info.url), json=response)
     lat, lon = Decimal("0"), Decimal("0")
 
     # Act
-    address_info = vkusvill_api.get_address_info(lat, lon)
+    address_info = authorized_vkusvill_api.get_address_info(lat, lon)
 
     # Assert
     assert address_info is None
 
 
 def test_get_shop_info(
-    app_settings: Settings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+    vkusvill_settings: VkusvillSettings,
+    authorized_vkusvill_api: VkusvillApi,
+    requests_mock: Mocker,
+    load_json,
 ):
     # Arrange
     response = load_json("shop_info.json")
-    requests_mock.get(str(app_settings.vkusvill.shop_info.url), json=response)
+    requests_mock.get(str(vkusvill_settings.shop_info.url), json=response)
     lat, lon = Decimal("55.72673"), Decimal("37.622145")
 
     # Act
-    shop_info = vkusvill_api.get_shop_info(lat, lon)
+    shop_info = authorized_vkusvill_api.get_shop_info(lat, lon)
 
     # Assert
     assert shop_info is not None
@@ -114,15 +119,18 @@ def test_get_shop_info(
 
 
 def test_get_shop_info_not_found(
-    app_settings: Settings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+    vkusvill_settings: VkusvillSettings,
+    authorized_vkusvill_api: VkusvillApi,
+    requests_mock: Mocker,
+    load_json,
 ):
     # Arrange
     response = load_json("shop_info_not_found.json")
-    requests_mock.get(str(app_settings.vkusvill.shop_info.url), json=response)
+    requests_mock.get(str(vkusvill_settings.shop_info.url), json=response)
     lat, lon = Decimal("0"), Decimal("0")
 
     # Act
-    shop_info = vkusvill_api.get_shop_info(lat, lon)
+    shop_info = authorized_vkusvill_api.get_shop_info(lat, lon)
 
     # Assert
     assert shop_info is None

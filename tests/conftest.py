@@ -3,12 +3,13 @@ import pathlib
 
 import pytest
 
-from vkusvill_green_labels.settings import Settings, settings
+from vkusvill_green_labels.services.vkusvill import VkusvillApi, VkusvillUserSettings
+from vkusvill_green_labels.settings import VkusvillSettings, settings
 
 
 @pytest.fixture
-def app_settings() -> Settings:
-    return settings
+def vkusvill_settings() -> VkusvillSettings:
+    return settings.vkusvill
 
 
 @pytest.fixture
@@ -23,3 +24,14 @@ def load_json(static_path):
             return json.load(file)
 
     return _load_json
+
+
+@pytest.fixture
+def vkusvill_api(vkusvill_settings: VkusvillSettings) -> VkusvillApi:
+    return VkusvillApi(vkusvill_settings)
+
+
+@pytest.fixture
+def authorized_vkusvill_api(vkusvill_settings: VkusvillSettings) -> VkusvillApi:
+    user_settings = VkusvillUserSettings(device_id="test", user_number="test", token="test")
+    return VkusvillApi(vkusvill_settings, user_settings)

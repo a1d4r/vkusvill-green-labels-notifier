@@ -9,25 +9,11 @@ PROJECT_ROOT = Path(__file__).parent.parent
 
 
 def load_vkusvill_settings() -> "VkusvillSettings":
-    with (PROJECT_ROOT / "vkusvill_settings.json").open() as file:
+    vkusvill_settings_path = Path(PROJECT_ROOT) / "vkusvill_settings.json"
+    if "pytest" in sys.modules:
+        vkusvill_settings_path = Path(PROJECT_ROOT) / "test_vkusvill_settings.json"
+    with vkusvill_settings_path.open() as file:
         return VkusvillSettings.model_validate_json(file.read())
-
-
-def load_test_vkusvill_settings() -> "VkusvillSettings":
-    return VkusvillSettings(
-        green_labels=EndpointSettings(
-            headers={}, query={}, url=HttpUrl("http://test/endpoint/green-labels")
-        ),
-        create_token=EndpointSettings(
-            headers={}, query={}, url=HttpUrl("http://test/endpoint/create-token")
-        ),
-        shop_info=EndpointSettings(
-            headers={}, query={}, url=HttpUrl("http://test/endpoint/shop-info")
-        ),
-        address_info=EndpointSettings(
-            headers={}, query={}, url=HttpUrl("http://test/endpoint/address-info")
-        ),
-    )
 
 
 class EndpointSettings(BaseModel):
@@ -42,6 +28,7 @@ class VkusvillSettings(BaseModel):
     create_token: EndpointSettings
     shop_info: EndpointSettings
     address_info: EndpointSettings
+    update_cart: EndpointSettings
 
 
 class TelegramSettings(BaseModel):
@@ -57,9 +44,8 @@ class Settings(BaseSettings):
     update_interval: int = Field(..., description="Update interval in seconds")
 
 
+env_file = PROJECT_ROOT / ".env"
 if "pytest" in sys.modules:
-    settings = Settings(
-        vkusvill=load_test_vkusvill_settings(), _env_file=PROJECT_ROOT / ".env.test"
-    )
-else:
-    settings = Settings(vkusvill=load_vkusvill_settings(), _env_file=PROJECT_ROOT / ".env")
+    env_file = PROJECT_ROOT / ".env.test"
+
+settings = Settings(vkusvill=load_vkusvill_settings(), _env_file=PROJECT_ROOT / ".env")

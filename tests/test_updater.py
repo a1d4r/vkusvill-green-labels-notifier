@@ -3,12 +3,13 @@ import pytest
 from requests_mock import Mocker
 
 from vkusvill_green_labels.services.vkusvill import VkusvillApi
+from vkusvill_green_labels.settings import VkusvillSettings
 from vkusvill_green_labels.storage import InMemoryGreenLabelsStorage
 from vkusvill_green_labels.updater import GreenLabelsUpdater
 
 
 @pytest.fixture
-def _mock_vkusvill_api(requests_mock: Mocker, load_json, app_settings):
+def _mock_vkusvill_api(requests_mock: Mocker, load_json, vkusvill_settings: VkusvillSettings):
     base_response = load_json("green_labels_response.json")
 
     responses = [{"status": "success"} for _ in range(4)]
@@ -18,17 +19,15 @@ def _mock_vkusvill_api(requests_mock: Mocker, load_json, app_settings):
     responses[3]["payload"] = base_response["payload"][5:6]
 
     requests_mock.get(
-        str(app_settings.vkusvill.green_labels.url),
+        str(vkusvill_settings.green_labels.url),
         response_list=[{"json": response, "status_code": 200} for response in responses],
     )
 
 
 @pytest.mark.usefixtures("_mock_vkusvill_api")
-def test_updater(app_settings):
+def test_updater(authorized_vkusvill_api: VkusvillApi):
     updater = GreenLabelsUpdater(
-        vkusvill_api=VkusvillApi(app_settings.vkusvill),
-        storage=InMemoryGreenLabelsStorage(),
-        shop_id=5266,
+        vkusvill_api=authorized_vkusvill_api, storage=InMemoryGreenLabelsStorage(), shop_id=5266
     )
 
     updater.update()

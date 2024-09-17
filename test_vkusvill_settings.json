@@ -1,0 +1,28 @@
+{
+  "green_labels": {
+    "headers": {},
+    "query": {},
+    "url": "http://test/green-labels"
+  },
+  "create_token": {
+    "headers": {},
+    "query": {},
+    "str_params": {},
+    "url": "http://test/create-token"
+  },
+  "shop_info": {
+    "headers": {},
+    "query": {},
+    "url": "http://test/shop-info"
+  },
+  "address_info": {
+    "headers": {},
+    "query": {},
+    "url": "http://test/address-info"
+  },
+  "update_cart": {
+    "headers": {},
+    "query": {},
+    "url": "http://test/update-cart"
+  }
+}

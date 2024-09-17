@@ -30,6 +30,10 @@ class VkusvillValidationError(VkusvillError):
     pass
 
 
+class VkusvillUnauthorizedError(VkusvillError):
+    pass
+
+
 class VkusvillUserSettings(BaseModel):
     device_id: str
     user_number: str
@@ -77,8 +81,15 @@ class AddressInfo(BaseModel):
     res: int
 
 
+class CartInfo(BaseModel):
+    """Информация о корзине."""
+
+    cart_id: int
+    message: str
+    res: int
+
+
 class VkusvillApi:
-    BONUS_CARD_NUMBER = "&832893"
     _TIMEOUT = 3
 
     def __init__(
@@ -88,8 +99,11 @@ class VkusvillApi:
         self.user_settings = user_settings
 
     def fetch_green_labels(self, shop_id: int) -> list[GreenLabelItem]:
-        params: dict[str, typing.Any] = self.settings.green_labels.query
-        params |= {"shop_id": shop_id, "number": self.BONUS_CARD_NUMBER}
+        if self.user_settings is None:
+            raise VkusvillUnauthorizedError("User settings are not provided")
+        params: dict[str, typing.Any] = self.settings.green_labels.query.copy()
+        params["shop_id"] = shop_id
+        params["number"] = self.user_settings.user_number
         response = requests.get(
             str(self.settings.green_labels.url),
             params=params,
@@ -104,27 +118,26 @@ class VkusvillApi:
         try:
             return TypeAdapter(list[GreenLabelItem]).validate_python(response.json()["payload"])
         except (ValidationError, KeyError) as exc:
-            msg = f"Could not validate payload: {exc}"
-            logger.exception(msg)
-            raise VkusvillApiError(msg) from exc
+            raise VkusvillApiError("Could not validate response") from exc
 
     def create_new_user_token(self, device_id: str | None = None) -> TokenResponse:
         if device_id is None:
             device_id = str(uuid4())
 
-        str_params = self.settings.create_token.str_params
+        str_params = self.settings.create_token.str_params.copy()
         str_params["ts"] = str(int(time()))
         str_params["device_id"] = str(device_id)
         formatted_str_params = "".join(
             ["{[" + key + "]}" + "{[" + value + "]}" for key, value in str_params.items()]
         )
 
-        params: dict[str, typing.Any] = self.settings.create_token.query
-        params |= {"device_id": str(device_id), "str_param": formatted_str_params}
+        params: dict[str, typing.Any] = self.settings.create_token.query.copy()
+        params["device_id"] = device_id
+        params["str_param"] = formatted_str_params
 
         response = requests.post(
             str(self.settings.create_token.url),
-            params=self.settings.create_token.query,
+            params=params,
             headers=self.settings.create_token.headers,
             timeout=self._TIMEOUT,
         )
@@ -136,9 +149,7 @@ class VkusvillApi:
         try:
             return TokenResponse.model_validate(response.json())
         except (ValidationError, KeyError) as exc:
-            msg = f"Could not validate payload: {exc}"
-            logger.exception(msg)
-            raise VkusvillApiError(msg) from exc
+            raise VkusvillApiError("Could not validate response") from exc
 
     def authorize(self) -> None:
         device_id = str(uuid4())
@@ -150,13 +161,19 @@ class VkusvillApi:
     def get_shop_info(
         self, latitude: decimal.Decimal, longitude: decimal.Decimal
     ) -> ShopInfo | None:
-        params: dict[str, typing.Any] = self.settings.shop_info.query
-        params |= {"latitude": str(latitude), "longitude": str(longitude)}
+        if self.user_settings is None:
+            raise VkusvillUnauthorizedError("User settings are not provided")
+
+        headers = self.settings.shop_info.headers.copy()
+        headers["x-vkusvill-token"] = self.user_settings.token
+
+        params: dict[str, typing.Any] = self.settings.shop_info.query.copy()
+        params["latitude"] = str(latitude)
+        params["longitude"] = str(longitude)
+        params["number"] = self.user_settings.user_number
+
         response = requests.get(
-            str(self.settings.shop_info.url),
-            params=self.settings.shop_info.query,
-            headers=self.settings.shop_info.headers,
-            timeout=self._TIMEOUT,
+            str(self.settings.shop_info.url), params=params, headers=headers, timeout=self._TIMEOUT
         )
         logger.debug(
             "{} {} - {} ", response.request.method, response.request.url, response.status_code
@@ -169,19 +186,26 @@ class VkusvillApi:
                 return None
             return shop_info_list[0]
         except (ValidationError, KeyError) as exc:
-            msg = f"Could not validate payload: {exc}"
-            logger.exception(msg)
-            raise VkusvillApiError(msg) from exc
+            raise VkusvillApiError("Could not validate response") from exc
 
     def get_address_info(
         self, latitude: decimal.Decimal, longitude: decimal.Decimal
     ) -> AddressInfo | None:
-        params: dict[str, typing.Any] = self.settings.address_info.query
-        params |= {"latitude": str(latitude), "longitude": str(longitude)}
+        if self.user_settings is None:
+            raise VkusvillUnauthorizedError("User settings are not provided")
+
+        headers = self.settings.address_info.headers.copy()
+        headers["x-vkusvill-token"] = self.user_settings.token
+
+        params: dict[str, typing.Any] = self.settings.address_info.query.copy()
+        params["latitude"] = str(latitude)
+        params["longitude"] = str(longitude)
+        params["number"] = self.user_settings.user_number
+
         response = requests.get(
             str(self.settings.address_info.url),
-            params=self.settings.address_info.query,
-            headers=self.settings.address_info.headers,
+            params=params,
+            headers=headers,
             timeout=self._TIMEOUT,
         )
         logger.debug(
@@ -194,11 +218,39 @@ class VkusvillApi:
             if address_info.res < 0:
                 return None
         except (ValidationError, KeyError) as exc:
-            msg = f"Could not validate payload: {exc}"
-            logger.exception(msg)
-            raise VkusvillApiError(msg) from exc
+            raise VkusvillApiError("Could not validate response") from exc
         else:
             return address_info
+
+    def update_cart(self, latitude: decimal.Decimal, longitude: decimal.Decimal) -> CartInfo | None:
+        if self.user_settings is None:
+            raise VkusvillUnauthorizedError("User settings are not provided")
+
+        headers = self.settings.update_cart.headers.copy()
+        headers["x-vkusvill-token"] = self.user_settings.token
+
+        params: dict[str, typing.Any] = self.settings.update_cart.query.copy()
+        params["number"] = self.user_settings.user_number
+        params["DateSupply"] = datetime.now(UTC).strftime("%Y%m%d")
+        params["coordinates"] = f"{latitude},{longitude}"
+
+        response = requests.post(
+            str(self.settings.update_cart.url), data=params, headers=headers, timeout=self._TIMEOUT
+        )
+        logger.debug(
+            "{} {} - {} ", response.request.method, response.request.url, response.status_code
+        )
+        logger.debug("{}", response.request.headers)
+        self._check_response_successful(response)
+
+        try:
+            cart_info = CartInfo.model_validate(response.json())
+            if cart_info.res < 0:
+                raise VkusvillApiError(f"Could not update cart: {cart_info.message}")
+        except (ValidationError, KeyError) as exc:
+            raise VkusvillApiError("Could not validate response") from exc
+        else:
+            return cart_info
 
     def _check_response_successful(self, response: requests.Response) -> None:
         if response.status_code != 200:
@@ -215,9 +267,11 @@ if __name__ == "__main__":
     from vkusvill_green_labels.settings import settings
 
     vkusvill = VkusvillApi(settings.vkusvill)
-    # logger.info(vkusvill.create_new_user_token())
     vkusvill.authorize()
     logger.info(vkusvill.user_settings)
-    # logger.info(vkusvill.fetch_green_labels(5266))
-    # logger.info(vkusvill.get_shop_info(Decimal("55.7267300"), Decimal("37.6221450")))
-    # logger.info(vkusvill.get_address_info(Decimal("55.7267300"), Decimal("37.6221450")))
+    lat, lon = Decimal("55.7381250"), Decimal("37.6287290")
+    shop_info = vkusvill.get_shop_info(lat, lon)
+    logger.info(shop_info)
+    address_info = vkusvill.get_address_info(lat, lon)
+    logger.info(address_info)
+    logger.info(vkusvill.update_cart(lat, lon))

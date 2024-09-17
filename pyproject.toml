@@ -134,6 +134,7 @@ allowed-confusables = [
 "tests/**/*.py" = [
   "S101", # Use of assert detected (assert allowed in tests)
   "S105", # Possible hardcoded password
+  "S106", # Possible hardcoded password
   "PLR2004", # Magic value used in comparison
 ]
 
