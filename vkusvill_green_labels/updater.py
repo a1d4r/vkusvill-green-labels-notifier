@@ -3,16 +3,13 @@ from vkusvill_green_labels.storage import GreenLabelsStorage
 
 
 class GreenLabelsUpdater:
-    def __init__(
-        self, vkusvill_api: VkusvillApi, storage: GreenLabelsStorage, shop_id: int
-    ) -> None:
+    def __init__(self, vkusvill_api: VkusvillApi, storage: GreenLabelsStorage) -> None:
         self.api = vkusvill_api
         self.items_storage = storage
-        self.shop_id = shop_id
 
     def update(self) -> list[GreenLabelItem]:
         """Update green labels from vkusvill API and return newly appeared items."""
-        items = self.api.fetch_green_labels(self.shop_id)
+        items = self.api.fetch_green_labels()
         new_items = self._get_items_difference(items, self.items_storage.get_items())
         self.items_storage.set_items(items)
         return list(new_items)

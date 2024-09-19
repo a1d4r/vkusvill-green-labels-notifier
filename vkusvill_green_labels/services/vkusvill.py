@@ -12,10 +12,9 @@ from uuid import uuid4
 import requests
 
 from loguru import logger
-from pydantic import BaseModel, Field, HttpUrl, TypeAdapter, ValidationError
+from pydantic import AliasPath, BaseModel, Field, TypeAdapter, ValidationError
 
 from vkusvill_green_labels.settings import VkusvillSettings
-from vkusvill_green_labels.validators import MoscowDatetime
 
 
 class VkusvillError(Exception):
@@ -42,18 +41,13 @@ class VkusvillUserSettings(BaseModel):
 
 
 class GreenLabelItem(BaseModel):
-    shop_id: int = Field(validation_alias="shop_no")
-    item_id: int = Field(validation_alias="id_tov")
-    name: str = Field(validation_alias="Name_tov")
-    rating: str | None = None
-    photo_url: HttpUrl | None = Field(default=None, validation_alias="mini_photo_url")
-    timestamp: MoscowDatetime = Field(validation_alias="ex_date")
-    unit_of_measurement: str = Field(validation_alias="ed_izm")
-    weight: decimal.Decimal = Field(validation_alias="ves")
-    discount_percents: decimal.Decimal = Field(validation_alias="discount")
-    units_available: decimal.Decimal = Field(validation_alias="ost")
-    price: decimal.Decimal
-    price_discount: decimal.Decimal = Field(validation_alias="price_spec")
+    item_id: int = Field(..., validation_alias="id")
+    title: str
+    amount: Decimal
+    weight_str: str
+    rating: str = Field(..., validation_alias=AliasPath("rating", "all"))
+    price: Decimal = Field(..., validation_alias=AliasPath("price", "price"))
+    discount_price: Decimal = Field(..., validation_alias=AliasPath("price", "discount_price"))
 
 
 class TokenResponse(BaseModel):
@@ -97,28 +91,6 @@ class VkusvillApi:
     ) -> None:
         self.settings = settings
         self.user_settings = user_settings
-
-    def fetch_green_labels(self, shop_id: int) -> list[GreenLabelItem]:
-        if self.user_settings is None:
-            raise VkusvillUnauthorizedError("User settings are not provided")
-        params: dict[str, typing.Any] = self.settings.green_labels.query.copy()
-        params["shop_id"] = shop_id
-        params["number"] = self.user_settings.user_number
-        response = requests.get(
-            str(self.settings.green_labels.url),
-            params=params,
-            headers=self.settings.green_labels.headers,
-            timeout=self._TIMEOUT,
-        )
-        logger.debug(
-            "{} {} - {} ", response.request.method, response.request.url, response.status_code
-        )
-        self._check_response_successful(response)
-
-        try:
-            return TypeAdapter(list[GreenLabelItem]).validate_python(response.json()["payload"])
-        except (ValidationError, KeyError) as exc:
-            raise VkusvillApiError("Could not validate response") from exc
 
     def create_new_user_token(self, device_id: str | None = None) -> TokenResponse:
         if device_id is None:
@@ -240,7 +212,6 @@ class VkusvillApi:
         logger.debug(
             "{} {} - {} ", response.request.method, response.request.url, response.status_code
         )
-        logger.debug("{}", response.request.headers)
         self._check_response_successful(response)
 
         try:
@@ -251,6 +222,32 @@ class VkusvillApi:
             raise VkusvillApiError("Could not validate response") from exc
         else:
             return cart_info
+
+    def fetch_green_labels(self) -> list[GreenLabelItem]:
+        if self.user_settings is None:
+            raise VkusvillUnauthorizedError("User settings are not provided")
+
+        headers = self.settings.green_labels.headers.copy()
+        headers["x-vkusvill-token"] = self.user_settings.token
+
+        params: dict[str, typing.Any] = self.settings.green_labels.query.copy()
+        params["number"] = self.user_settings.user_number
+
+        response = requests.get(
+            str(self.settings.green_labels.url),
+            params=params,
+            headers=headers,
+            timeout=self._TIMEOUT,
+        )
+        logger.debug(
+            "{} {} - {} ", response.request.method, response.request.url, response.status_code
+        )
+        self._check_response_successful(response)
+
+        try:
+            return TypeAdapter(list[GreenLabelItem]).validate_python(response.json())
+        except (ValidationError, KeyError) as exc:
+            raise VkusvillApiError("Could not validate response") from exc
 
     def _check_response_successful(self, response: requests.Response) -> None:
         if response.status_code != 200:
@@ -275,3 +272,6 @@ if __name__ == "__main__":
     address_info = vkusvill.get_address_info(lat, lon)
     logger.info(address_info)
     logger.info(vkusvill.update_cart(lat, lon))
+    green_labels_items = vkusvill.fetch_green_labels()
+    logger.info(len(green_labels_items))
+    logger.info(green_labels_items[0])

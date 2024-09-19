@@ -1,0 +1,2019 @@
+[
+  {
+    "amount_tomorrow": 2.21,
+    "weight_step": "1.000",
+    "price": {
+      "priv_used": 1,
+      "priv_private": false,
+      "discount_price": 32,
+      "discount_percent": 40,
+      "properties": {
+        "price_text_color": "#1A1A1A",
+        "desc_text_color": "",
+        "icon_to_action": {
+          "image": "",
+          "action_link": ""
+        },
+        "icon": {
+          "icon_basic": "",
+          "icon_pers": ""
+        },
+        "nameplate": null,
+        "bottomsheet": null,
+        "priv_private": false,
+        "text": "",
+        "type": 0,
+        "shopping_cart": {
+          "icon": {
+            "icon_basic": "",
+            "icon_pers": ""
+          },
+          "group_price": false,
+          "tov_separator": null,
+          "show_both": true,
+          "text": "",
+          "desc_text_color": "",
+          "title_prefix": null,
+          "color": "#9AE794",
+          "price_text_color": "#1A1A1A"
+        },
+        "additional_block": null,
+        "price_type": 5,
+        "priv_used": 1,
+        "price_name": "Green_Label",
+        "color": "#9AE794",
+        "show_both": true,
+        "id_priv": null,
+        "priv_type": null
+      },
+      "id_priv": null,
+      "price_type": 5,
+      "priv_type": null,
+      "price": 53
+    },
+    "cashback": {
+      "type": 0,
+      "value": 0
+    },
+    "adults_only": false,
+    "id": 602,
+    "images": [
+      {
+        "type": "Full",
+        "images": [
+          {
+            "url": "https://img.vkusvill.ru/pim/images/mobile/7603467b-8c1c-4fd5-9fd9-321b6d7770dd.jpg?1712588335.9685",
+            "pos": 1
+          },
+          {
+            "url": "https://img.vkusvill.ru/pim/images/mobile/a6ff4af0-5af3-424b-9e07-888c92c0a9ca.jpg?1712588358.432",
+            "pos": 2
+          }
+        ]
+      },
+      {
+        "images": [
+          {
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/7603467b-8c1c-4fd5-9fd9-321b6d7770dd.jpg?1712588343.1226",
+            "pos": 1
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/a6ff4af0-5af3-424b-9e07-888c92c0a9ca.jpg?1712588364.5082"
+          }
+        ],
+        "type": "Large"
+      },
+      {
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/7603467b-8c1c-4fd5-9fd9-321b6d7770dd.jpg?1712588337.3416"
+          },
+          {
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/a6ff4af0-5af3-424b-9e07-888c92c0a9ca.jpg?1712588359.4885",
+            "pos": 2
+          }
+        ],
+        "type": "Mini"
+      }
+    ],
+    "backlight_color": null,
+    "weight_kg": "1.47",
+    "description": "",
+    "button": {
+      "color_text_dark": "#ffffff",
+      "icon_url": "https://cdn-mobile-backend.vkusvill.ru/appn/7S5ZwbeKY6vMiLeEux0GGczfQMDlO1Z6RL4BkyY6.png",
+      "color_button_dark": "#2DAA56",
+      "type_button": "teaser",
+      "id": 1,
+      "color_button": "#36BA5F",
+      "text": "В корзину",
+      "color_text": "#ffffff",
+      "meta": null,
+      "url_by_tap": ""
+    },
+    "labels_loyalty": null,
+    "meta": {},
+    "weight_str": "",
+    "title": "Капуста белокочанная",
+    "amount": 2.21,
+    "amount_express": 2.21,
+    "unit": "кг",
+    "weight_type": "Catalog.Item.Packing.Weight",
+    "express_toggle": {
+      "expressView": false,
+      "expressChosen": false
+    },
+    "partner": "",
+    "modifications": null,
+    "labels": [],
+    "is_favorite": false,
+    "rating": {
+      "manufacturers": null,
+      "all": "4.8",
+      "rating_type": 0,
+      "dynamic": "0.3",
+      "dynamic_history": [
+        {
+          "date": "2024-08-19",
+          "rating": "4.0"
+        },
+        {
+          "rating": "4.0",
+          "date": "2024-08-20"
+        },
+        {
+          "date": "2024-08-21",
+          "rating": "4.0"
+        },
+        {
+          "date": "2024-08-22",
+          "rating": "4.0"
+        },
+        {
+          "date": "2024-08-23",
+          "rating": "4.0"
+        },
+        {
+          "date": "2024-08-24",
+          "rating": "4.0"
+        },
+        {
+          "date": "2024-08-25",
+          "rating": "4.0"
+        },
+        {
+          "date": "2024-08-26",
+          "rating": "4.0"
+        },
+        {
+          "rating": "4.0",
+          "date": "2024-08-27"
+        },
+        {
+          "date": "2024-08-28",
+          "rating": "4.0"
+        },
+        {
+          "date": "2024-08-30",
+          "rating": "4.7"
+        },
+        {
+          "date": "2024-08-31",
+          "rating": "4.7"
+        },
+        {
+          "date": "2024-09-01",
+          "rating": "4.7"
+        },
+        {
+          "date": "2024-09-02",
+          "rating": "4.7"
+        },
+        {
+          "date": "2024-09-03",
+          "rating": "4.7"
+        },
+        {
+          "date": "2024-09-04",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-05",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-06",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-07",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-08",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-09",
+          "rating": "4.9"
+        },
+        {
+          "rating": "4.8",
+          "date": "2024-09-10"
+        },
+        {
+          "date": "2024-09-11",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-12",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-13",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-14",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-15",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-16",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-17",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-18",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-19",
+          "rating": "4.8"
+        }
+      ],
+      "stars_count": {
+        "1": 67,
+        "2": 73,
+        "3": 341,
+        "4": 1837,
+        "5": 11914
+      }
+    },
+    "type": "product"
+  },
+  {
+    "images": [
+      {
+        "type": "Full",
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/9399706f-07d6-467c-803b-ca9d6f070762.jpg?1718398280.4428"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/669437b6-1880-45b8-978f-d069b06a2701.jpg?1692916750.6619"
+          }
+        ]
+      },
+      {
+        "type": "Large",
+        "images": [
+          {
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/9399706f-07d6-467c-803b-ca9d6f070762.jpg?1718398291.9344",
+            "pos": 1
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/669437b6-1880-45b8-978f-d069b06a2701.jpg?1692916757.5765"
+          }
+        ]
+      },
+      {
+        "type": "Mini",
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/9399706f-07d6-467c-803b-ca9d6f070762.jpg?1718398282.187"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/669437b6-1880-45b8-978f-d069b06a2701.jpg?1692916752.3554"
+          }
+        ]
+      }
+    ],
+    "backlight_color": null,
+    "id": 605,
+    "cashback": {
+      "value": 0,
+      "type": 0
+    },
+    "modifications": null,
+    "labels": [],
+    "partner": "",
+    "weight_str": "",
+    "price": {
+      "priv_used": 1,
+      "priv_private": false,
+      "price": 50,
+      "discount_price": 30,
+      "id_priv": null,
+      "priv_type": null,
+      "price_type": 5,
+      "discount_percent": 40,
+      "properties": {
+        "icon": {
+          "icon_basic": "",
+          "icon_pers": ""
+        },
+        "bottomsheet": null,
+        "id_priv": null,
+        "priv_used": 1,
+        "color": "#9AE794",
+        "show_both": true,
+        "type": 0,
+        "text": "",
+        "icon_to_action": {
+          "image": "",
+          "action_link": ""
+        },
+        "priv_private": false,
+        "nameplate": null,
+        "price_name": "Green_Label",
+        "price_text_color": "#1A1A1A",
+        "additional_block": null,
+        "price_type": 5,
+        "desc_text_color": "",
+        "shopping_cart": {
+          "group_price": false,
+          "title_prefix": null,
+          "color": "#9AE794",
+          "price_text_color": "#1A1A1A",
+          "tov_separator": null,
+          "show_both": true,
+          "text": "",
+          "desc_text_color": "",
+          "icon": {
+            "icon_basic": "",
+            "icon_pers": ""
+          }
+        },
+        "priv_type": null
+      }
+    },
+    "rating": {
+      "rating_type": 0,
+      "dynamic": "0.0",
+      "dynamic_history": [
+        {
+          "date": "2024-08-19",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-20",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-21",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-22",
+          "rating": "4.9"
+        },
+        {
+          "rating": "4.9",
+          "date": "2024-08-23"
+        },
+        {
+          "date": "2024-08-24",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-25",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-26",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-27",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-28",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-29",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-30",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-31",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-01",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-02",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-03",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-04",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-05",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-06",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-07",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-08",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-09",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-10",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-11",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-12",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-13",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-14",
+          "rating": "4.9"
+        },
+        {
+          "rating": "4.9",
+          "date": "2024-09-15"
+        },
+        {
+          "date": "2024-09-16",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-17",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-18",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-19",
+          "rating": "4.9"
+        }
+      ],
+      "stars_count": {
+        "1": 497,
+        "2": 545,
+        "3": 2540,
+        "4": 19722,
+        "5": 144555
+      },
+      "manufacturers": null,
+      "all": "4.9"
+    },
+    "type": "product",
+    "adults_only": false,
+    "amount": 2.91,
+    "amount_express": 2.91,
+    "weight_type": "Catalog.Item.Packing.Weight",
+    "description": "",
+    "labels_loyalty": null,
+    "meta": {},
+    "is_favorite": false,
+    "unit": "кг",
+    "button": {
+      "icon_url": "https://cdn-mobile-backend.vkusvill.ru/appn/7S5ZwbeKY6vMiLeEux0GGczfQMDlO1Z6RL4BkyY6.png",
+      "color_button_dark": "#2DAA56",
+      "type_button": "teaser",
+      "id": 1,
+      "color_button": "#36BA5F",
+      "text": "В корзину",
+      "color_text": "#ffffff",
+      "color_text_dark": "#ffffff",
+      "meta": null,
+      "url_by_tap": ""
+    },
+    "title": "Лук репчатый",
+    "amount_tomorrow": 2.91,
+    "weight_kg": "0.65",
+    "weight_step": "0.100",
+    "express_toggle": {
+      "expressView": false,
+      "expressChosen": false
+    }
+  },
+  {
+    "weight_str": "400 г",
+    "button": {
+      "url_by_tap": "",
+      "color_button": "#36BA5F",
+      "text": "В корзину",
+      "color_text_dark": "#ffffff",
+      "color_button_dark": "#2DAA56",
+      "meta": null,
+      "id": 1,
+      "color_text": "#ffffff",
+      "icon_url": "https://cdn-mobile-backend.vkusvill.ru/appn/7S5ZwbeKY6vMiLeEux0GGczfQMDlO1Z6RL4BkyY6.png",
+      "type_button": "teaser"
+    },
+    "amount_express": 7,
+    "adults_only": false,
+    "rating": {
+      "all": "4.9",
+      "rating_type": 0,
+      "dynamic": "0.0",
+      "dynamic_history": [
+        {
+          "rating": "4.8",
+          "date": "2024-08-19"
+        },
+        {
+          "date": "2024-08-20",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-08-21",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-08-22",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-08-23",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-08-24",
+          "rating": "4.8"
+        },
+        {
+          "rating": "4.8",
+          "date": "2024-08-25"
+        },
+        {
+          "date": "2024-08-26",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-08-27",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-28",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-08-29",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-30",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-31",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-01",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-02",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-03",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-04",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-05",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-06",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-07",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-08",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-09",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-10",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-11",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-12",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-13",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-14",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-15",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-16",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-17",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-18",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-19",
+          "rating": "4.9"
+        }
+      ],
+      "stars_count": {
+        "4": 41,
+        "5": 350,
+        "1": 3,
+        "2": 0,
+        "3": 3
+      },
+      "manufacturers": null
+    },
+    "meta": {},
+    "title": "Блинчики Сибирская Коллекция с малиной замороженные 400 г",
+    "is_favorite": false,
+    "weight_step": "1.000",
+    "express_toggle": {
+      "expressView": false,
+      "expressChosen": false
+    },
+    "partner": "",
+    "type": "product",
+    "weight_kg": "0.400",
+    "weight_type": "Catalog.Item.Packing.Piece",
+    "description": "",
+    "modifications": null,
+    "unit": "шт",
+    "images": [
+      {
+        "images": [
+          {
+            "url": "https://img.vkusvill.ru/pim/images/mobile/2cb35dfb-0c15-4acd-926b-44374945b14c.jpg?1694426589.2126",
+            "pos": 1
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/d9646d37-49fd-4bed-99a9-d2459bb45349.jpg?1694426597.4467"
+          }
+        ],
+        "type": "Full"
+      },
+      {
+        "type": "Large",
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/2cb35dfb-0c15-4acd-926b-44374945b14c.jpg?1694426594.6056"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/d9646d37-49fd-4bed-99a9-d2459bb45349.jpg?1694426603.3848"
+          }
+        ]
+      },
+      {
+        "type": "Mini",
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/2cb35dfb-0c15-4acd-926b-44374945b14c.jpg?1694426590.0888"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/d9646d37-49fd-4bed-99a9-d2459bb45349.jpg?1694426598.4639"
+          }
+        ]
+      }
+    ],
+    "labels": [
+      {
+        "back_color": "#F0E68C",
+        "text_color": "#000000",
+        "icon": {},
+        "properties": {
+          "buttonName": "Смотреть такие же товары",
+          "deep_link": "https://vkusvill.ru/mobile?catalog/id&group_id=10486&name=%D0%A1%D1%83%D0%BF%D0%B5%D1%80%D0%BC%D0%B0%D1%80%D0%BA%D0%B5%D1%82&type=subcategories",
+          "title": "Метка Супермаркет",
+          "description": "Так мы отмечаем товары известных брендов, которые вы привыкли покупать в других сетях. Заказать их можно только онлайн — на полках магазинов эти товары не найти."
+        },
+        "id": 2,
+        "text": "Супермаркет",
+        "type": "Object.Label.Type.Text.Bottom"
+      },
+      {
+        "id": 3,
+        "text": "Заморозка",
+        "type": "Object.Label.Type.Icon.Bottom",
+        "back_color": "",
+        "text_color": "",
+        "icon": {
+          "Back": {
+            "url": "https://img.vkusvill.ru/pim/images/ml_back/6827eeee-4266-4580-b9a3-403ee937b71b.png?1700222346.6272"
+          },
+          "Front": {
+            "url": "https://img.vkusvill.ru/pim/images/ml_front/6827eeee-4266-4580-b9a3-403ee937b71b.png?1700222346.595"
+          }
+        },
+        "properties": {
+          "title": "Метка Заморозка",
+          "description": "Так мы отмечаем продукты, которые продаются в замороженном виде. Их можно найти в категории «Замороженные продукты» в каталоге.",
+          "buttonName": "Смотреть такие же товары",
+          "deep_link": "https://vkusvill.ru/mobile?catalog/id&set_id=10062&name=%D0%9A%D0%BE%D1%80%D0%B5%D1%8F%20%D0%B8%20%D0%90%D0%B7%D0%B8%D1%8F=products"
+        }
+      }
+    ],
+    "cashback": {
+      "value": 0,
+      "type": 0
+    },
+    "backlight_color": null,
+    "labels_loyalty": null,
+    "id": 41687,
+    "amount": 7,
+    "amount_tomorrow": 7,
+    "price": {
+      "priv_used": 1,
+      "price": 419,
+      "discount_price": 251,
+      "id_priv": null,
+      "priv_type": null,
+      "price_type": 5,
+      "priv_private": false,
+      "discount_percent": 40,
+      "properties": {
+        "price_text_color": "#1A1A1A",
+        "additional_block": null,
+        "priv_type": null,
+        "price_type": 5,
+        "priv_private": false,
+        "price_name": "Green_Label",
+        "color": "#9AE794",
+        "priv_used": 1,
+        "text": "",
+        "bottomsheet": null,
+        "id_priv": null,
+        "type": 0,
+        "shopping_cart": {
+          "group_price": false,
+          "color": "#9AE794",
+          "icon": {
+            "icon_basic": "",
+            "icon_pers": ""
+          },
+          "title_prefix": null,
+          "tov_separator": null,
+          "price_text_color": "#1A1A1A",
+          "show_both": true,
+          "text": "",
+          "desc_text_color": ""
+        },
+        "icon_to_action": {
+          "image": "",
+          "action_link": ""
+        },
+        "icon": {
+          "icon_basic": "",
+          "icon_pers": ""
+        },
+        "nameplate": null,
+        "show_both": true,
+        "desc_text_color": ""
+      }
+    }
+  },
+  {
+    "weight_step": "1.000",
+    "images": [
+      {
+        "type": "Full",
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/181d0b74-e80c-485a-9517-3c7df251ab4a.jpg?1703433070.0876"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/454e4526-bde0-4806-932c-9e7c98d54992.jpg?1725139337.2726"
+          },
+          {
+            "pos": 3,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/8284edc8-9ad5-4c17-96a9-607042da2592.jpg?1725139372.0122"
+          }
+        ]
+      },
+      {
+        "type": "Large",
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/181d0b74-e80c-485a-9517-3c7df251ab4a.jpg?1703433076.1324"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/454e4526-bde0-4806-932c-9e7c98d54992.jpg?1725139348.6532"
+          },
+          {
+            "pos": 3,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/8284edc8-9ad5-4c17-96a9-607042da2592.jpg?1725139384.8625"
+          }
+        ]
+      },
+      {
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/181d0b74-e80c-485a-9517-3c7df251ab4a.jpg?1703433071.2322"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/454e4526-bde0-4806-932c-9e7c98d54992.jpg?1725139339.0251"
+          },
+          {
+            "pos": 3,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/8284edc8-9ad5-4c17-96a9-607042da2592.jpg?1725139374.0095"
+          }
+        ],
+        "type": "Mini"
+      }
+    ],
+    "labels": [],
+    "unit": "шт",
+    "express_toggle": {
+      "expressView": false,
+      "expressChosen": false
+    },
+    "meta": {},
+    "description": "",
+    "price": {
+      "id_priv": null,
+      "priv_type": null,
+      "price_type": 5,
+      "discount_price": 50,
+      "properties": {
+        "color": "#9AE794",
+        "priv_type": null,
+        "priv_private": false,
+        "bottomsheet": null,
+        "nameplate": null,
+        "priv_used": 1,
+        "price_text_color": "#1A1A1A",
+        "desc_text_color": "",
+        "icon_to_action": {
+          "image": "",
+          "action_link": ""
+        },
+        "shopping_cart": {
+          "color": "#9AE794",
+          "show_both": true,
+          "text": "",
+          "desc_text_color": "",
+          "group_price": false,
+          "title_prefix": null,
+          "icon": {
+            "icon_basic": "",
+            "icon_pers": ""
+          },
+          "tov_separator": null,
+          "price_text_color": "#1A1A1A"
+        },
+        "additional_block": null,
+        "show_both": true,
+        "type": 0,
+        "id_priv": null,
+        "price_name": "Green_Label",
+        "text": "",
+        "icon": {
+          "icon_basic": "",
+          "icon_pers": ""
+        },
+        "price_type": 5
+      },
+      "priv_used": 1,
+      "priv_private": false,
+      "price": 84,
+      "discount_percent": 40
+    },
+    "modifications": null,
+    "amount_tomorrow": 1,
+    "amount": 1,
+    "weight_type": "Catalog.Item.Packing.Piece",
+    "partner": "",
+    "id": 16039,
+    "rating": {
+      "all": "4.9",
+      "rating_type": 0,
+      "dynamic": "0.0",
+      "dynamic_history": [
+        {
+          "date": "2024-08-19",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-20",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-21",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-22",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-23",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-24",
+          "rating": "5.0"
+        },
+        {
+          "date": "2024-08-25",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-26",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-27",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-28",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-29",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-08-30",
+          "rating": "4.8"
+        },
+        {
+          "rating": "4.8",
+          "date": "2024-08-31"
+        },
+        {
+          "date": "2024-09-01",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-02",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-03",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-04",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-05",
+          "rating": "5.0"
+        },
+        {
+          "date": "2024-09-06",
+          "rating": "5.0"
+        },
+        {
+          "date": "2024-09-07",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-08",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-09",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-10",
+          "rating": "4.9"
+        },
+        {
+          "rating": "4.9",
+          "date": "2024-09-11"
+        },
+        {
+          "date": "2024-09-12",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-13",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-14",
+          "rating": "4.9"
+        },
+        {
+          "rating": "4.8",
+          "date": "2024-09-15"
+        },
+        {
+          "date": "2024-09-16",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-17",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-18",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-19",
+          "rating": "4.9"
+        }
+      ],
+      "stars_count": {
+        "1": 24,
+        "2": 30,
+        "3": 102,
+        "4": 717,
+        "5": 6998
+      },
+      "manufacturers": null
+    },
+    "type": "product",
+    "amount_express": 1,
+    "is_favorite": false,
+    "cashback": {
+      "value": 0,
+      "type": 0
+    },
+    "title": "Изделие х/б \"Кефирный\"",
+    "adults_only": false,
+    "weight_kg": "0.300",
+    "weight_str": "300 г",
+    "backlight_color": null,
+    "labels_loyalty": null,
+    "button": {
+      "text": "В корзину",
+      "color_button_dark": "#2DAA56",
+      "url_by_tap": "",
+      "type_button": "teaser",
+      "meta": null,
+      "id": 1,
+      "color_button": "#36BA5F",
+      "color_text": "#ffffff",
+      "color_text_dark": "#ffffff",
+      "icon_url": "https://cdn-mobile-backend.vkusvill.ru/appn/7S5ZwbeKY6vMiLeEux0GGczfQMDlO1Z6RL4BkyY6.png"
+    }
+  },
+  {
+    "amount": 4,
+    "images": [
+      {
+        "type": "Full",
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/9dd2ff83-3d12-4980-a6bc-8925af4e1d59.jpg?1723071560.2655"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/d36eefbd-219e-4234-9e2d-ae503ec11b22.jpg?1697430932.0342"
+          },
+          {
+            "url": "https://img.vkusvill.ru/pim/images/mobile/9d0d91c1-9ba7-4ff7-af3f-10702ecae47a.jpg?1723156219.2317",
+            "pos": 3
+          },
+          {
+            "pos": 4,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/d56e4ff4-2fde-4f04-8dcd-6c765eee2f95.jpg?1723156252.2278"
+          },
+          {
+            "pos": 5,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/f9b9992e-7c22-4dc5-92f4-bd4729419769.jpg?1723546112.3158"
+          }
+        ]
+      },
+      {
+        "type": "Large",
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/9dd2ff83-3d12-4980-a6bc-8925af4e1d59.jpg?1723071570.8872"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/d36eefbd-219e-4234-9e2d-ae503ec11b22.jpg?1697430941.445"
+          },
+          {
+            "pos": 3,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/9d0d91c1-9ba7-4ff7-af3f-10702ecae47a.jpg?1723156229.7932"
+          },
+          {
+            "pos": 4,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/d56e4ff4-2fde-4f04-8dcd-6c765eee2f95.jpg?1723156262.4221"
+          },
+          {
+            "pos": 5,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/f9b9992e-7c22-4dc5-92f4-bd4729419769.jpg?1723546125.3115"
+          }
+        ]
+      },
+      {
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/9dd2ff83-3d12-4980-a6bc-8925af4e1d59.jpg?1723071561.9981"
+          },
+          {
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/d36eefbd-219e-4234-9e2d-ae503ec11b22.jpg?1697430933.3867",
+            "pos": 2
+          },
+          {
+            "pos": 3,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/9d0d91c1-9ba7-4ff7-af3f-10702ecae47a.jpg?1723156220.9802"
+          },
+          {
+            "pos": 4,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/d56e4ff4-2fde-4f04-8dcd-6c765eee2f95.jpg?1723156253.8274"
+          },
+          {
+            "pos": 5,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/f9b9992e-7c22-4dc5-92f4-bd4729419769.jpg?1723546114.3139"
+          }
+        ],
+        "type": "Mini"
+      }
+    ],
+    "meta": {},
+    "type": "product",
+    "is_favorite": false,
+    "unit": "шт",
+    "weight_str": "100 г",
+    "button": {
+      "color_button": "#36BA5F",
+      "color_text_dark": "#ffffff",
+      "icon_url": "https://cdn-mobile-backend.vkusvill.ru/appn/7S5ZwbeKY6vMiLeEux0GGczfQMDlO1Z6RL4BkyY6.png",
+      "url_by_tap": "",
+      "type_button": "teaser",
+      "id": 1,
+      "text": "В корзину",
+      "color_text": "#ffffff",
+      "color_button_dark": "#2DAA56",
+      "meta": null
+    },
+    "cashback": {
+      "value": 0,
+      "type": 0
+    },
+    "partner": "",
+    "weight_kg": "0.100",
+    "description": "",
+    "modifications": null,
+    "weight_step": "1.000",
+    "rating": {
+      "dynamic_history": [
+        {
+          "date": "2024-08-19",
+          "rating": "4.4"
+        },
+        {
+          "rating": "4.4",
+          "date": "2024-08-20"
+        },
+        {
+          "date": "2024-08-21",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-22",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-23",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-24",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-25",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-26",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-27",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-28",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-29",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-30",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-31",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-09-01",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-09-02",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-09-03",
+          "rating": "4.5"
+        },
+        {
+          "date": "2024-09-04",
+          "rating": "4.5"
+        },
+        {
+          "date": "2024-09-05",
+          "rating": "4.5"
+        },
+        {
+          "date": "2024-09-06",
+          "rating": "4.5"
+        },
+        {
+          "date": "2024-09-07",
+          "rating": "4.5"
+        },
+        {
+          "date": "2024-09-08",
+          "rating": "4.5"
+        },
+        {
+          "date": "2024-09-09",
+          "rating": "4.6"
+        },
+        {
+          "date": "2024-09-10",
+          "rating": "4.6"
+        },
+        {
+          "date": "2024-09-11",
+          "rating": "4.6"
+        },
+        {
+          "date": "2024-09-12",
+          "rating": "4.6"
+        },
+        {
+          "date": "2024-09-13",
+          "rating": "4.7"
+        },
+        {
+          "rating": "4.7",
+          "date": "2024-09-14"
+        },
+        {
+          "date": "2024-09-15",
+          "rating": "4.7"
+        },
+        {
+          "date": "2024-09-16",
+          "rating": "4.6"
+        },
+        {
+          "date": "2024-09-17",
+          "rating": "4.6"
+        },
+        {
+          "date": "2024-09-18",
+          "rating": "4.6"
+        },
+        {
+          "date": "2024-09-19",
+          "rating": "4.6"
+        }
+      ],
+      "stars_count": {
+        "1": 48,
+        "2": 22,
+        "3": 97,
+        "4": 262,
+        "5": 1933
+      },
+      "manufacturers": null,
+      "all": "4.6",
+      "rating_type": 0,
+      "dynamic": "0.1"
+    },
+    "title": "Камбала стейк вяленый, 100 г",
+    "amount_tomorrow": 4,
+    "weight_type": "Catalog.Item.Packing.Piece",
+    "backlight_color": null,
+    "id": 51236,
+    "labels": [],
+    "labels_loyalty": null,
+    "express_toggle": {
+      "expressView": false,
+      "expressChosen": false
+    },
+    "amount_express": 4,
+    "adults_only": false,
+    "price": {
+      "price_type": 5,
+      "priv_used": 1,
+      "priv_private": false,
+      "price": 218,
+      "discount_percent": 40,
+      "properties": {
+        "price_name": "Green_Label",
+        "id_priv": null,
+        "priv_private": false,
+        "show_both": true,
+        "type": 0,
+        "priv_type": null,
+        "price_type": 5,
+        "priv_used": 1,
+        "additional_block": null,
+        "bottomsheet": null,
+        "color": "#9AE794",
+        "text": "",
+        "price_text_color": "#1A1A1A",
+        "desc_text_color": "",
+        "icon": {
+          "icon_basic": "",
+          "icon_pers": ""
+        },
+        "shopping_cart": {
+          "color": "#9AE794",
+          "price_text_color": "#1A1A1A",
+          "show_both": true,
+          "group_price": false,
+          "title_prefix": null,
+          "tov_separator": null,
+          "text": "",
+          "desc_text_color": "",
+          "icon": {
+            "icon_basic": "",
+            "icon_pers": ""
+          }
+        },
+        "icon_to_action": {
+          "image": "",
+          "action_link": ""
+        },
+        "nameplate": null
+      },
+      "id_priv": null,
+      "priv_type": null,
+      "discount_price": 131
+    }
+  },
+  {
+    "labels": [],
+    "express_toggle": {
+      "expressView": false,
+      "expressChosen": false
+    },
+    "title": "Ряпушка вяленая, 200 г",
+    "is_favorite": false,
+    "weight_step": "1.000",
+    "amount_express": 1,
+    "weight_type": "Catalog.Item.Packing.Piece",
+    "description": "",
+    "backlight_color": null,
+    "meta": {},
+    "price": {
+      "discount_percent": 40,
+      "properties": {
+        "icon_to_action": {
+          "image": "",
+          "action_link": ""
+        },
+        "nameplate": null,
+        "id_priv": null,
+        "priv_type": null,
+        "priv_private": false,
+        "price_name": "Green_Label",
+        "color": "#9AE794",
+        "icon": {
+          "icon_basic": "",
+          "icon_pers": ""
+        },
+        "type": 0,
+        "price_text_color": "#1A1A1A",
+        "bottomsheet": null,
+        "priv_used": 1,
+        "show_both": true,
+        "additional_block": null,
+        "shopping_cart": {
+          "group_price": false,
+          "color": "#9AE794",
+          "price_text_color": "#1A1A1A",
+          "text": "",
+          "desc_text_color": "",
+          "title_prefix": null,
+          "tov_separator": null,
+          "show_both": true,
+          "icon": {
+            "icon_basic": "",
+            "icon_pers": ""
+          }
+        },
+        "price_type": 5,
+        "text": "",
+        "desc_text_color": ""
+      },
+      "price_type": 5,
+      "priv_used": 1,
+      "priv_private": false,
+      "price": 515,
+      "discount_price": 309,
+      "id_priv": null,
+      "priv_type": null
+    },
+    "images": [
+      {
+        "type": "Full",
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/1180e4ca-db4a-490e-a980-cf5b4ef98aa1.jpg?1719428192.5578"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/f8bcca80-69e8-4225-99f3-0d8e6eb2a02b.jpg?1719428220.1617"
+          }
+        ]
+      },
+      {
+        "type": "Large",
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/1180e4ca-db4a-490e-a980-cf5b4ef98aa1.jpg?1719428200.0731"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/f8bcca80-69e8-4225-99f3-0d8e6eb2a02b.jpg?1719428228.2408"
+          }
+        ]
+      },
+      {
+        "type": "Mini",
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/1180e4ca-db4a-490e-a980-cf5b4ef98aa1.jpg?1719428194.716"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/f8bcca80-69e8-4225-99f3-0d8e6eb2a02b.jpg?1719428221.3627"
+          }
+        ]
+      }
+    ],
+    "unit": "шт",
+    "partner": "",
+    "id": 94050,
+    "weight_str": "200 г",
+    "labels_loyalty": null,
+    "cashback": {
+      "value": 0,
+      "type": 0
+    },
+    "rating": {
+      "manufacturers": null,
+      "all": "4.7",
+      "rating_type": 0,
+      "dynamic": "0.3",
+      "dynamic_history": [
+        {
+          "date": "2024-08-19",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-20",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-21",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-22",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-23",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-24",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-25",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-26",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-27",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-28",
+          "rating": "4.4"
+        },
+        {
+          "rating": "4.4",
+          "date": "2024-08-29"
+        },
+        {
+          "date": "2024-08-30",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-08-31",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-09-01",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-09-02",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-09-03",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-09-04",
+          "rating": "4.4"
+        },
+        {
+          "rating": "4.4",
+          "date": "2024-09-05"
+        },
+        {
+          "rating": "4.4",
+          "date": "2024-09-06"
+        },
+        {
+          "date": "2024-09-07",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-09-08",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-09-09",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-09-10",
+          "rating": "4.4"
+        },
+        {
+          "date": "2024-09-11",
+          "rating": "4.4"
+        },
+        {
+          "rating": "4.5",
+          "date": "2024-09-12"
+        },
+        {
+          "date": "2024-09-13",
+          "rating": "4.6"
+        },
+        {
+          "rating": "4.6",
+          "date": "2024-09-14"
+        },
+        {
+          "date": "2024-09-15",
+          "rating": "4.6"
+        },
+        {
+          "date": "2024-09-16",
+          "rating": "4.6"
+        },
+        {
+          "rating": "4.7",
+          "date": "2024-09-17"
+        },
+        {
+          "date": "2024-09-18",
+          "rating": "4.7"
+        },
+        {
+          "date": "2024-09-19",
+          "rating": "4.7"
+        }
+      ],
+      "stars_count": {
+        "1": 10,
+        "2": 3,
+        "3": 11,
+        "4": 36,
+        "5": 158
+      }
+    },
+    "type": "product",
+    "amount": 1,
+    "amount_tomorrow": 1,
+    "adults_only": false,
+    "weight_kg": "0.200",
+    "modifications": null,
+    "button": {
+      "color_button": "#36BA5F",
+      "text": "В корзину",
+      "color_text_dark": "#ffffff",
+      "color_button_dark": "#2DAA56",
+      "meta": null,
+      "id": 1,
+      "color_text": "#ffffff",
+      "icon_url": "https://cdn-mobile-backend.vkusvill.ru/appn/7S5ZwbeKY6vMiLeEux0GGczfQMDlO1Z6RL4BkyY6.png",
+      "url_by_tap": "",
+      "type_button": "teaser"
+    }
+  },
+  {
+    "meta": {},
+    "id": 907,
+    "adults_only": false,
+    "button": {
+      "id": 1,
+      "color_text": "#ffffff",
+      "color_text_dark": "#ffffff",
+      "type_button": "teaser",
+      "color_button": "#36BA5F",
+      "text": "В корзину",
+      "icon_url": "https://cdn-mobile-backend.vkusvill.ru/appn/7S5ZwbeKY6vMiLeEux0GGczfQMDlO1Z6RL4BkyY6.png",
+      "color_button_dark": "#2DAA56",
+      "url_by_tap": "",
+      "meta": null
+    },
+    "labels": [],
+    "amount": 1,
+    "amount_express": 1,
+    "modifications": null,
+    "amount_tomorrow": 1,
+    "description": "",
+    "labels_loyalty": null,
+    "unit": "шт",
+    "weight_step": "1.000",
+    "weight_str": "250 г ",
+    "images": [
+      {
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/d7d20762-abb8-42dc-8f2f-c05ddcbd2c4f.jpg?1713915252.9261"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/ca18f00d-abf3-4c10-9f16-83cecd6cfcea.jpg?1713915291.2608"
+          },
+          {
+            "pos": 3,
+            "url": "https://img.vkusvill.ru/pim/images/mobile/dbacdb70-86af-4a56-9e35-53efc357a69c.jpg?1713915329.9747"
+          }
+        ],
+        "type": "Full"
+      },
+      {
+        "type": "Large",
+        "images": [
+          {
+            "pos": 1,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/d7d20762-abb8-42dc-8f2f-c05ddcbd2c4f.jpg?1713915265.1409"
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/ca18f00d-abf3-4c10-9f16-83cecd6cfcea.jpg?1713915303.9365"
+          },
+          {
+            "pos": 3,
+            "url": "https://img.vkusvill.ru/pim/images/mobile_large/dbacdb70-86af-4a56-9e35-53efc357a69c.jpg?1713915342.1726"
+          }
+        ]
+      },
+      {
+        "type": "Mini",
+        "images": [
+          {
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/d7d20762-abb8-42dc-8f2f-c05ddcbd2c4f.jpg?1713915254.7476",
+            "pos": 1
+          },
+          {
+            "pos": 2,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/ca18f00d-abf3-4c10-9f16-83cecd6cfcea.jpg?1713915293.2739"
+          },
+          {
+            "pos": 3,
+            "url": "https://img.vkusvill.ru/pim/images/m_thumb/dbacdb70-86af-4a56-9e35-53efc357a69c.jpg?1713915331.8763"
+          }
+        ]
+      }
+    ],
+    "backlight_color": null,
+    "express_toggle": {
+      "expressView": false,
+      "expressChosen": false
+    },
+    "partner": "",
+    "type": "product",
+    "price": {
+      "properties": {
+        "desc_text_color": "",
+        "shopping_cart": {
+          "color": "#9AE794",
+          "show_both": true,
+          "icon": {
+            "icon_basic": "",
+            "icon_pers": ""
+          },
+          "group_price": false,
+          "title_prefix": null,
+          "tov_separator": null,
+          "price_text_color": "#1A1A1A",
+          "text": "",
+          "desc_text_color": ""
+        },
+        "priv_private": false,
+        "bottomsheet": null,
+        "id_priv": null,
+        "price_type": 5,
+        "priv_used": 1,
+        "price_name": "Green_Label",
+        "price_text_color": "#1A1A1A",
+        "icon": {
+          "icon_basic": "",
+          "icon_pers": ""
+        },
+        "additional_block": null,
+        "icon_to_action": {
+          "image": "",
+          "action_link": ""
+        },
+        "nameplate": null,
+        "priv_type": null,
+        "color": "#9AE794",
+        "show_both": true,
+        "text": "",
+        "type": 0
+      },
+      "priv_private": false,
+      "price": 79,
+      "price_type": 5,
+      "priv_used": 1,
+      "discount_price": 47,
+      "discount_percent": 40,
+      "id_priv": null,
+      "priv_type": null
+    },
+    "rating": {
+      "all": "4.8",
+      "rating_type": 0,
+      "dynamic": "0.0",
+      "dynamic_history": [
+        {
+          "date": "2024-08-19",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-20",
+          "rating": "4.9"
+        },
+        {
+          "rating": "4.9",
+          "date": "2024-08-21"
+        },
+        {
+          "rating": "4.9",
+          "date": "2024-08-22"
+        },
+        {
+          "date": "2024-08-23",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-24",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-08-25",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-08-26",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-08-27",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-08-28",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-08-29",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-08-30",
+          "rating": "4.7"
+        },
+        {
+          "rating": "4.7",
+          "date": "2024-08-31"
+        },
+        {
+          "date": "2024-09-01",
+          "rating": "4.7"
+        },
+        {
+          "rating": "4.7",
+          "date": "2024-09-02"
+        },
+        {
+          "date": "2024-09-03",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-04",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-05",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-06",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-07",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-08",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-09",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-10",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-11",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-12",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-13",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-14",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-15",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-16",
+          "rating": "4.9"
+        },
+        {
+          "date": "2024-09-17",
+          "rating": "4.7"
+        },
+        {
+          "date": "2024-09-18",
+          "rating": "4.8"
+        },
+        {
+          "date": "2024-09-19",
+          "rating": "4.8"
+        }
+      ],
+      "stars_count": {
+        "1": 34,
+        "2": 24,
+        "3": 166,
+        "4": 1079,
+        "5": 6374
+      },
+      "manufacturers": null
+    },
+    "cashback": {
+      "value": 0,
+      "type": 0
+    },
+    "weight_type": "Catalog.Item.Packing.Piece",
+    "title": "Хлеб \"Тостовый\", нарезка",
+    "is_favorite": false,
+    "weight_kg": "0.250"
+  }
+]

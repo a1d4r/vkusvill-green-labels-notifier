@@ -12,7 +12,7 @@ from vkusvill_green_labels.storage import InMemoryGreenLabelsStorage
 from vkusvill_green_labels.updater import GreenLabelsUpdater
 
 updater = GreenLabelsUpdater(
-    vkusvill_api=VkusvillApi(settings.vkusvill), storage=InMemoryGreenLabelsStorage(), shop_id=5266
+    vkusvill_api=VkusvillApi(settings.vkusvill), storage=InMemoryGreenLabelsStorage()
 )
 scheduler = BackgroundScheduler()
 bot = telebot.TeleBot(settings.telegram.bot_token.get_secret_value())
@@ -38,17 +38,17 @@ def check_green_labels() -> None:
     text = ""
     for item in new_items:
         text += (
-            fmt.mbold(fmt.escape_markdown(item.name))
+            fmt.mbold(fmt.escape_markdown(item.title))
             + " "
             + fmt.escape_markdown(item.rating)
             + "★\n"
             + "Цена: "
             + fmt.mstrikethrough(fmt.escape_markdown(str(item.price)))
             + " "
-            + fmt.mitalic(fmt.escape_markdown(str(item.price_discount)))
+            + fmt.mitalic(fmt.escape_markdown(str(item.discount_price)))
             + "\n"
             + "Доступно: "
-            + fmt.escape_markdown(str(int(item.units_available)))
+            + fmt.escape_markdown(str(int(item.amount)))
             + "\n\n"
         )
 
