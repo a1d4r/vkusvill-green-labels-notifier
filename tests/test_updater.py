@@ -2,9 +2,9 @@ import pytest
 
 from requests_mock import Mocker
 
+from vkusvill_green_labels.repositories.green_labels import InMemoryGreenLabelsRepository
 from vkusvill_green_labels.services.vkusvill import VkusvillApi
 from vkusvill_green_labels.settings import VkusvillSettings
-from vkusvill_green_labels.storage import InMemoryGreenLabelsStorage
 from vkusvill_green_labels.updater import GreenLabelsUpdater
 
 
@@ -28,7 +28,7 @@ def _mock_vkusvill_api(requests_mock: Mocker, load_json, vkusvill_settings: Vkus
 @pytest.mark.usefixtures("_mock_vkusvill_api")
 def test_updater(authorized_vkusvill_api: VkusvillApi):
     updater = GreenLabelsUpdater(
-        vkusvill_api=authorized_vkusvill_api, storage=InMemoryGreenLabelsStorage()
+        vkusvill_api=authorized_vkusvill_api, green_labels_repo=InMemoryGreenLabelsRepository()
     )
 
     updater.update()

@@ -1,5 +1,6 @@
 import sys
 
+from decimal import Decimal
 from pathlib import Path
 
 from pydantic import BaseModel, Field, HttpUrl, SecretStr
@@ -41,6 +42,8 @@ class Settings(BaseSettings):
 
     vkusvill: VkusvillSettings
     telegram: TelegramSettings
+    address_latitude: Decimal
+    address_longitude: Decimal
     update_interval: int = Field(..., description="Update interval in seconds")
 
 

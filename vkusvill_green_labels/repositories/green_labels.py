@@ -3,7 +3,7 @@ import abc
 from vkusvill_green_labels.services import vkusvill
 
 
-class GreenLabelsStorage(abc.ABC):
+class GreenLabelsRepository(abc.ABC):
     @abc.abstractmethod
     def get_items(self) -> list[vkusvill.GreenLabelItem]: ...
 
@@ -11,7 +11,7 @@ class GreenLabelsStorage(abc.ABC):
     def set_items(self, items: list[vkusvill.GreenLabelItem]) -> None: ...
 
 
-class InMemoryGreenLabelsStorage(GreenLabelsStorage):
+class InMemoryGreenLabelsRepository(GreenLabelsRepository):
     def __init__(self) -> None:
         self.items: list[vkusvill.GreenLabelItem] = []
 
