@@ -48,4 +48,4 @@ env_file = PROJECT_ROOT / ".env"
 if "pytest" in sys.modules:
     env_file = PROJECT_ROOT / ".env.test"
 
-settings = Settings(vkusvill=load_vkusvill_settings(), _env_file=PROJECT_ROOT / ".env")
+settings = Settings(vkusvill=load_vkusvill_settings(), _env_file=env_file)
