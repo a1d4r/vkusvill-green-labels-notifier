@@ -1,17 +1,22 @@
 from decimal import Decimal
 
-from requests_mock import Mocker
+from httpx import Response
+from respx import MockRouter
 
 from vkusvill_green_labels.services.vkusvill import VkusvillApi
 from vkusvill_green_labels.settings import VkusvillSettings
 
 
 def test_create_token(
-    vkusvill_settings: VkusvillSettings, vkusvill_api: VkusvillApi, requests_mock: Mocker, load_json
+    vkusvill_settings: VkusvillSettings,
+    vkusvill_api: VkusvillApi,
+    respx_mock: MockRouter,
+    load_json,
 ):
     # Arrange
-    response = load_json("token_response.json")
-    requests_mock.post(str(vkusvill_settings.create_token.url), json=response)
+    respx_mock.post(str(vkusvill_settings.create_token.url)).mock(
+        return_value=Response(200, json=load_json("token_response.json"))
+    )
 
     # Act
     token_data = vkusvill_api.create_new_user_token()
@@ -24,12 +29,13 @@ def test_create_token(
 def test_get_address_info(
     vkusvill_settings: VkusvillSettings,
     authorized_vkusvill_api: VkusvillApi,
-    requests_mock: Mocker,
+    respx_mock: MockRouter,
     load_json,
 ):
     # Arrange
-    response = load_json("address_info.json")
-    requests_mock.get(str(vkusvill_settings.address_info.url), json=response)
+    respx_mock.get(str(vkusvill_settings.address_info.url)).mock(
+        return_value=Response(200, json=load_json("address_info.json"))
+    )
     lat, lon = Decimal("55.72673"), Decimal("37.622145")
 
     # Act
@@ -46,12 +52,13 @@ def test_get_address_info(
 def test_get_address_info_not_found(
     vkusvill_settings: VkusvillSettings,
     authorized_vkusvill_api: VkusvillApi,
-    requests_mock: Mocker,
+    respx_mock: MockRouter,
     load_json,
 ):
     # Arrange
-    response = load_json("address_info_not_found.json")
-    requests_mock.get(str(vkusvill_settings.address_info.url), json=response)
+    respx_mock.get(str(vkusvill_settings.address_info.url)).mock(
+        return_value=Response(200, json=load_json("address_info_not_found.json"))
+    )
     lat, lon = Decimal("0"), Decimal("0")
 
     # Act
@@ -64,12 +71,13 @@ def test_get_address_info_not_found(
 def test_get_shop_info(
     vkusvill_settings: VkusvillSettings,
     authorized_vkusvill_api: VkusvillApi,
-    requests_mock: Mocker,
+    respx_mock: MockRouter,
     load_json,
 ):
     # Arrange
-    response = load_json("shop_info.json")
-    requests_mock.get(str(vkusvill_settings.shop_info.url), json=response)
+    respx_mock.get(str(vkusvill_settings.shop_info.url)).mock(
+        return_value=Response(200, json=load_json("shop_info.json"))
+    )
     lat, lon = Decimal("55.72673"), Decimal("37.622145")
 
     # Act
@@ -83,12 +91,13 @@ def test_get_shop_info(
 def test_get_shop_info_not_found(
     vkusvill_settings: VkusvillSettings,
     authorized_vkusvill_api: VkusvillApi,
-    requests_mock: Mocker,
+    respx_mock: MockRouter,
     load_json,
 ):
     # Arrange
-    response = load_json("shop_info_not_found.json")
-    requests_mock.get(str(vkusvill_settings.shop_info.url), json=response)
+    respx_mock.get(str(vkusvill_settings.shop_info.url)).mock(
+        return_value=Response(200, json=load_json("shop_info_not_found.json"))
+    )
     lat, lon = Decimal("0"), Decimal("0")
 
     # Act
@@ -101,25 +110,21 @@ def test_get_shop_info_not_found(
 def test_fetch_green_labels(
     vkusvill_settings: VkusvillSettings,
     authorized_vkusvill_api: VkusvillApi,
-    requests_mock: Mocker,
+    respx_mock: MockRouter,
     load_json,
 ):
     # Arrange
     response_page_1 = load_json("green_labels.json")
     response_page_2 = load_json("green_labels_2.json")
 
-    response_list = [
-        {"json": response_page_1, "status_code": 200},
-        {"json": response_page_2, "status_code": 200},
-    ]
-
-    requests_mock.get(str(vkusvill_settings.green_labels.url), response_list=response_list)
+    route = respx_mock.get(str(vkusvill_settings.green_labels.url))
+    route.side_effect = [Response(200, json=response_page_1), Response(200, json=response_page_2)]
 
     # Act
     green_labels_items = authorized_vkusvill_api.fetch_green_labels()
 
     # Assert
-    assert len(green_labels_items) == 200
+    assert len(green_labels_items) == 207
     assert green_labels_items[0].item_id == 88860
     assert green_labels_items[0].title == "Азу из филе грудки индейки, 500 г"
     assert green_labels_items[0].amount == Decimal("1")

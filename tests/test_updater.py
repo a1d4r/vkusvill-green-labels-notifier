@@ -1,6 +1,7 @@
 import pytest
 
-from requests_mock import Mocker
+from httpx import Response
+from respx import MockRouter
 
 from vkusvill_green_labels.repositories.green_labels import InMemoryGreenLabelsRepository
 from vkusvill_green_labels.services.vkusvill import VkusvillApi
@@ -9,7 +10,7 @@ from vkusvill_green_labels.updater import GreenLabelsUpdater
 
 
 @pytest.fixture
-def _mock_vkusvill_api(requests_mock: Mocker, load_json, vkusvill_settings: VkusvillSettings):
+def _mock_vkusvill_api(respx_mock: MockRouter, load_json, vkusvill_settings: VkusvillSettings):
     green_label_items = load_json("green_labels.json")
 
     responses = [
@@ -19,10 +20,8 @@ def _mock_vkusvill_api(requests_mock: Mocker, load_json, vkusvill_settings: Vkus
         green_label_items[5:6],
     ]
 
-    requests_mock.get(
-        str(vkusvill_settings.green_labels.url),
-        response_list=[{"json": response, "status_code": 200} for response in responses],
-    )
+    route = respx_mock.get(str(vkusvill_settings.green_labels.url))
+    route.side_effect = [Response(200, json=response) for response in responses]
 
 
 @pytest.mark.usefixtures("_mock_vkusvill_api")
