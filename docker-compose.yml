@@ -3,7 +3,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: vkusvill-green-labels-notifier:latest
     env_file:
       - .env
     volumes:

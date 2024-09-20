@@ -105,7 +105,7 @@ class VkusvillApi:
 
         params: dict[str, typing.Any] = self.settings.create_token.query.copy()
         params["device_id"] = device_id
-        params["str_param"] = formatted_str_params
+        params["str_par"] = formatted_str_params
 
         response = requests.post(
             str(self.settings.create_token.url),
