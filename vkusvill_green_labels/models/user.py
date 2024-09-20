@@ -16,7 +16,7 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[UserID] = mapped_column(UUID, default=uuid4, primary_key=True)
-    tg_id: Mapped[int] = mapped_column(unique=True)
+    tg_id: Mapped[int] = mapped_column(index=True, unique=True)
     first_name: Mapped[str | None] = mapped_column()
     last_name: Mapped[str | None] = mapped_column()
     username: Mapped[str | None] = mapped_column()
