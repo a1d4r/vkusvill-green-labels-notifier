@@ -6,10 +6,11 @@ import decimal
 from datetime import UTC, datetime
 from decimal import Decimal
 from functools import partial
+from json import JSONDecodeError
 from time import time
 from uuid import uuid4
 
-import requests
+import httpx
 
 from loguru import logger
 from pydantic import AliasPath, BaseModel, Field, TypeAdapter, ValidationError
@@ -107,7 +108,7 @@ class VkusvillApi:
         params["device_id"] = device_id
         params["str_par"] = formatted_str_params
 
-        response = requests.post(
+        response = httpx.post(
             str(self.settings.create_token.url),
             params=params,
             headers=self.settings.create_token.headers,
@@ -144,7 +145,7 @@ class VkusvillApi:
         params["longitude"] = str(longitude)
         params["number"] = self.user_settings.user_number
 
-        response = requests.get(
+        response = httpx.get(
             str(self.settings.shop_info.url), params=params, headers=headers, timeout=self._TIMEOUT
         )
         logger.debug(
@@ -174,7 +175,7 @@ class VkusvillApi:
         params["longitude"] = str(longitude)
         params["number"] = self.user_settings.user_number
 
-        response = requests.get(
+        response = httpx.get(
             str(self.settings.address_info.url),
             params=params,
             headers=headers,
@@ -206,7 +207,7 @@ class VkusvillApi:
         params["DateSupply"] = datetime.now(UTC).strftime("%Y%m%d")
         params["coordinates"] = f"{latitude},{longitude}"
 
-        response = requests.post(
+        response = httpx.post(
             str(self.settings.update_cart.url), data=params, headers=headers, timeout=self._TIMEOUT
         )
         logger.debug(
@@ -233,7 +234,7 @@ class VkusvillApi:
         params: dict[str, typing.Any] = self.settings.green_labels.query.copy()
         params["number"] = self.user_settings.user_number
 
-        response = requests.get(
+        response = httpx.get(
             str(self.settings.green_labels.url),
             params=params,
             headers=headers,
@@ -249,11 +250,11 @@ class VkusvillApi:
         except (ValidationError, KeyError) as exc:
             raise VkusvillApiError("Could not validate response") from exc
 
-    def _check_response_successful(self, response: requests.Response) -> None:
+    def _check_response_successful(self, response: httpx.Response) -> None:
         if response.status_code != 200:
             try:
                 response_body = response.json()
-            except requests.JSONDecodeError:
+            except (JSONDecodeError, UnicodeDecodeError):
                 response_body = response.text
             msg = f"Vkusvill API bad response: status_code={response.status_code}, response={response_body}"
             logger.exception(msg)
