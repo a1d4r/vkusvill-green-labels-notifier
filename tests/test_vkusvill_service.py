@@ -124,7 +124,7 @@ def test_fetch_green_labels(
     green_labels_items = authorized_vkusvill_api.fetch_green_labels()
 
     # Assert
-    assert len(green_labels_items) == 200
+    assert len(green_labels_items) == 207
     assert green_labels_items[0].item_id == 88860
     assert green_labels_items[0].title == "Азу из филе грудки индейки, 500 г"
     assert green_labels_items[0].amount == Decimal("1")

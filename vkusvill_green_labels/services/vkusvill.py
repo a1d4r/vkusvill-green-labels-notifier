@@ -234,21 +234,33 @@ class VkusvillApi:
         params: dict[str, typing.Any] = self.settings.green_labels.query.copy()
         params["number"] = self.user_settings.user_number
 
-        response = httpx.get(
-            str(self.settings.green_labels.url),
-            params=params,
-            headers=headers,
-            timeout=self._TIMEOUT,
-        )
-        logger.debug(
-            "{} {} - {} ", response.request.method, response.request.url, response.status_code
-        )
-        self._check_response_successful(response)
+        all_items = []
+        offset = 0
+        limit = 200
+        while True:
+            params["offset"] = offset
+            params["limit"] = limit
+            response = httpx.get(
+                str(self.settings.green_labels.url),
+                params=params,
+                headers=headers,
+                timeout=self._TIMEOUT,
+            )
+            logger.debug(
+                "{} {} - {} ", response.request.method, response.request.url, response.status_code
+            )
+            self._check_response_successful(response)
 
-        try:
-            return TypeAdapter(list[GreenLabelItem]).validate_python(response.json())
-        except (ValidationError, KeyError) as exc:
-            raise VkusvillApiError("Could not validate response") from exc
+            try:
+                items = TypeAdapter(list[GreenLabelItem]).validate_python(response.json())
+            except (ValidationError, KeyError) as exc:
+                raise VkusvillApiError("Could not validate response") from exc
+            else:
+                all_items.extend(items)
+                if len(items) < limit:
+                    break
+                offset += limit
+        return all_items
 
     def _check_response_successful(self, response: httpx.Response) -> None:
         if response.status_code != 200:
