@@ -3,10 +3,10 @@ import sys
 from decimal import Decimal
 from pathlib import Path
 
-from pydantic import BaseModel, Field, HttpUrl, SecretStr
+from pydantic import BaseModel, Field, HttpUrl, PositiveInt, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent.parent
 
 
 def load_vkusvill_settings() -> "VkusvillSettings":
@@ -37,11 +37,36 @@ class TelegramSettings(BaseModel):
     user_id: int = Field(..., description="ID of the user to send updates")
 
 
+class DatabaseSettings(BaseSettings):
+    dialect: str = "postgresql"
+    driver: str = "asyncpg"
+    username: SecretStr
+    password: SecretStr
+    host: str
+    port: int
+    name: str
+
+    pool_recycle_seconds: PositiveInt = 3600
+
+    @property
+    def url(self) -> str:
+        """URL for SQLAlchemy engine.
+
+        Format: dialect+driver://username:password@host:port/database
+        More info: https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls
+        """
+        return (
+            f"{self.dialect}+{self.driver}://{self.username.get_secret_value()}:"
+            f"{self.password.get_secret_value()}@{self.host}:{self.port}/{self.name}"
+        )
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
     vkusvill: VkusvillSettings
     telegram: TelegramSettings
+    database: DatabaseSettings
     address_latitude: Decimal
     address_longitude: Decimal
     update_interval: int = Field(..., description="Update interval in seconds")

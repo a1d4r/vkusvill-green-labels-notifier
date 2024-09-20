@@ -14,6 +14,9 @@ loguru = "^0.7.2"
 pydantic-settings = "^2.5.2"
 pytelegrambotapi = "^4.22.1"
 httpx = "^0.27.2"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.35"}
+asyncpg = "^0.29.0"
+advanced-alchemy = "^0.19.3"
 
 [tool.poetry.group.dev.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
 mypy = "^1.11.2"
@@ -190,5 +193,5 @@ quote-style = "double"
 skip-magic-trailing-comma = true
 
 [tool.deptry.per_rule_ignores]
-DEP002 = []
+DEP002 = ["asyncpg"]
 DEP003 = []

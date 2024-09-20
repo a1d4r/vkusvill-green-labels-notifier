@@ -7,9 +7,9 @@ import telebot.formatting as fmt
 from apscheduler.schedulers.background import BackgroundScheduler
 from loguru import logger
 
+from vkusvill_green_labels.core.settings import settings
 from vkusvill_green_labels.repositories.green_labels import InMemoryGreenLabelsRepository
 from vkusvill_green_labels.services.vkusvill import VkusvillApi
-from vkusvill_green_labels.settings import settings
 from vkusvill_green_labels.updater import GreenLabelsUpdater
 
 vkusvill_api = VkusvillApi(settings.vkusvill)

@@ -15,7 +15,7 @@ import httpx
 from loguru import logger
 from pydantic import AliasPath, BaseModel, Field, TypeAdapter, ValidationError
 
-from vkusvill_green_labels.settings import VkusvillSettings
+from vkusvill_green_labels.core.settings import VkusvillSettings
 
 
 class VkusvillError(Exception):
@@ -274,7 +274,7 @@ class VkusvillApi:
 
 
 if __name__ == "__main__":
-    from vkusvill_green_labels.settings import settings
+    from vkusvill_green_labels.core.settings import settings
 
     vkusvill = VkusvillApi(settings.vkusvill)
     vkusvill.authorize()

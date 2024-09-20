@@ -3,9 +3,9 @@ import pytest
 from httpx import Response
 from respx import MockRouter
 
+from vkusvill_green_labels.core.settings import VkusvillSettings
 from vkusvill_green_labels.repositories.green_labels import InMemoryGreenLabelsRepository
 from vkusvill_green_labels.services.vkusvill import VkusvillApi
-from vkusvill_green_labels.settings import VkusvillSettings
 from vkusvill_green_labels.updater import GreenLabelsUpdater
 
 

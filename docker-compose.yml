@@ -7,3 +7,29 @@ services:
       - .env
     volumes:
       - ./vkusvill_green_labels:/app/vkusvill_green_labels
+    profiles:
+      - dev
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: vkusvill
+      PGDATA: /data/postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/data/postgres
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d vkusvill" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - infra
+      - dev
+
+volumes:
+  postgres-data:
