@@ -27,8 +27,8 @@ cp envs/.env.example envs/.env
 
 ```bash
 pyenv install 3.12
-pyenv virtualenv 3.12 mco-profit
-pyenv local mco-profit
+pyenv virtualenv 3.12 vkusvill-green-labels
+pyenv local vkusvill-green-labels
 ```
 
 3. If you don't have `Poetry` installed run:
