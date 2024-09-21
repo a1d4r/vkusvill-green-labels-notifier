@@ -1,38 +1,104 @@
-# vkusvill-green-labels-notifier
+# Vkusvill Green Labels Notifiers
 
 Telegram bot which notifies a user when there are new items with green labels available.
 
+## Table of content
+
+<!-- TOC -->
+* [Vkusvill Green Labels Notifiers](#vkusvill-green-labels-notifiers)
+  * [Table of content](#table-of-content)
+  * [Installation](#installation)
+  * [Migrations](#migrations)
+  * [Makefile usage](#makefile-usage)
+  * [Credits](#credits)
+<!-- TOC -->
+
 ## Installation
 
-1. Clone `git` repo:
+1. Create env file:
 
 ```bash
-git clone https://github.com/a1d4r/vkusvill-green-labels-notifier.git
-cd vkusvill-green-labels
+cp envs/.env.example envs/.env
 ```
 
-2. If you don't have `Poetry` installed run:
+2. If you use `pyenv`, create and activate environment.
+   You can [read this article](https://fathomtech.io/blog/python-environments-with-pyenv-and-vitualenv/)
+   to get familiar with pyenv. Or you can just omit this step, and poetry will install venv for you.
+
+```bash
+pyenv install 3.12
+pyenv virtualenv 3.12 vkusvill-green-labels
+pyenv local vkusvill-green-labels
+```
+
+3. If you don't have `Poetry` installed run:
 
 ```bash
 make poetry-download
 ```
 
-3. Initialize poetry and install `pre-commit` hooks:
+4. Initialize poetry and install `pre-commit` hooks:
 
 ```bash
 make install
 make pre-commit-install
 ```
 
-4. Run formatters, linters, and tests. Make sure there is no errors.
+5. Run formatters, linters, and tests. Make sure there is no errors.
 
 ```bash
 make format lint test
 ```
 
-### Makefile usage
+6. Run supporting services
 
-[`Makefile`](https://github.com/a1d4r/vkusvill-green-labels-notifier/blob/master/Makefile) contains a lot of functions for faster development.
+```bash
+docker compose --profile infra up -d
+```
+
+7. Run the application
+
+```bash
+make up
+```
+
+## Migrations
+
+Create migration:
+
+```bash
+alembic revision --autogenerate -m "Message"
+```
+
+Review the generated migration file and corresponding SQL:
+
+```bash
+alembic upgrade prev_revision_id:revision_id --sql
+```
+
+You can find `prev_revision_id` and `revision_id` in the migration file
+
+```
+Revision ID: %revision_id%
+Revises: %prev_revision_id%
+```
+
+Apply migrations:
+
+```bash
+alembic upgrade head
+```
+
+Revert last migration:
+
+```bash
+alembic downgrade -1
+```
+
+## Makefile usage
+
+[`Makefile`](https://github.com/a1d4r/vkusvill-green-labels-notifier/blob/master/Makefile) contains a lot of functions
+for faster development.
 
 <details>
 <summary>1. Download and remove Poetry</summary>
