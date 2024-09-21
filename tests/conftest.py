@@ -3,8 +3,10 @@ import pathlib
 
 import pytest
 
+from vkusvill_green_labels.core.settings import VkusvillSettings, settings
 from vkusvill_green_labels.services.vkusvill import VkusvillApi, VkusvillUserSettings
-from vkusvill_green_labels.settings import VkusvillSettings, settings
+
+pytest_plugins = ["tests.fixtures.containers", "tests.fixtures.db"]
 
 
 @pytest.fixture

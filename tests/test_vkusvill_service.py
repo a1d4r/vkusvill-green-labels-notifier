@@ -3,8 +3,8 @@ from decimal import Decimal
 from httpx import Response
 from respx import MockRouter
 
+from vkusvill_green_labels.core.settings import VkusvillSettings
 from vkusvill_green_labels.services.vkusvill import VkusvillApi
-from vkusvill_green_labels.settings import VkusvillSettings
 
 
 def test_create_token(
