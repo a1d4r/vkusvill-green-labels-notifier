@@ -42,10 +42,17 @@ class VkusvillUserSettings(BaseModel):
 
 
 class GreenLabelItem(BaseModel):
-    item_id: int = Field(..., validation_alias="id")
+    item_id: int
     title: str
     amount: Decimal
     weight_str: str
+    rating: str
+    price: Decimal
+    discount_price: Decimal
+
+
+class GreenLabelItemAliased(GreenLabelItem):
+    item_id: int = Field(..., validation_alias="id")
     rating: str = Field(..., validation_alias=AliasPath("rating", "all"))
     price: Decimal = Field(..., validation_alias=AliasPath("price", "price"))
     discount_price: Decimal = Field(..., validation_alias=AliasPath("price", "discount_price"))
@@ -252,7 +259,10 @@ class VkusvillApi:
             self._check_response_successful(response)
 
             try:
-                items = TypeAdapter(list[GreenLabelItem]).validate_python(response.json())
+                aliased_items = TypeAdapter(list[GreenLabelItemAliased]).validate_python(
+                    response.json()
+                )
+                items = TypeAdapter(list[GreenLabelItem]).validate_python(aliased_items)
             except (ValidationError, KeyError) as exc:
                 raise VkusvillApiError("Could not validate response") from exc
             else:
