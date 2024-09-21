@@ -1,6 +1,5 @@
 import sys
 
-from decimal import Decimal
 from pathlib import Path
 
 from pydantic import BaseModel, Field, HttpUrl, PositiveInt, SecretStr
@@ -61,14 +60,22 @@ class DatabaseSettings(BaseSettings):
         )
 
 
+class RedisSettings(BaseSettings):
+    """Настройки Redis."""
+
+    model_config = SettingsConfigDict(extra="ignore")
+
+    host: str
+    port: int
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
     vkusvill: VkusvillSettings
     telegram: TelegramSettings
     database: DatabaseSettings
-    address_latitude: Decimal
-    address_longitude: Decimal
+    redis: RedisSettings
     update_interval: int = Field(..., description="Update interval in seconds")
 
 

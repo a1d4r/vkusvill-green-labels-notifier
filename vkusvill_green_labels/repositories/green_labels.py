@@ -1,22 +1,26 @@
-import abc
+from typing import ClassVar
 
-from vkusvill_green_labels.services import vkusvill
+from dataclasses import dataclass
 
+from pydantic import TypeAdapter
+from redis.asyncio import Redis
 
-class GreenLabelsRepository(abc.ABC):
-    @abc.abstractmethod
-    def get_items(self) -> list[vkusvill.GreenLabelItem]: ...
-
-    @abc.abstractmethod
-    def set_items(self, items: list[vkusvill.GreenLabelItem]) -> None: ...
+from vkusvill_green_labels.models.identifiers import UserID
+from vkusvill_green_labels.services.vkusvill import GreenLabelItem
 
 
-class InMemoryGreenLabelsRepository(GreenLabelsRepository):
-    def __init__(self) -> None:
-        self.items: list[vkusvill.GreenLabelItem] = []
+@dataclass
+class GreenLabelsRepository:
+    redis: Redis
+    prefix: ClassVar[str] = "green_labels:"
+    adapter: ClassVar[TypeAdapter[list[GreenLabelItem]]] = TypeAdapter(list[GreenLabelItem])
 
-    def get_items(self) -> list[vkusvill.GreenLabelItem]:
-        return self.items
+    async def get_items(self, user_id: UserID) -> list[GreenLabelItem]:
+        value = await self.redis.get(self.prefix + str(user_id))
+        if value is None:
+            return []
+        return self.adapter.validate_json(value)
 
-    def set_items(self, items: list[vkusvill.GreenLabelItem]) -> None:
-        self.items = items
+    async def set_items(self, user_id: UserID, items: list[GreenLabelItem]) -> None:
+        value = self.adapter.dump_json(items)
+        await self.redis.set(self.prefix + str(user_id), value)
