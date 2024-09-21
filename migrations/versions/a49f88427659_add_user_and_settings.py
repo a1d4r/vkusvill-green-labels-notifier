@@ -1,8 +1,8 @@
 """Add user and settings
 
-Revision ID: 145ea4bda68a
+Revision ID: a49f88427659
 Revises:
-Create Date: 2024-09-21 02:50:13.796875
+Create Date: 2024-09-21 16:17:47.623910
 
 """
 
@@ -18,7 +18,7 @@ import vkusvill_green_labels.models.utils.pydantic_type
 from vkusvill_green_labels.services.vkusvill import VkusvillUserSettings
 
 # revision identifiers, used by Alembic.
-revision: str = "145ea4bda68a"
+revision: str = "a49f88427659"
 down_revision: str | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -52,7 +52,7 @@ def upgrade() -> None:
         sa.Column("first_name", sa.String(), nullable=True),
         sa.Column("last_name", sa.String(), nullable=True),
         sa.Column("username", sa.String(), nullable=True),
-        sa.Column("user_settings_id", sa.UUID(), nullable=False),
+        sa.Column("user_settings_id", sa.UUID(), nullable=True),
         sa.Column("sa_orm_sentinel", sa.Integer(), nullable=True),
         sa.Column(
             "created_at", advanced_alchemy.types.datetime.DateTimeUTC(timezone=True), nullable=False

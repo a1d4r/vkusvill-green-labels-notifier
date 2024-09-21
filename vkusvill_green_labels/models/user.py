@@ -21,5 +21,5 @@ class User(Base):
     last_name: Mapped[str | None] = mapped_column()
     username: Mapped[str | None] = mapped_column()
 
-    user_settings_id: Mapped[UserSettingsID] = mapped_column(ForeignKey("user_settings.id"))
-    settings: Mapped["UserSettings"] = relationship(lazy="selectin")
+    user_settings_id: Mapped[UserSettingsID | None] = mapped_column(ForeignKey("user_settings.id"))
+    settings: Mapped["UserSettings | None"] = relationship(lazy="selectin")

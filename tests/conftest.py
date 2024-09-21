@@ -6,6 +6,8 @@ import pytest
 from vkusvill_green_labels.core.settings import VkusvillSettings, settings
 from vkusvill_green_labels.services.vkusvill import VkusvillApi, VkusvillUserSettings
 
+pytest_plugins = ["tests.fixtures.containers", "tests.fixtures.db"]
+
 
 @pytest.fixture
 def vkusvill_settings() -> VkusvillSettings:
