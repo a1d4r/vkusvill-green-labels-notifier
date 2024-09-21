@@ -18,6 +18,7 @@ asyncpg = "^0.29.0"
 advanced-alchemy = "^0.19.3"
 alembic = "^1.13.2"
 redis = {extras = ["hiredis"], version = "^5.0.8"}
+aiogram = "^3.13.1"
 
 [tool.poetry.group.dev.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
 mypy = "^1.11.2"

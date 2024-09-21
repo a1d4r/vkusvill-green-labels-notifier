@@ -2,7 +2,7 @@ import sys
 
 from pathlib import Path
 
-from pydantic import BaseModel, Field, HttpUrl, PositiveInt, SecretStr
+from pydantic import BaseModel, Field, HttpUrl, PositiveInt, RedisDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -33,7 +33,6 @@ class VkusvillSettings(BaseModel):
 
 class TelegramSettings(BaseModel):
     bot_token: SecretStr = Field(..., description="Token from @BotFather")
-    user_id: int = Field(..., description="ID of the user to send updates")
 
 
 class DatabaseSettings(BaseSettings):
@@ -65,8 +64,7 @@ class RedisSettings(BaseSettings):
 
     model_config = SettingsConfigDict(extra="ignore")
 
-    host: str
-    port: int
+    dsn: RedisDsn
 
 
 class Settings(BaseSettings):

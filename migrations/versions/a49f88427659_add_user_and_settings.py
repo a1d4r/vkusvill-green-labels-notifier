@@ -15,7 +15,7 @@ from alembic import op
 
 import vkusvill_green_labels.models.utils.pydantic_type
 
-from vkusvill_green_labels.services.vkusvill import VkusvillUserSettings
+from vkusvill_green_labels.services.vkusvill_api import VkusvillUserSettings
 
 # revision identifiers, used by Alembic.
 revision: str = "a49f88427659"

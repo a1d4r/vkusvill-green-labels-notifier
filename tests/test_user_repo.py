@@ -8,7 +8,7 @@ from sqlalchemy.orm.attributes import flag_modified
 
 from vkusvill_green_labels.models import User, UserSettings
 from vkusvill_green_labels.repositories.user import UserRepository
-from vkusvill_green_labels.services.vkusvill import VkusvillUserSettings
+from vkusvill_green_labels.services.vkusvill_api import VkusvillUserSettings
 
 
 @pytest.fixture

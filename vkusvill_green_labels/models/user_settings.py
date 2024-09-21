@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from vkusvill_green_labels.models.base import Base
 from vkusvill_green_labels.models.identifiers import UserSettingsID
 from vkusvill_green_labels.models.utils.pydantic_type import PydanticType
-from vkusvill_green_labels.services.vkusvill import VkusvillUserSettings
+from vkusvill_green_labels.services.vkusvill_api import VkusvillUserSettings
 
 
 class UserSettings(Base):
