@@ -287,4 +287,6 @@ make cleanup
 
 ## Credits
 
+Special thanks to [coolitydev](https://github.com/coolitydev) for the help in developing this project.
+
 This project was generated with [`python-package-template`](https://github.com/a1d4r/python-package-template)
