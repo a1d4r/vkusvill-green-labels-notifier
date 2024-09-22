@@ -20,6 +20,7 @@ alembic = "^1.13.2"
 redis = {extras = ["hiredis"], version = "^5.0.8"}
 aiogram = "^3.13.1"
 dishka = "^1.3.0"
+simplejson = "^3.19.3"
 
 [tool.poetry.group.dev.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
 mypy = "^1.11.2"

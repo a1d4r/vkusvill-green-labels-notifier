@@ -6,7 +6,7 @@ from sqlalchemy import UUID, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from vkusvill_green_labels.models.base import Base
-from vkusvill_green_labels.models.identifiers import UserID, UserSettingsID
+from vkusvill_green_labels.models.types import UserID, UserSettingsID
 
 if TYPE_CHECKING:
     from vkusvill_green_labels.models import UserSettings
@@ -21,5 +21,5 @@ class User(Base):
     last_name: Mapped[str | None] = mapped_column()
     username: Mapped[str | None] = mapped_column()
 
-    user_settings_id: Mapped[UserSettingsID | None] = mapped_column(ForeignKey("user_settings.id"))
-    settings: Mapped["UserSettings | None"] = relationship(lazy="selectin")
+    user_settings_id: Mapped[UserSettingsID] = mapped_column(ForeignKey("user_settings.id"))
+    settings: Mapped["UserSettings"] = relationship(lazy="selectin")

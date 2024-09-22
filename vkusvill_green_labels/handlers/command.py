@@ -11,6 +11,6 @@ router = Router(name="command_router")
 async def start_handler(message: Message) -> None:
     await message.answer(
         text="Привет, я бот, который уведомляет пользователя о появлении новых товаров с зелеными ценниками\n\n"
-        "Отправь свои координаты для того, чтобы был подобран ближайший магазин!",
+        "Отправь месторасположение для того, чтобы был подобран ближайший магазин!",
         reply_markup=request_location_kb,
     )
