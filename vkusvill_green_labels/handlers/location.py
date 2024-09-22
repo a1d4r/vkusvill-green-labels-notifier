@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
@@ -18,17 +16,24 @@ async def location_handler(
 ) -> None:
     if message.location is None:
         return
-    latitude = Decimal(message.location.latitude).quantize(Decimal("0.0000001"))
-    longitude = Decimal(message.location.longitude).quantize(Decimal("0.0000001"))
-    address = await vkusvill_service.get_address_by_location(latitude, longitude)
-    if address is None:
+    address_info = await vkusvill_service.get_address_info_by_location(
+        latitude=message.location.latitude, longitude=message.location.longitude
+    )
+    if address_info is None:
         await message.answer(
             text="Адрес не найден. Скорее всего ВкусВилл не доставляет по указанному вами адресу. Попробуйте еще раз",
             reply_markup=request_location_kb,
         )
         return
-    await state.update_data(latitude=latitude, longitude=longitude, address=address)
-    await message.answer(text=f"Ваш адрес: {address}", reply_markup=address_verify_kb)
+    await state.update_data(
+        latitude=address_info.latitude,
+        longitude=address_info.longitude,
+        address=address_info.address,
+    )
+    await message.answer(
+        text=f"Ваш адрес: {address_info.address} ({address_info.latitude}, {address_info.longitude})",
+        reply_markup=address_verify_kb,
+    )
 
 
 @router.callback_query(F.data == "save_address")

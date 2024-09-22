@@ -83,3 +83,14 @@ async def test_update_user_settings(
     updated_user = await test_session.scalar(select(User, User.tg_id == user_with_settings.tg_id))
     assert updated_user is not None
     assert updated_user.settings.vkusvill_settings.token == new_token
+
+
+async def test_get_user_for_notifications(
+    user_with_settings: User, user_repo: UserRepository
+) -> None:
+    # Act
+    users = await user_repo.get_users_for_notifications()
+
+    # Assert
+    assert len(users) == 1
+    assert users[0].tg_id == user_with_settings.tg_id
