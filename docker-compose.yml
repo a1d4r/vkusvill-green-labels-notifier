@@ -25,7 +25,6 @@ services:
     volumes:
       - ./vkusvill_settings.json:/app/vkusvill_settings.json
     profiles:
-      - dev
       - prod
 
   postgres:
