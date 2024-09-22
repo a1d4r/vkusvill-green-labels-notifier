@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from vkusvill_green_labels.models import User
+from vkusvill_green_labels.models import User, UserSettings
 
 
 @dataclass
@@ -24,9 +24,9 @@ class UserRepository:
         await self.session.commit()
         return user
 
-    async def get_user_for_notifications(self) -> list[User]:
+    async def get_users_for_notifications(self) -> list[User]:
         return list(
             await self.session.scalars(
-                select(User).where(User.settings.enable_notifications.is_(True))
+                select(User).join(UserSettings).where(UserSettings.enable_notifications.is_(True))
             )
         )

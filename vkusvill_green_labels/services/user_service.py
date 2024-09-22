@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from aiogram.types import User as TelegramUser
 from loguru import logger
+from sqlalchemy.orm.attributes import flag_modified
 
 from vkusvill_green_labels.models import User, UserSettings
 from vkusvill_green_labels.repositories.user import UserRepository
@@ -35,4 +36,8 @@ class UserService:
             user.settings.address = address
             user.settings.address_latitude = latitude
             user.settings.address_longitude = longitude
+            user.settings.vkusvill_settings = None
+            flag_modified(user.settings, "vkusvill_settings")
+            await self.user_repository.update_user(user)
+            logger.info("Updated address for user {}", telegram_user.id)
         logger.info("Saved address for user {}", telegram_user.id)
