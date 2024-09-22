@@ -2,13 +2,31 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      target: development
     env_file:
-      - .env
+      - .env.docker
+    command: >
+      bash -c "alembic upgrade head
+      && python -m vkusvill_green_labels.main"
     volumes:
-      - ./vkusvill_green_labels:/app/vkusvill_green_labels
+      - .:/app
     profiles:
       - dev
+
+  app-prod:
+    build:
+      context: .
+      target: production
+    env_file:
+      - .env.docker
+    command: >
+      bash -c "alembic upgrade head
+      && python -m vkusvill_green_labels.main"
+    volumes:
+      - ./vkusvill_settings.json:/app/vkusvill_settings.json
+    profiles:
+      - dev
+      - prod
 
   postgres:
     image: postgres:16-alpine
@@ -30,6 +48,7 @@ services:
     profiles:
       - infra
       - dev
+      - prod
 
   redis:
     image: redis:7-alpine
@@ -42,6 +61,7 @@ services:
     profiles:
       - dev
       - infra
+      - prod
 
 volumes:
   postgres-data:

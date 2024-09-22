@@ -21,6 +21,9 @@ class UpdaterService:
 
     async def update_green_labels(self) -> None:
         users = await self.user_repo.get_users_for_notifications()
+        if not users:
+            logger.info("No users found for notifications")
+            return
         for user in users:
             new_green_labels = await self.fetch_new_green_labels_for_user(user)
             if not new_green_labels:
