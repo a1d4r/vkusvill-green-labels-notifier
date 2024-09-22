@@ -1,8 +1,10 @@
 # ruff: noqa: ERA001
 import typing
 
+import asyncio
 import decimal
 
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import Decimal
 from functools import partial
@@ -15,7 +17,7 @@ import httpx
 from loguru import logger
 from pydantic import AliasPath, BaseModel, Field, TypeAdapter, ValidationError
 
-from vkusvill_green_labels.core.settings import VkusvillSettings
+from vkusvill_green_labels.core.settings import VkusvillSettings, settings
 
 
 class VkusvillError(Exception):
@@ -91,16 +93,14 @@ class CartInfo(BaseModel):
     res: int
 
 
+@dataclass
 class VkusvillApi:
-    _TIMEOUT = 3
+    client: httpx.AsyncClient
+    settings: VkusvillSettings
+    user_settings: VkusvillUserSettings | None = None
+    timeout: typing.ClassVar[float] = 3
 
-    def __init__(
-        self, settings: VkusvillSettings, user_settings: VkusvillUserSettings | None = None
-    ) -> None:
-        self.settings = settings
-        self.user_settings = user_settings
-
-    def create_new_user_token(self, device_id: str | None = None) -> TokenResponse:
+    async def create_new_user_token(self, device_id: str | None = None) -> TokenResponse:
         if device_id is None:
             device_id = str(uuid4())
 
@@ -115,11 +115,11 @@ class VkusvillApi:
         params["device_id"] = device_id
         params["str_par"] = formatted_str_params
 
-        response = httpx.post(
+        response = await self.client.post(
             str(self.settings.create_token.url),
             params=params,
             headers=self.settings.create_token.headers,
-            timeout=self._TIMEOUT,
+            timeout=self.timeout,
         )
         logger.debug(
             "{} {} - {} ", response.request.method, response.request.url, response.status_code
@@ -131,14 +131,14 @@ class VkusvillApi:
         except (ValidationError, KeyError) as exc:
             raise VkusvillApiError("Could not validate response") from exc
 
-    def authorize(self) -> None:
+    async def authorize(self) -> None:
         device_id = str(uuid4())
-        user_token = self.create_new_user_token(device_id)
+        user_token = await self.create_new_user_token(device_id)
         self.user_settings = VkusvillUserSettings(
             device_id=device_id, user_number=user_token.user_number, token=user_token.token
         )
 
-    def get_shop_info(
+    async def get_shop_info(
         self, latitude: decimal.Decimal, longitude: decimal.Decimal
     ) -> ShopInfo | None:
         if self.user_settings is None:
@@ -152,8 +152,8 @@ class VkusvillApi:
         params["longitude"] = str(longitude)
         params["number"] = self.user_settings.user_number
 
-        response = httpx.get(
-            str(self.settings.shop_info.url), params=params, headers=headers, timeout=self._TIMEOUT
+        response = await self.client.get(
+            str(self.settings.shop_info.url), params=params, headers=headers, timeout=self.timeout
         )
         logger.debug(
             "{} {} - {} ", response.request.method, response.request.url, response.status_code
@@ -168,7 +168,7 @@ class VkusvillApi:
         except (ValidationError, KeyError) as exc:
             raise VkusvillApiError("Could not validate response") from exc
 
-    def get_address_info(
+    async def get_address_info(
         self, latitude: decimal.Decimal, longitude: decimal.Decimal
     ) -> AddressInfo | None:
         if self.user_settings is None:
@@ -182,11 +182,11 @@ class VkusvillApi:
         params["longitude"] = str(longitude)
         params["number"] = self.user_settings.user_number
 
-        response = httpx.get(
+        response = await self.client.get(
             str(self.settings.address_info.url),
             params=params,
             headers=headers,
-            timeout=self._TIMEOUT,
+            timeout=self.timeout,
         )
         logger.debug(
             "{} {} - {} ", response.request.method, response.request.url, response.status_code
@@ -202,7 +202,9 @@ class VkusvillApi:
         else:
             return address_info
 
-    def update_cart(self, latitude: decimal.Decimal, longitude: decimal.Decimal) -> CartInfo | None:
+    async def update_cart(
+        self, latitude: decimal.Decimal, longitude: decimal.Decimal
+    ) -> CartInfo | None:
         if self.user_settings is None:
             raise VkusvillUnauthorizedError("User settings are not provided")
 
@@ -214,8 +216,8 @@ class VkusvillApi:
         params["DateSupply"] = datetime.now(UTC).strftime("%Y%m%d")
         params["coordinates"] = f"{latitude},{longitude}"
 
-        response = httpx.post(
-            str(self.settings.update_cart.url), data=params, headers=headers, timeout=self._TIMEOUT
+        response = await self.client.post(
+            str(self.settings.update_cart.url), data=params, headers=headers, timeout=self.timeout
         )
         logger.debug(
             "{} {} - {} ", response.request.method, response.request.url, response.status_code
@@ -231,7 +233,7 @@ class VkusvillApi:
         else:
             return cart_info
 
-    def fetch_green_labels(self) -> list[GreenLabelItem]:
+    async def fetch_green_labels(self) -> list[GreenLabelItem]:
         if self.user_settings is None:
             raise VkusvillUnauthorizedError("User settings are not provided")
 
@@ -247,11 +249,11 @@ class VkusvillApi:
         while True:
             params["offset"] = offset
             params["limit"] = limit
-            response = httpx.get(
+            response = await self.client.get(
                 str(self.settings.green_labels.url),
                 params=params,
                 headers=headers,
-                timeout=self._TIMEOUT,
+                timeout=self.timeout,
             )
             logger.debug(
                 "{} {} - {} ", response.request.method, response.request.url, response.status_code
@@ -283,18 +285,22 @@ class VkusvillApi:
             raise VkusvillApiError(msg)
 
 
-if __name__ == "__main__":
-    from vkusvill_green_labels.core.settings import settings
+async def main() -> None:
+    async with httpx.AsyncClient() as client:
+        vkusvill_api = VkusvillApi(client, settings.vkusvill)
+        await vkusvill_api.authorize()
+        logger.info(vkusvill_api.user_settings)
+        lat, lon = Decimal("55.7381250"), Decimal("37.6287290")
+        shop_info = await vkusvill_api.get_shop_info(lat, lon)
+        logger.info(shop_info)
+        address_info = await vkusvill_api.get_address_info(lat, lon)
+        logger.info(address_info)
+        logger.info(await vkusvill_api.update_cart(lat, lon))
+        green_labels_items = await vkusvill_api.fetch_green_labels()
+        logger.info(len(green_labels_items))
+        if green_labels_items:
+            logger.info(green_labels_items[0])
 
-    vkusvill = VkusvillApi(settings.vkusvill)
-    vkusvill.authorize()
-    logger.info(vkusvill.user_settings)
-    lat, lon = Decimal("55.7381250"), Decimal("37.6287290")
-    shop_info = vkusvill.get_shop_info(lat, lon)
-    logger.info(shop_info)
-    address_info = vkusvill.get_address_info(lat, lon)
-    logger.info(address_info)
-    logger.info(vkusvill.update_cart(lat, lon))
-    green_labels_items = vkusvill.fetch_green_labels()
-    logger.info(len(green_labels_items))
-    logger.info(green_labels_items[0])
+
+if __name__ == "__main__":
+    asyncio.run(main())

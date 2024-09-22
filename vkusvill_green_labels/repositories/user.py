@@ -10,7 +10,7 @@ from vkusvill_green_labels.models import User
 class UserRepository:
     session: AsyncSession
 
-    async def create_user(self, user: User) -> User:
+    async def add_user(self, user: User) -> User:
         self.session.add(user)
         await self.session.commit()
         return user
