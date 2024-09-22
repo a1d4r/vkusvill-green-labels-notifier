@@ -16,7 +16,7 @@ class UserRepository:
         return user
 
     async def get_user_by_telegram_id(self, tg_id: int) -> User | None:
-        result = await self.session.execute(select(User, User.tg_id == tg_id))
+        result = await self.session.execute(select(User).where(User.tg_id == tg_id))
         return result.scalar_one_or_none()
 
     async def update_user(self, user: User) -> User:
