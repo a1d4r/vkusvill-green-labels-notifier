@@ -1,8 +1,8 @@
 """Add user and settings
 
-Revision ID: a49f88427659
+Revision ID: 3ee3d973f8d0
 Revises:
-Create Date: 2024-09-21 16:17:47.623910
+Create Date: 2024-09-22 18:16:29.753096
 
 """
 
@@ -15,10 +15,10 @@ from alembic import op
 
 import vkusvill_green_labels.models.utils.pydantic_type
 
-from vkusvill_green_labels.services.vkusvill import VkusvillUserSettings
+from vkusvill_green_labels.services.vkusvill_api import VkusvillUserSettings
 
 # revision identifiers, used by Alembic.
-revision: str = "a49f88427659"
+revision: str = "3ee3d973f8d0"
 down_revision: str | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -30,6 +30,7 @@ def upgrade() -> None:
         sa.Column("id", sa.UUID(), nullable=False),
         sa.Column("address_latitude", sa.Numeric(), nullable=False),
         sa.Column("address_longitude", sa.Numeric(), nullable=False),
+        sa.Column("address", sa.String(), nullable=False),
         sa.Column("enable_notifications", sa.Boolean(), nullable=False),
         sa.Column(
             "vkusvill_settings",
@@ -52,7 +53,7 @@ def upgrade() -> None:
         sa.Column("first_name", sa.String(), nullable=True),
         sa.Column("last_name", sa.String(), nullable=True),
         sa.Column("username", sa.String(), nullable=True),
-        sa.Column("user_settings_id", sa.UUID(), nullable=True),
+        sa.Column("user_settings_id", sa.UUID(), nullable=False),
         sa.Column("sa_orm_sentinel", sa.Integer(), nullable=True),
         sa.Column(
             "created_at", advanced_alchemy.types.datetime.DateTimeUTC(timezone=True), nullable=False
