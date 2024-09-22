@@ -195,6 +195,7 @@ class VkusvillApi:
 
         try:
             address_info = AddressInfo.model_validate(response.json())
+            logger.debug("Address info: {}", address_info)
             if address_info.res < 0:
                 return None
         except (ValidationError, KeyError) as exc:

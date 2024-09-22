@@ -12,7 +12,7 @@ TESTS = tests
 
 # Application
 up:
-	python -m vkusvill_green_labels.bot
+	python -m vkusvill_green_labels.main
 
 #* Poetry
 .PHONY: poetry-download

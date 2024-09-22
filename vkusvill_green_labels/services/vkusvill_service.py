@@ -3,7 +3,11 @@ from typing import ClassVar
 from dataclasses import dataclass
 from decimal import Decimal
 
-from vkusvill_green_labels.services.vkusvill_api import VkusvillApi, VkusvillUserSettings
+from vkusvill_green_labels.services.vkusvill_api import (
+    AddressInfo,
+    VkusvillApi,
+    VkusvillUserSettings,
+)
 
 
 @dataclass
@@ -18,8 +22,9 @@ class VkusvillService:
         else:
             self.vkusvill_api.user_settings = self.base_user_settings
 
-    async def get_address_by_location(self, latitude: Decimal, longitude: Decimal) -> str | None:
-        address_info = await self.vkusvill_api.get_address_info(latitude, longitude)
-        if not address_info:
-            return None
-        return address_info.address
+    async def get_address_info_by_location(
+        self, latitude: float, longitude: float
+    ) -> AddressInfo | None:
+        decimal_latitude = Decimal(latitude).quantize(Decimal("0.0000001"))
+        decimal_longitude = Decimal(longitude).quantize(Decimal("0.0000001"))
+        return await self.vkusvill_api.get_address_info(decimal_latitude, decimal_longitude)
