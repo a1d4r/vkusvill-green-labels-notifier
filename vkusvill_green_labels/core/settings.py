@@ -1,12 +1,11 @@
 import sys
 
-from decimal import Decimal
 from pathlib import Path
 
-from pydantic import BaseModel, Field, HttpUrl, SecretStr
+from pydantic import BaseModel, Field, HttpUrl, PositiveInt, RedisDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-PROJECT_ROOT = Path(__file__).parent.parent
+PROJECT_ROOT = Path(__file__).parent.parent.parent
 
 
 def load_vkusvill_settings() -> "VkusvillSettings":
@@ -34,7 +33,38 @@ class VkusvillSettings(BaseModel):
 
 class TelegramSettings(BaseModel):
     bot_token: SecretStr = Field(..., description="Token from @BotFather")
-    user_id: int = Field(..., description="ID of the user to send updates")
+
+
+class DatabaseSettings(BaseSettings):
+    dialect: str = "postgresql"
+    driver: str = "asyncpg"
+    username: SecretStr
+    password: SecretStr
+    host: str
+    port: int
+    name: str
+
+    pool_recycle_seconds: PositiveInt = 3600
+
+    @property
+    def url(self) -> str:
+        """URL for SQLAlchemy engine.
+
+        Format: dialect+driver://username:password@host:port/database
+        More info: https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls
+        """
+        return (
+            f"{self.dialect}+{self.driver}://{self.username.get_secret_value()}:"
+            f"{self.password.get_secret_value()}@{self.host}:{self.port}/{self.name}"
+        )
+
+
+class RedisSettings(BaseSettings):
+    """Настройки Redis."""
+
+    model_config = SettingsConfigDict(extra="ignore")
+
+    dsn: RedisDsn
 
 
 class Settings(BaseSettings):
@@ -42,8 +72,8 @@ class Settings(BaseSettings):
 
     vkusvill: VkusvillSettings
     telegram: TelegramSettings
-    address_latitude: Decimal
-    address_longitude: Decimal
+    database: DatabaseSettings
+    redis: RedisSettings
     update_interval: int = Field(..., description="Update interval in seconds")
 
 

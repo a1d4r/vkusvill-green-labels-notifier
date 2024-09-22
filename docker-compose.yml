@@ -2,8 +2,67 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      target: development
     env_file:
-      - .env
+      - .env.docker
+    command: >
+      bash -c "alembic upgrade head
+      && python -m vkusvill_green_labels.main"
     volumes:
-      - ./vkusvill_green_labels:/app/vkusvill_green_labels
+      - .:/app
+    profiles:
+      - dev
+
+  app-prod:
+    build:
+      context: .
+      target: production
+    env_file:
+      - .env.docker
+    command: >
+      bash -c "alembic upgrade head
+      && python -m vkusvill_green_labels.main"
+    volumes:
+      - ./vkusvill_settings.json:/app/vkusvill_settings.json
+    profiles:
+      - dev
+      - prod
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: vkusvill
+      PGDATA: /data/postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/data/postgres
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d vkusvill" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - infra
+      - dev
+      - prod
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    profiles:
+      - dev
+      - infra
+      - prod
+
+volumes:
+  postgres-data:
+  redis-data:
