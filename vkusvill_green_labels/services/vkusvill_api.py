@@ -155,9 +155,6 @@ class VkusvillApi:
         response = await self.client.get(
             str(self.settings.shop_info.url), params=params, headers=headers, timeout=self.timeout
         )
-        logger.debug(
-            "{} {} - {} ", response.request.method, response.request.url, response.status_code
-        )
         self._check_response_successful(response)
 
         try:
@@ -188,14 +185,10 @@ class VkusvillApi:
             headers=headers,
             timeout=self.timeout,
         )
-        logger.debug(
-            "{} {} - {} ", response.request.method, response.request.url, response.status_code
-        )
         self._check_response_successful(response)
 
         try:
             address_info = AddressInfo.model_validate(response.json())
-            logger.debug("Address info: {}", address_info)
             if address_info.res < 0:
                 return None
         except (ValidationError, KeyError) as exc:
@@ -219,9 +212,6 @@ class VkusvillApi:
 
         response = await self.client.post(
             str(self.settings.update_cart.url), data=params, headers=headers, timeout=self.timeout
-        )
-        logger.debug(
-            "{} {} - {} ", response.request.method, response.request.url, response.status_code
         )
         self._check_response_successful(response)
 
