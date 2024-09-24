@@ -5,7 +5,7 @@ from loguru import logger
 from sqlalchemy.orm.attributes import flag_modified
 
 from vkusvill_green_labels.models.db import User, UserSettings
-from vkusvill_green_labels.models.types import Latitude, Longitude
+from vkusvill_green_labels.models.vkusvill import AddressInfo
 from vkusvill_green_labels.repositories.user import UserRepository
 
 
@@ -14,16 +14,16 @@ class UserService:
     user_repository: UserRepository
 
     async def save_address_for_user(
-        self, telegram_user: TelegramUser, address: str, latitude: Latitude, longitude: Longitude
+        self, telegram_user: TelegramUser, address_info: AddressInfo
     ) -> None:
-        logger.debug("Coordinates: ({}, {})", repr(latitude), repr(longitude))
-        logger.debug("Coordinates types: ({}, {})", type(latitude), type(longitude))
-        logger.info("Saving address for user {}: ({}, {})", telegram_user.id, latitude, longitude)
+        logger.info("Saving address for user {}: {}", telegram_user.id, address_info)
         user = await self.user_repository.get_user_by_telegram_id(telegram_user.id)
         if not user:
             logger.info("Creating new user {}", telegram_user.id)
             user_settings = UserSettings(
-                address_latitude=latitude, address_longitude=longitude, address=address
+                address_latitude=address_info.latitude,
+                address_longitude=address_info.longitude,
+                address=address_info.address,
             )
             user = User(
                 tg_id=telegram_user.id,
@@ -35,9 +35,9 @@ class UserService:
             await self.user_repository.add_user(user)
             logger.info("Created new user {}", telegram_user.id)
         else:
-            user.settings.address = address
-            user.settings.address_latitude = latitude
-            user.settings.address_longitude = longitude
+            user.settings.address = address_info.address
+            user.settings.address_latitude = address_info.latitude
+            user.settings.address_longitude = address_info.longitude
             user.settings.vkusvill_settings = None
             flag_modified(user.settings, "vkusvill_settings")
             await self.user_repository.update_user(user)
