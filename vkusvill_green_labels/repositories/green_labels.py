@@ -6,7 +6,7 @@ from pydantic import TypeAdapter
 from redis.asyncio import Redis
 
 from vkusvill_green_labels.models.types import UserID
-from vkusvill_green_labels.services.vkusvill_api import GreenLabelItem
+from vkusvill_green_labels.models.vkusvill import GreenLabelItem
 
 
 @dataclass

@@ -6,11 +6,12 @@ from loguru import logger
 from sqlalchemy.orm.attributes import flag_modified
 
 from vkusvill_green_labels.core.settings import settings
-from vkusvill_green_labels.models import User
+from vkusvill_green_labels.models.db import User
+from vkusvill_green_labels.models.vkusvill import GreenLabelItem
 from vkusvill_green_labels.repositories.green_labels import GreenLabelsRepository
 from vkusvill_green_labels.repositories.user import UserRepository
 from vkusvill_green_labels.services.notification_service import NotificationService
-from vkusvill_green_labels.services.vkusvill_api import GreenLabelItem, VkusvillApi
+from vkusvill_green_labels.services.vkusvill_api import VkusvillApi
 
 
 @dataclass

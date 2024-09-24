@@ -1,6 +1,5 @@
 import inspect
 import logging
-import sys
 
 from loguru import logger
 
@@ -25,7 +24,7 @@ class InterceptHandler(logging.Handler):
         logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
 
 
-def setup_logging():
+def setup_logging() -> None:
     logging.basicConfig(handlers=[InterceptHandler()], level=settings.log_level)
 
     if settings.log_level == "DEBUG":
