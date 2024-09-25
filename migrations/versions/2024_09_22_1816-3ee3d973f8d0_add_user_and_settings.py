@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 from alembic import op
 
-import vkusvill_green_labels.models.utils.pydantic_type
+import vkusvill_green_labels.models.db.utils.pydantic_type
 
 from vkusvill_green_labels.services.vkusvill_api import VkusvillUserSettings
 
@@ -34,7 +34,7 @@ def upgrade() -> None:
         sa.Column("enable_notifications", sa.Boolean(), nullable=False),
         sa.Column(
             "vkusvill_settings",
-            vkusvill_green_labels.models.utils.pydantic_type.PydanticType(VkusvillUserSettings),
+            vkusvill_green_labels.models.db.utils.pydantic_type.PydanticType(VkusvillUserSettings),
             nullable=True,
         ),
         sa.Column("sa_orm_sentinel", sa.Integer(), nullable=True),

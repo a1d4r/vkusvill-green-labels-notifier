@@ -74,6 +74,7 @@ class Settings(BaseSettings):
     telegram: TelegramSettings
     database: DatabaseSettings
     redis: RedisSettings
+    log_level: str = "INFO"
     update_interval: int = Field(..., description="Update interval in seconds")
 
 

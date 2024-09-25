@@ -4,6 +4,7 @@ from aiogram.types import CallbackQuery, Message
 from dishka import FromDishka
 
 from vkusvill_green_labels.keyboards.client import address_verify_kb, request_location_kb
+from vkusvill_green_labels.models.vkusvill import AddressInfo
 from vkusvill_green_labels.services.user_service import UserService
 from vkusvill_green_labels.services.vkusvill_service import VkusvillService
 
@@ -21,15 +22,14 @@ async def location_handler(
     )
     if address_info is None:
         await message.answer(
-            text="Адрес не найден. Скорее всего ВкусВилл не доставляет по указанному вами адресу. Попробуйте еще раз",
+            text=(
+                "Адрес не найден. Скорее всего ВкусВилл не доставляет по указанному "
+                "вами адресу. Попробуйте повторить попытку позже."
+            ),
             reply_markup=request_location_kb,
         )
         return
-    await state.update_data(
-        latitude=address_info.latitude,
-        longitude=address_info.longitude,
-        address=address_info.address,
-    )
+    await state.update_data(address_info=address_info.model_dump(mode="json"))
     await message.answer(
         text=f"Ваш адрес: {address_info.address} ({address_info.latitude}, {address_info.longitude})",
         reply_markup=address_verify_kb,
@@ -40,13 +40,15 @@ async def location_handler(
 async def save_address_handler(
     call: CallbackQuery, state: FSMContext, user_service: FromDishka[UserService]
 ) -> None:
-    location = await state.get_data()
+    state_data = await state.get_data()
     await state.clear()
-    latitude, longitude, address = location["latitude"], location["longitude"], location["address"]
-    await user_service.save_address_for_user(call.from_user, address, latitude, longitude)
+    address_info = AddressInfo.model_validate(state_data["address_info"])
+    await user_service.save_address_for_user(call.from_user, address_info)
     if not isinstance(call.message, Message):
         return
-    await call.message.edit_text(text=f"Адрес {address} ({latitude}, {longitude}) сохранен!")
+    await call.message.edit_text(
+        text=f"Адрес {address_info.address} ({address_info.latitude}, {address_info.longitude}) сохранен!"
+    )
 
 
 @router.callback_query(F.data == "change_address")

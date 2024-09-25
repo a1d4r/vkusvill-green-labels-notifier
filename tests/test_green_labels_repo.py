@@ -6,8 +6,8 @@ import pytest
 from redis.asyncio import Redis
 
 from vkusvill_green_labels.models.types import UserID
+from vkusvill_green_labels.models.vkusvill import GreenLabelItem
 from vkusvill_green_labels.repositories.green_labels import GreenLabelsRepository
-from vkusvill_green_labels.services.vkusvill_api import GreenLabelItem
 
 
 @pytest.fixture
