@@ -43,7 +43,7 @@ async def request_location_handler(
         await callback.message.edit_text(**content.as_kwargs(), reply_markup=back_to_menu_kb)
         await callback.answer()
     else:
-        content = fmt.as_marked_list("Отправьте геопозицию по адресу доставки:", instruction)
+        content = fmt.as_list("Отправьте геопозицию по адресу доставки:", instruction)
         await callback.message.edit_text(**content.as_kwargs(), reply_markup=back_to_menu_kb)
         await callback.answer()
     await state.set_state(SelectAddress.verify_address)
