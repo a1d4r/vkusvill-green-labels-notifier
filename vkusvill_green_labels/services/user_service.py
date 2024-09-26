@@ -13,6 +13,31 @@ from vkusvill_green_labels.repositories.user import UserRepository
 class UserService:
     user_repository: UserRepository
 
+    async def get_user_address(self, telegram_user: TelegramUser) -> AddressInfo | None:
+        user = await self.user_repository.get_user_by_telegram_id(telegram_user.id)
+        if not user:
+            return None
+        return AddressInfo(
+            address=user.settings.address,
+            latitude=user.settings.address_latitude,
+            longitude=user.settings.address_longitude,
+        )
+
+    async def get_user_notifications_settings(self, telegram_user: TelegramUser) -> bool:
+        user = await self.user_repository.get_user_by_telegram_id(telegram_user.id)
+        if not user:
+            return False
+        return user.settings.enable_notifications
+
+    async def update_user_notifications_settings(
+        self, telegram_user: TelegramUser, enable: bool
+    ) -> None:
+        user = await self.user_repository.get_user_by_telegram_id(telegram_user.id)
+        if not user:
+            return
+        user.settings.enable_notifications = enable
+        await self.user_repository.update_user(user)
+
     async def save_address_for_user(
         self, telegram_user: TelegramUser, address_info: AddressInfo
     ) -> None:

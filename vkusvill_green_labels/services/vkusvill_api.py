@@ -161,7 +161,7 @@ class VkusvillApi:
         self._check_response_successful(response)
 
         try:
-            response_address_info = AddressInfo.model_validate(response.json())
+            response_address_info = AddressInfoResponse.model_validate(response.json())
             if response_address_info.res < 0:
                 return None
             address_info = AddressInfo.model_validate(response_address_info, from_attributes=True)
