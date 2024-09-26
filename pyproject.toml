@@ -125,6 +125,7 @@ ignore = [
   "TRY003", # long message for exceptions
   "EM101", # allow string literals for exceptions
   "EM102", # allow f-string literals for exceptions
+  "FBT001",  # Boolean-typed positional argument in function definition
 ]
 unfixable = [
   "F", # pyflakes

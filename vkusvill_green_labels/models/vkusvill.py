@@ -42,4 +42,3 @@ class AddressInfo(BaseModel):
     latitude: Latitude
     longitude: Longitude
     address: str
-    res: int
