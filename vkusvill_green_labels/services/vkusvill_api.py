@@ -7,7 +7,6 @@ import decimal
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import Decimal
-from functools import partial
 from json import JSONDecodeError
 from time import time
 from uuid import uuid4
@@ -18,6 +17,12 @@ from loguru import logger
 from pydantic import AliasPath, BaseModel, Field, TypeAdapter, ValidationError
 
 from vkusvill_green_labels.core.settings import VkusvillSettings, settings
+from vkusvill_green_labels.models.vkusvill import (
+    AddressInfo,
+    GreenLabelItem,
+    TokenInfo,
+    VkusvillUserSettings,
+)
 
 
 class VkusvillError(Exception):
@@ -36,38 +41,11 @@ class VkusvillUnauthorizedError(VkusvillError):
     pass
 
 
-class VkusvillUserSettings(BaseModel):
-    device_id: str
-    user_number: str
-    token: str
-    created_at: datetime = Field(default_factory=partial(datetime.now, UTC))
-
-
-class GreenLabelItem(BaseModel):
-    item_id: int
-    title: str
-    amount: Decimal
-    weight_str: str
-    rating: str
-    price: Decimal
-    discount_price: Decimal
-
-
-class GreenLabelItemAliased(GreenLabelItem):
+class GreenLabelItemResponse(GreenLabelItem):
     item_id: int = Field(..., validation_alias="id")
     rating: str = Field(..., validation_alias=AliasPath("rating", "all"))
     price: Decimal = Field(..., validation_alias=AliasPath("price", "price"))
     discount_price: Decimal = Field(..., validation_alias=AliasPath("price", "discount_price"))
-
-
-class TokenResponse(BaseModel):
-    """Информация о токене и пользователе."""
-
-    email: str
-    fullname: str
-    user_number: str = Field(validation_alias="number")
-    phone: str
-    token: str
 
 
 class ShopInfo(BaseModel):
@@ -76,16 +54,11 @@ class ShopInfo(BaseModel):
     shop_number: int = Field(validation_alias="ShopNo")
 
 
-class AddressInfo(BaseModel):
-    """Информация об адресе."""
-
-    latitude: Decimal
-    longitude: Decimal
-    address: str
+class AddressInfoResponse(AddressInfo):
     res: int
 
 
-class CartInfo(BaseModel):
+class CartInfoResponse(BaseModel):
     """Информация о корзине."""
 
     cart_id: int
@@ -100,7 +73,7 @@ class VkusvillApi:
     user_settings: VkusvillUserSettings | None = None
     timeout: typing.ClassVar[float] = 3
 
-    async def create_new_user_token(self, device_id: str | None = None) -> TokenResponse:
+    async def create_new_user_token(self, device_id: str | None = None) -> TokenInfo:
         if device_id is None:
             device_id = str(uuid4())
 
@@ -127,7 +100,7 @@ class VkusvillApi:
         self._check_response_successful(response)
 
         try:
-            return TokenResponse.model_validate(response.json())
+            return TokenInfo.model_validate(response.json())
         except (ValidationError, KeyError) as exc:
             raise VkusvillApiError("Could not validate response") from exc
 
@@ -154,9 +127,6 @@ class VkusvillApi:
 
         response = await self.client.get(
             str(self.settings.shop_info.url), params=params, headers=headers, timeout=self.timeout
-        )
-        logger.debug(
-            "{} {} - {} ", response.request.method, response.request.url, response.status_code
         )
         self._check_response_successful(response)
 
@@ -188,16 +158,13 @@ class VkusvillApi:
             headers=headers,
             timeout=self.timeout,
         )
-        logger.debug(
-            "{} {} - {} ", response.request.method, response.request.url, response.status_code
-        )
         self._check_response_successful(response)
 
         try:
-            address_info = AddressInfo.model_validate(response.json())
-            logger.debug("Address info: {}", address_info)
-            if address_info.res < 0:
+            response_address_info = AddressInfoResponse.model_validate(response.json())
+            if response_address_info.res < 0:
                 return None
+            address_info = AddressInfo.model_validate(response_address_info, from_attributes=True)
         except (ValidationError, KeyError) as exc:
             raise VkusvillApiError("Could not validate response") from exc
         else:
@@ -205,7 +172,7 @@ class VkusvillApi:
 
     async def update_cart(
         self, latitude: decimal.Decimal, longitude: decimal.Decimal
-    ) -> CartInfo | None:
+    ) -> CartInfoResponse | None:
         if self.user_settings is None:
             raise VkusvillUnauthorizedError("User settings are not provided")
 
@@ -220,13 +187,10 @@ class VkusvillApi:
         response = await self.client.post(
             str(self.settings.update_cart.url), data=params, headers=headers, timeout=self.timeout
         )
-        logger.debug(
-            "{} {} - {} ", response.request.method, response.request.url, response.status_code
-        )
         self._check_response_successful(response)
 
         try:
-            cart_info = CartInfo.model_validate(response.json())
+            cart_info = CartInfoResponse.model_validate(response.json())
             if cart_info.res < 0:
                 raise VkusvillApiError(f"Could not update cart: {cart_info.message}")
         except (ValidationError, KeyError) as exc:
@@ -262,10 +226,10 @@ class VkusvillApi:
             self._check_response_successful(response)
 
             try:
-                aliased_items = TypeAdapter(list[GreenLabelItemAliased]).validate_python(
+                response_items = TypeAdapter(list[GreenLabelItemResponse]).validate_python(
                     response.json()
                 )
-                items = TypeAdapter(list[GreenLabelItem]).validate_python(aliased_items)
+                items = TypeAdapter(list[GreenLabelItem]).validate_python(response_items)
             except (ValidationError, KeyError) as exc:
                 raise VkusvillApiError("Could not validate response") from exc
             else:

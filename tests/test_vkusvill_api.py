@@ -46,7 +46,6 @@ async def test_get_address_info(
     assert address_info.latitude == lat
     assert address_info.longitude == lon
     assert address_info.address == "Москва, Люсиновская улица, 6"
-    assert address_info.res == 1
 
 
 async def test_get_address_info_not_found(

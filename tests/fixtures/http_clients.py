@@ -4,7 +4,8 @@ import httpx
 import pytest
 
 from vkusvill_green_labels.core.settings import VkusvillSettings
-from vkusvill_green_labels.services.vkusvill_api import VkusvillApi, VkusvillUserSettings
+from vkusvill_green_labels.models.vkusvill import VkusvillUserSettings
+from vkusvill_green_labels.services.vkusvill_api import VkusvillApi
 
 
 @pytest.fixture

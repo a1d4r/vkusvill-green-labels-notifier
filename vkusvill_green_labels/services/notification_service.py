@@ -7,8 +7,8 @@ from aiogram import Bot
 from aiogram.utils import formatting as fmt
 
 from vkusvill_green_labels.bot import bot
-from vkusvill_green_labels.models import User
-from vkusvill_green_labels.services.vkusvill_api import GreenLabelItem
+from vkusvill_green_labels.models.db import User
+from vkusvill_green_labels.models.vkusvill import GreenLabelItem
 
 
 @dataclass

@@ -3,11 +3,8 @@ from typing import ClassVar
 from dataclasses import dataclass
 from decimal import Decimal
 
-from vkusvill_green_labels.services.vkusvill_api import (
-    AddressInfo,
-    VkusvillApi,
-    VkusvillUserSettings,
-)
+from vkusvill_green_labels.models.vkusvill import AddressInfo, VkusvillUserSettings
+from vkusvill_green_labels.services.vkusvill_api import VkusvillApi
 
 
 @dataclass

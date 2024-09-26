@@ -20,7 +20,6 @@ alembic = "^1.13.2"
 redis = {extras = ["hiredis"], version = "^5.0.8"}
 aiogram = "^3.13.1"
 dishka = "^1.3.0"
-simplejson = "^3.19.3"
 
 [tool.poetry.group.dev.dependencies]  # https://python-poetry.org/docs/master/managing-dependencies/
 mypy = "^1.11.2"
@@ -126,6 +125,7 @@ ignore = [
   "TRY003", # long message for exceptions
   "EM101", # allow string literals for exceptions
   "EM102", # allow f-string literals for exceptions
+  "FBT001",  # Boolean-typed positional argument in function definition
 ]
 unfixable = [
   "F", # pyflakes

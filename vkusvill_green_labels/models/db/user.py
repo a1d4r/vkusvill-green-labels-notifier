@@ -5,11 +5,11 @@ from uuid import uuid4
 from sqlalchemy import UUID, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from vkusvill_green_labels.models.base import Base
+from vkusvill_green_labels.models.db.base import Base
 from vkusvill_green_labels.models.types import UserID, UserSettingsID
 
 if TYPE_CHECKING:
-    from vkusvill_green_labels.models import UserSettings
+    from vkusvill_green_labels.models.db import UserSettings
 
 
 class User(Base):
