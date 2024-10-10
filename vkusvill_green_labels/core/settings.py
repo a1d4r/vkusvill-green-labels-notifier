@@ -21,6 +21,7 @@ class EndpointSettings(BaseModel):
     query: dict[str, str] = Field(..., description="Query parameters for the request")
     url: HttpUrl = Field(..., description="URL of the endpoint")
     str_params: dict[str, str] = Field({}, description="Parameters to build str_par")
+    timeout: float = Field(5.0, description="Timeout, in seconds")
 
 
 class VkusvillSettings(BaseModel):
