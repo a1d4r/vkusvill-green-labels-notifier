@@ -17,9 +17,9 @@ class User(Base):
 
     id: Mapped[UserID] = mapped_column(UUID, default=uuid4, primary_key=True)
     tg_id: Mapped[int] = mapped_column(index=True, unique=True)
-    first_name: Mapped[str | None] = mapped_column()
-    last_name: Mapped[str | None] = mapped_column()
-    username: Mapped[str | None] = mapped_column()
+    first_name: Mapped[str | None]
+    last_name: Mapped[str | None]
+    username: Mapped[str | None]
 
     user_settings_id: Mapped[UserSettingsID] = mapped_column(ForeignKey("user_settings.id"))
     settings: Mapped["UserSettings"] = relationship(lazy="selectin")
