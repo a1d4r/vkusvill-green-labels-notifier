@@ -1,6 +1,8 @@
 import inspect
 import logging
 
+import sentry_sdk
+
 from loguru import logger
 
 from vkusvill_green_labels.core.settings import settings
@@ -17,7 +19,13 @@ class InterceptHandler(logging.Handler):
 
         # Find caller from where originated the logged message.
         frame, depth = inspect.currentframe(), 0
-        while frame and (depth == 0 or frame.f_code.co_filename == logging.__file__):
+        while frame and (
+            depth == 0
+            or (
+                frame.f_code.co_filename
+                in {logging.__file__, sentry_sdk.integrations.logging.__file__}  # type: ignore[attr-defined]
+            )
+        ):
             frame = frame.f_back
             depth += 1
 
@@ -39,6 +47,7 @@ def setup_logging() -> None:
         "aiogram.dispatcher",
         "aiogram.event",
         "apscheduler",
+        "urllib3",
     ]:
         # Set the log level to INFO even when debug is enabled.
         logging.getLogger(log).setLevel(logging.INFO)
