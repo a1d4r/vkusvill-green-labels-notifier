@@ -2,7 +2,7 @@ import sys
 
 from pathlib import Path
 
-from pydantic import BaseModel, Field, HttpUrl, PositiveInt, RedisDsn, SecretStr
+from pydantic import BaseModel, Field, HttpUrl, PositiveInt, RedisDsn, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -67,6 +67,23 @@ class RedisSettings(BaseSettings):
     dsn: RedisDsn
 
 
+class SentrySettings(BaseSettings):
+    model_config = SettingsConfigDict(extra="ignore")
+
+    dsn: str | None = None
+    traces_sample_rate: float = 1.0
+    profiles_sample_rate: float = 1.0
+    environment: str | None = None
+
+    @field_validator("environment")
+    @classmethod
+    def validate_environment(cls, v: str | None) -> str | None:
+        """Replace empty string with None."""
+        if v is not None and not v.strip():
+            return None
+        return v
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
@@ -74,6 +91,7 @@ class Settings(BaseSettings):
     telegram: TelegramSettings
     database: DatabaseSettings
     redis: RedisSettings
+    sentry: SentrySettings
     log_level: str = "INFO"
     update_interval: int = Field(..., description="Update interval in seconds")
 

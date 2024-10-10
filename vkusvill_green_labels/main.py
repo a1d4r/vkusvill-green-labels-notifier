@@ -8,12 +8,14 @@ from dishka.integrations.aiogram import setup_dishka
 from vkusvill_green_labels.bot import bot, dp
 from vkusvill_green_labels.core.settings import settings
 from vkusvill_green_labels.core.setup_logging import setup_logging
+from vkusvill_green_labels.core.setup_sentry import setup_sentry
 from vkusvill_green_labels.dependencies import container
 from vkusvill_green_labels.jobs import check_green_labels
 
 
 async def main() -> None:
     setup_logging()
+    setup_sentry()
     scheduler = AsyncIOScheduler()
     setup_dishka(container=container, router=dp, auto_inject=True)
     scheduler.add_job(
