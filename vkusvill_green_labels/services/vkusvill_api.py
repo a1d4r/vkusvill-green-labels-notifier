@@ -71,7 +71,6 @@ class VkusvillApi:
     client: httpx.AsyncClient
     settings: VkusvillSettings
     user_settings: VkusvillUserSettings | None = None
-    timeout: typing.ClassVar[float] = 3
 
     async def create_new_user_token(self, device_id: str | None = None) -> TokenInfo:
         if device_id is None:
@@ -92,7 +91,7 @@ class VkusvillApi:
             str(self.settings.create_token.url),
             params=params,
             headers=self.settings.create_token.headers,
-            timeout=self.timeout,
+            timeout=self.settings.create_token.timeout,
         )
         logger.debug(
             "{} {} - {} ", response.request.method, response.request.url, response.status_code
@@ -126,7 +125,10 @@ class VkusvillApi:
         params["number"] = self.user_settings.user_number
 
         response = await self.client.get(
-            str(self.settings.shop_info.url), params=params, headers=headers, timeout=self.timeout
+            str(self.settings.shop_info.url),
+            params=params,
+            headers=headers,
+            timeout=self.settings.shop_info.timeout,
         )
         self._check_response_successful(response)
 
@@ -156,7 +158,7 @@ class VkusvillApi:
             str(self.settings.address_info.url),
             params=params,
             headers=headers,
-            timeout=self.timeout,
+            timeout=self.settings.address_info.timeout,
         )
         self._check_response_successful(response)
 
@@ -185,7 +187,10 @@ class VkusvillApi:
         params["coordinates"] = f"{latitude},{longitude}"
 
         response = await self.client.post(
-            str(self.settings.update_cart.url), data=params, headers=headers, timeout=self.timeout
+            str(self.settings.update_cart.url),
+            data=params,
+            headers=headers,
+            timeout=self.settings.update_cart.timeout,
         )
         self._check_response_successful(response)
 
@@ -218,7 +223,7 @@ class VkusvillApi:
                 str(self.settings.green_labels.url),
                 params=params,
                 headers=headers,
-                timeout=self.timeout,
+                timeout=self.settings.green_labels.timeout,
             )
             logger.debug(
                 "{} {} - {} ", response.request.method, response.request.url, response.status_code

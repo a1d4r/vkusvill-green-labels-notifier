@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 import httpx
 
+from aiogram.exceptions import TelegramForbiddenError
 from loguru import logger
 from sqlalchemy.orm.attributes import flag_modified
 
@@ -33,6 +34,10 @@ class UpdaterService:
                 await self.notification_service.notify_about_new_green_labels(
                     user, new_green_labels
                 )
+            except TelegramForbiddenError:
+                logger.info("User {} has blocked the bot. Disabling notifications.", user.tg_id)
+                user.settings.enable_notifications = False
+                await self.user_repo.update_user(user)
             except Exception:  # noqa: BLE001
                 logger.exception("Failed to send notification to user {}", user.tg_id)
 
