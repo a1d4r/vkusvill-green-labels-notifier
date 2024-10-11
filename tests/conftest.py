@@ -5,7 +5,13 @@ import pytest
 
 from vkusvill_green_labels.core.settings import VkusvillSettings, settings
 
-pytest_plugins = ["tests.fixtures.containers", "tests.fixtures.db", "tests.fixtures.http_clients"]
+pytest_plugins = [
+    "tests.fixtures.containers",
+    "tests.fixtures.db",
+    "tests.fixtures.http_clients",
+    "tests.fixtures.repositories",
+    "tests.fixtures.services",
+]
 
 
 @pytest.fixture
