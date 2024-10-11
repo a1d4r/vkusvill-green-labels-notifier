@@ -73,19 +73,6 @@ class UserSettingsFactory(SQLAlchemyFactory[UserSettings]):
     __set_as_default_factory_for_type__ = True
 
     id = Ignore()
-
-    @classmethod
-    def address_latitude(cls) -> Latitude:
-        return Latitude(cls.__faker__.latitude())
-
-    @classmethod
-    def address_longitude(cls) -> Longitude:
-        return Longitude(cls.__faker__.longitude())
-
-    @classmethod
-    def address(cls) -> str:
-        return cls.__faker__.address()
-
     vkusvill_settings = Ignore()
 
 
