@@ -4,6 +4,7 @@ import pathlib
 import pytest
 
 from vkusvill_green_labels.core.settings import VkusvillSettings, settings
+from vkusvill_green_labels.core.setup_logging import setup_logging
 
 pytest_plugins = [
     "tests.fixtures.containers",
@@ -12,6 +13,8 @@ pytest_plugins = [
     "tests.fixtures.repositories",
     "tests.fixtures.services",
 ]
+
+setup_logging()
 
 
 @pytest.fixture

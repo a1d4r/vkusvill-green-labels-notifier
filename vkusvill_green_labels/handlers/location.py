@@ -27,15 +27,15 @@ async def request_location_handler(
     if not isinstance(callback.message, Message):
         return
     await state.clear()
-    address_info = await user_service.get_user_address(callback.from_user)
+    current_location = await user_service.get_user_location(callback.from_user)
     instruction = fmt.as_marked_list(
         "Нажмите на иконку скрепки 📎",
         "Переключитесь на вкладку «Геопозиция»",
         "Выберите месторасположение",
     )
-    if address_info:
+    if current_location:
         content = fmt.as_list(
-            fmt.Text("Текущий адрес доставки: ", fmt.Bold(address_info.address)),
+            fmt.Text("Текущий адрес доставки: ", fmt.Bold(current_location.address)),
             "",
             "Для смены адреса отправьте новую геопозицию:",
             instruction,
@@ -82,7 +82,7 @@ async def save_address_handler(
         return
     state_data = await state.get_data()
     address_info = AddressInfo.model_validate(state_data["address_info"])
-    await user_service.save_address_for_user(callback.from_user, address_info)
+    await user_service.save_location_for_user(callback.from_user, address_info)
     await callback.message.edit_text(
         text=f'Адрес "{address_info.address}" успешно сохранен!', reply_markup=back_to_menu_kb
     )

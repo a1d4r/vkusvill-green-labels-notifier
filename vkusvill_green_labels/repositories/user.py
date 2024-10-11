@@ -27,6 +27,8 @@ class UserRepository:
     async def get_users_for_notifications(self) -> list[User]:
         return list(
             await self.session.scalars(
-                select(User).join(UserSettings).where(UserSettings.enable_notifications.is_(True))
+                select(User)
+                .join(UserSettings)
+                .where(UserSettings.enable_notifications.is_(True), UserSettings.locations.any())
             )
         )

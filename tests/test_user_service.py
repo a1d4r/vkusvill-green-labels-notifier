@@ -34,14 +34,25 @@ async def user_with_location_in_db(test_session: AsyncSession, telegram_user: Te
     return user
 
 
-async def test_save_address_for_new_user(
+async def test_get_user_location(
+    user_service: UserService, telegram_user: TelegramUser, user_with_location_in_db: User
+):
+    # Act
+    location = await user_service.get_user_location(telegram_user)
+
+    # Assert
+    assert location is not None
+    assert location.to_dict() == user_with_location_in_db.settings.locations[0].to_dict()
+
+
+async def test_save_location_for_new_user(
     user_service: UserService,
     telegram_user: TelegramUser,
     address_info: AddressInfo,
     test_session: AsyncSession,
 ):
     # Act
-    await user_service.save_address_for_user(telegram_user, address_info)
+    await user_service.save_location_for_user(telegram_user, address_info)
 
     # Assert
     user = await test_session.scalar(select(User, User.tg_id == telegram_user.id))
@@ -54,7 +65,7 @@ async def test_save_address_for_new_user(
     assert user.settings.locations[0].longitude == address_info.longitude
 
 
-async def test_save_new_address_for_existing_user(
+async def test_save_new_location_for_existing_user(
     user_service: UserService,
     test_session: AsyncSession,
     telegram_user: TelegramUser,
@@ -62,7 +73,7 @@ async def test_save_new_address_for_existing_user(
     user_with_location_in_db: User,
 ):
     # Act
-    await user_service.save_address_for_user(telegram_user, address_info)
+    await user_service.save_location_for_user(telegram_user, address_info)
 
     # Assert
     await test_session.refresh(user_with_location_in_db)

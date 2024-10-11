@@ -43,12 +43,16 @@ class UpdaterService:
 
     async def fetch_new_green_labels_for_user(self, user: User) -> list[GreenLabelItem]:
         logger.info("Fetching new green labels for user {}", user.tg_id)
+        if not user.settings.locations:
+            logger.warning("No locations found for user {}", user.tg_id)
+            return []
+        location = user.settings.locations[0]
         if user.settings.vkusvill_settings is None:
             async with httpx.AsyncClient() as client:
                 vkusvill_api = VkusvillApi(client, settings.vkusvill)
                 await vkusvill_api.authorize()
                 await vkusvill_api.update_cart(
-                    user.settings.address_latitude, user.settings.address_longitude
+                    latitude=location.latitude, longitude=location.longitude
                 )
                 user.settings.vkusvill_settings = vkusvill_api.user_settings
                 flag_modified(user.settings, "vkusvill_settings")
