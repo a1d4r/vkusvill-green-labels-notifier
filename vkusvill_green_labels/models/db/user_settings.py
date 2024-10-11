@@ -14,9 +14,9 @@ class UserSettings(Base):
     __tablename__ = "user_settings"
 
     id: Mapped[UserSettingsID] = mapped_column(UUID, default=uuid4, primary_key=True)
-    address_latitude: Mapped[Latitude] = mapped_column(Numeric)
-    address_longitude: Mapped[Longitude] = mapped_column(Numeric)
-    address: Mapped[str]
+    address_latitude: Mapped[Latitude | None] = mapped_column(Numeric, nullable=True)
+    address_longitude: Mapped[Longitude | None] = mapped_column(Numeric, nullable=True)
+    address: Mapped[str | None]
     enable_notifications: Mapped[bool] = mapped_column(default=True)
     vkusvill_settings: Mapped[VkusvillUserSettings | None] = mapped_column(
         PydanticType(VkusvillUserSettings)
