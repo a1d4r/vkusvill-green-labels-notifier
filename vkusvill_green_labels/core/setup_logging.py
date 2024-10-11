@@ -2,6 +2,7 @@ import inspect
 import logging
 
 import sentry_sdk
+import sentry_sdk.integrations.logging
 
 from loguru import logger
 
@@ -23,7 +24,7 @@ class InterceptHandler(logging.Handler):
             depth == 0
             or (
                 frame.f_code.co_filename
-                in {logging.__file__, sentry_sdk.integrations.logging.__file__}  # type: ignore[attr-defined]
+                in {logging.__file__, sentry_sdk.integrations.logging.__file__}
             )
         ):
             frame = frame.f_back
@@ -48,6 +49,9 @@ def setup_logging() -> None:
         "aiogram.event",
         "apscheduler",
         "urllib3",
+        "testcontainers",
+        "asyncio",
+        "docker",
     ]:
         # Set the log level to INFO even when debug is enabled.
         logging.getLogger(log).setLevel(logging.INFO)
