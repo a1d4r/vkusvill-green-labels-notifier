@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 from alembic import op
 
-import vkusvill_green_labels.models.utils.pydantic_type
+import vkusvill_green_labels.models.db.utils.pydantic_type
 ${imports if imports else ""}
 
 # revision identifiers, used by Alembic.
