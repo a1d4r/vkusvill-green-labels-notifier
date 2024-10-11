@@ -36,6 +36,7 @@ testcontainers = {extras = ["postgres", "redis"], version = "^4.8.1"}
 pytest-asyncio = "^0.24.0"
 pytest-alembic = "^0.11.1"
 pytest-postgresql = "^6.1.1"
+polyfactory = "^2.17.0"
 
 [tool.mypy]  # https://mypy.readthedocs.io/en/latest/config_file.html#using-a-pyproject-toml-file
 junit_xml = "reports/mypy.xml"

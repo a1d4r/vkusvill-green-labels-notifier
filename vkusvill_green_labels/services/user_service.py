@@ -4,7 +4,7 @@ from aiogram.types import User as TelegramUser
 from loguru import logger
 from sqlalchemy.orm.attributes import flag_modified
 
-from vkusvill_green_labels.models.db import User, UserSettings
+from vkusvill_green_labels.models.db import Location, User, UserSettings
 from vkusvill_green_labels.models.vkusvill import AddressInfo
 from vkusvill_green_labels.repositories.user import UserRepository
 
@@ -50,6 +50,12 @@ class UserService:
                 address_longitude=address_info.longitude,
                 address=address_info.address,
             )
+            location = Location(
+                latitude=address_info.latitude,
+                longitude=address_info.longitude,
+                address=address_info.address,
+            )
+            user_settings.locations.append(location)
             user = User(
                 tg_id=telegram_user.id,
                 first_name=telegram_user.first_name,
@@ -65,6 +71,12 @@ class UserService:
             user.settings.address_longitude = address_info.longitude
             user.settings.vkusvill_settings = None
             flag_modified(user.settings, "vkusvill_settings")
+            if user.settings.locations:
+                location = user.settings.locations[0]
+                location.latitude = address_info.latitude
+                location.longitude = address_info.longitude
+                location.address = address_info.address
+                flag_modified(user.settings, "locations")
             await self.user_repository.update_user(user)
             logger.info("Updated address for user {}", telegram_user.id)
         logger.info("Saved address for user {}", telegram_user.id)
