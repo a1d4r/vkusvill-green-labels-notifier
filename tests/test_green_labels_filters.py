@@ -1,9 +1,6 @@
 import pytest
 
-from vkusvill_green_labels.models.filter_operators import (
-    TitleBlackListOperator,
-    TitleWhiteListOperator,
-)
+from vkusvill_green_labels.models.filters import TitleBlackListFilter, TitleWhiteListFilter
 from vkusvill_green_labels.models.vkusvill import GreenLabelItem
 from vkusvill_green_labels.services.vkusvill_api import GreenLabelItemResponse
 
@@ -18,7 +15,7 @@ def green_labels_items(load_json) -> list[GreenLabelItem]:
 
 def test_title_whitelist_filter(green_labels_items: list[GreenLabelItem]):
     # Arrange
-    filter_operator = TitleWhiteListOperator(whitelist=["лук", "капуста"])
+    filter_operator = TitleWhiteListFilter(whitelist=["лук", "капуста"])
 
     # Act
     filtered_items_titles = [
@@ -33,7 +30,7 @@ def test_title_whitelist_filter(green_labels_items: list[GreenLabelItem]):
 
 def test_title_blacklist_filter(green_labels_items: list[GreenLabelItem]):
     # Arrange
-    filter_operator = TitleBlackListOperator(blacklist=["хлеб", "блин", "х/б"])
+    filter_operator = TitleBlackListFilter(blacklist=["хлеб", "блин", "х/б"])
 
     # Act
     filtered_items_titles = [

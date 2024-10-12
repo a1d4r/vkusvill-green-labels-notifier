@@ -1,12 +1,12 @@
 """Add filters
 
-Revision ID: 8e458a31aae9
+Revision ID: 272acf3925ed
 Revises: f30b71eff838
-Create Date: 2024-10-12 14:07:16.453516
+Create Date: 2024-10-12 16:15:32.549606
 
 """
 
-from collections.abc import Sequence
+from collections.abc import Sequence  # noqa: I001
 
 import advanced_alchemy.types
 import sqlalchemy as sa
@@ -14,11 +14,10 @@ import sqlalchemy as sa
 from alembic import op
 
 import vkusvill_green_labels.models.db.utils.pydantic_type
-
-from vkusvill_green_labels.models.filter_operators import GreenLabelsFilterOperator
+from vkusvill_green_labels.models.filters import GreenLabelsFilter
 
 # revision identifiers, used by Alembic.
-revision: str = "8e458a31aae9"
+revision: str = "272acf3925ed"
 down_revision: str | None = "f30b71eff838"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -30,9 +29,7 @@ def upgrade() -> None:
         sa.Column("id", sa.UUID(), nullable=False),
         sa.Column(
             "definition",
-            vkusvill_green_labels.models.db.utils.pydantic_type.PydanticType(
-                GreenLabelsFilterOperator
-            ),
+            vkusvill_green_labels.models.db.utils.pydantic_type.PydanticType(GreenLabelsFilter),
             nullable=False,
         ),
         sa.Column("name", sa.String(), nullable=True),
@@ -49,7 +46,7 @@ def upgrade() -> None:
     op.create_table(
         "user_settings_filters",
         sa.Column("user_settings_id", sa.UUID(), nullable=False),
-        sa.Column("green_label_filter_id", sa.UUID(), nullable=False),
+        sa.Column("filter_id", sa.UUID(), nullable=False),
         sa.Column("id", advanced_alchemy.types.guid.GUID(length=16), nullable=False),
         sa.Column("sa_orm_sentinel", sa.Integer(), nullable=True),
         sa.Column(
@@ -59,9 +56,9 @@ def upgrade() -> None:
             "updated_at", advanced_alchemy.types.datetime.DateTimeUTC(timezone=True), nullable=False
         ),
         sa.ForeignKeyConstraint(
-            ["green_label_filter_id"],
+            ["filter_id"],
             ["filters.id"],
-            name=op.f("fk_user_settings_filters_green_label_filter_id_filters"),
+            name=op.f("fk_user_settings_filters_filter_id_filters"),
             ondelete="CASCADE",
         ),
         sa.ForeignKeyConstraint(
@@ -71,7 +68,7 @@ def upgrade() -> None:
             ondelete="CASCADE",
         ),
         sa.PrimaryKeyConstraint(
-            "user_settings_id", "green_label_filter_id", "id", name=op.f("pk_user_settings_filters")
+            "user_settings_id", "filter_id", "id", name=op.f("pk_user_settings_filters")
         ),
     )
 

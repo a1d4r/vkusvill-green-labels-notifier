@@ -13,6 +13,6 @@ def toggle_notification_kb_builder(is_enabled: bool) -> InlineKeyboardMarkup:
         text="❌Отключить" if is_enabled else "✅Включить",
         callback_data=ToggleNotificationCD(enabled=not is_enabled),
     )
-    builder.button(text="↩️Назад в меню", callback_data="back_to_menu")
+    builder.button(text="↩️Назад в меню", callback_data="menu")
     builder.adjust(1)
     return builder.as_markup()

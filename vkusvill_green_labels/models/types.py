@@ -5,6 +5,6 @@ from uuid import UUID
 
 UserID = NewType("UserID", UUID)
 UserSettingsID = NewType("UserSettingsID", UUID)
-GreenLabelFilterID = NewType("GreenLabelFilterID", UUID)
+FilterID = NewType("FilterID", UUID)
 Latitude = NewType("Latitude", Decimal)
 Longitude = NewType("Longitude", Decimal)

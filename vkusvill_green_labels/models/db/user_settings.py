@@ -24,4 +24,4 @@ class UserSettings(Base):
     locations: Mapped[list[Location]] = relationship(
         secondary="user_settings_locations", lazy="selectin"
     )
-    filters: Mapped[list[Filter]] = relationship(secondary="filters", lazy="selectin")
+    filters: Mapped[list[Filter]] = relationship(secondary="user_settings_filters", lazy="selectin")
