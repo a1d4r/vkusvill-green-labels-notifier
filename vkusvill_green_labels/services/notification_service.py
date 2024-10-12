@@ -30,7 +30,7 @@ class NotificationService:
                             fmt.Italic(str(item.discount_price)),
                         )
                     ),
-                    fmt.as_line(fmt.Text("Доступно: ", str(int(item.amount)))),
+                    fmt.as_line(fmt.Text("Доступно: ", str(item.amount))),
                     "",
                 )
                 text_items.extend(lines)
