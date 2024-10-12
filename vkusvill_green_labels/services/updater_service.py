@@ -65,7 +65,15 @@ class UpdaterService:
         new_green_labels = self._get_items_difference(current_green_labels, previous_green_labels)
         await self.green_labels_repo.set_items(user.id, current_green_labels)
         logger.info("Fetched {} new green labels for user {}", len(new_green_labels), user.tg_id)
-        return new_green_labels
+        filtered_green_labels = [
+            green_label
+            for green_label in new_green_labels
+            if all(filter_.definition.satisfies(green_label) for filter_ in user.settings.filters)
+        ]
+        logger.info(
+            "Filtered {} new green labels for user {}", len(filtered_green_labels), user.tg_id
+        )
+        return filtered_green_labels
 
     @staticmethod
     def _get_items_difference(

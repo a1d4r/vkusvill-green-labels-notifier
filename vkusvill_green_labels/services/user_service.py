@@ -1,10 +1,18 @@
+from typing import assert_never
+
 from dataclasses import dataclass
 
 from aiogram.types import User as TelegramUser
 from loguru import logger
 from sqlalchemy.orm.attributes import flag_modified
 
-from vkusvill_green_labels.models.db import Location, User, UserSettings
+from vkusvill_green_labels.models.db import Filter, Location, User, UserSettings
+from vkusvill_green_labels.models.filters import (
+    FilterType,
+    GreenLabelsFilter,
+    TitleBlackListFilter,
+    TitleWhiteListFilter,
+)
 from vkusvill_green_labels.models.vkusvill import AddressInfo
 from vkusvill_green_labels.repositories.user import UserRepository
 
@@ -21,7 +29,7 @@ class UserService:
                 first_name=telegram_user.first_name,
                 last_name=telegram_user.last_name,
                 username=telegram_user.username,
-                settings=UserSettings(locations=[]),
+                settings=UserSettings(locations=[], filters=[]),
             )
             await self.user_repository.add_user(user)
             logger.info("Created new user: {}", user.tg_id)
@@ -61,3 +69,26 @@ class UserService:
         flag_modified(user.settings, "vkusvill_settings")
         await self.user_repository.update_user(user)
         logger.info("Saved location for user {}: {}", telegram_user.id, user.settings.locations[0])
+
+    async def get_user_filters(self, telegram_user: TelegramUser) -> list[Filter]:
+        user = await self.get_or_create_user(telegram_user)
+        return user.settings.filters
+
+    async def create_filter_for_user(
+        self,
+        telegram_user: TelegramUser,
+        filter_type: FilterType,
+        word_list: list[str],
+        filter_name: str,
+    ) -> None:
+        user = await self.get_or_create_user(telegram_user)
+        green_labels_filter: GreenLabelsFilter
+        match filter_type:
+            case FilterType.title_whitelist:
+                green_labels_filter = TitleWhiteListFilter(whitelist=word_list)
+            case FilterType.title_blacklist:
+                green_labels_filter = TitleBlackListFilter(blacklist=word_list)
+            case _:
+                assert_never(filter_type)
+        user.settings.filters.append(Filter(definition=green_labels_filter, name=filter_name))
+        await self.user_repository.update_user(user)

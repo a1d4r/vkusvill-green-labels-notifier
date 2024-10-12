@@ -11,11 +11,6 @@ from vkusvill_green_labels.repositories.user import UserRepository
 
 
 @pytest.fixture
-async def user_repo(session: AsyncSession) -> UserRepository:
-    return UserRepository(session)
-
-
-@pytest.fixture
 async def user(session: AsyncSession) -> User:
     user = User(tg_id=1)
     session.add(user)
@@ -71,7 +66,9 @@ async def user_without_locations(session: AsyncSession) -> User:
     return user
 
 
-async def test_create_users_with_settings(test_session: AsyncSession, user_repo: UserRepository):
+async def test_create_users_with_settings(
+    test_session: AsyncSession, user_repository: UserRepository
+):
     # Arrange
     tg_id = 1
     user = User(
@@ -85,7 +82,7 @@ async def test_create_users_with_settings(test_session: AsyncSession, user_repo:
     )
 
     # Act
-    await user_repo.add_user(user)
+    await user_repository.add_user(user)
 
     # Assert
     user_in_db = await test_session.scalar(select(User, User.tg_id == tg_id))
@@ -95,7 +92,7 @@ async def test_create_users_with_settings(test_session: AsyncSession, user_repo:
 
 
 async def test_update_user_settings(
-    test_session: AsyncSession, user_with_settings: User, user_repo: UserRepository
+    test_session: AsyncSession, user_with_settings: User, user_repository: UserRepository
 ):
     # Arrange
     new_token = "new_token"
@@ -104,7 +101,7 @@ async def test_update_user_settings(
     # Act
     # We have to manually flag the user settings as modified to trigger the flush
     flag_modified(user_with_settings.settings, "vkusvill_settings")
-    await user_repo.update_user(user_with_settings)
+    await user_repository.update_user(user_with_settings)
 
     # Assert
     updated_user = await test_session.scalar(select(User, User.tg_id == user_with_settings.tg_id))
@@ -113,10 +110,10 @@ async def test_update_user_settings(
 
 
 async def test_get_users_for_notifications(
-    user_with_settings: User, user_repo: UserRepository
+    user_with_settings: User, user_repository: UserRepository
 ) -> None:
     # Act
-    users = await user_repo.get_users_for_notifications()
+    users = await user_repository.get_users_for_notifications()
 
     # Assert
     assert len(users) == 1
@@ -125,9 +122,9 @@ async def test_get_users_for_notifications(
 
 @pytest.mark.usefixtures("user_with_disabled_notifications")
 @pytest.mark.usefixtures("user_without_locations")
-async def test_get_users_for_notifications_no_candidates(user_repo: UserRepository) -> None:
+async def test_get_users_for_notifications_no_candidates(user_repository: UserRepository) -> None:
     # Act
-    users = await user_repo.get_users_for_notifications()
+    users = await user_repository.get_users_for_notifications()
 
     # Assert
     assert users == []

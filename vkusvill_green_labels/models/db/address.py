@@ -6,6 +6,8 @@ from vkusvill_green_labels.models.types import Latitude, Longitude, UserSettings
 
 
 class Location(Base):
+    """Адрес доставки."""
+
     __tablename__ = "locations"
 
     latitude: Mapped[Latitude] = mapped_column(Numeric)

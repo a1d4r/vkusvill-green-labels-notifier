@@ -7,7 +7,7 @@ from aiogram.utils import formatting as fmt
 from dishka import FromDishka
 
 from vkusvill_green_labels.keyboards.location import confirm_location_kb
-from vkusvill_green_labels.keyboards.menu import back_to_menu_kb, main_menu_kb
+from vkusvill_green_labels.keyboards.menu import back_to_menu_kb
 from vkusvill_green_labels.models.vkusvill import AddressInfo
 from vkusvill_green_labels.services.user_service import UserService
 from vkusvill_green_labels.services.vkusvill_service import VkusvillService
@@ -98,12 +98,3 @@ async def change_address_handler(callback: CallbackQuery, state: FSMContext) -> 
     await callback.answer()
     await state.clear()
     await state.set_state(SelectAddress.verify_address)
-
-
-@router.callback_query(F.data == "back_to_menu")
-async def back_to_menu_handler(callback: CallbackQuery, state: FSMContext) -> None:
-    await state.clear()
-    if not isinstance(callback.message, Message):
-        return
-    await callback.message.edit_text(text="Выберите пункт в меню.", reply_markup=main_menu_kb)
-    await callback.answer()
