@@ -11,8 +11,10 @@ from vkusvill_green_labels.bot import bot
 from vkusvill_green_labels.core.database import async_session_factory
 from vkusvill_green_labels.core.redis import redis
 from vkusvill_green_labels.core.settings import settings
+from vkusvill_green_labels.repositories.filter import FilterRepository
 from vkusvill_green_labels.repositories.green_labels import GreenLabelsRepository
 from vkusvill_green_labels.repositories.user import UserRepository
+from vkusvill_green_labels.services.filter_service import FilterService
 from vkusvill_green_labels.services.notification_service import NotificationService
 from vkusvill_green_labels.services.updater_service import UpdaterService
 from vkusvill_green_labels.services.user_service import UserService
@@ -56,11 +58,13 @@ provider.provide(provide_vkusvill_api, scope=Scope.REQUEST)
 provider.provide(provide_vkusvill_service, scope=Scope.REQUEST)
 provider.provide(provide_session, scope=Scope.REQUEST)
 provider.provide(provide_redis, scope=Scope.APP)
-
-provider.provide(UserRepository, scope=Scope.REQUEST)
-provider.provide(GreenLabelsRepository, scope=Scope.REQUEST)
-provider.provide(UserService, scope=Scope.REQUEST)
 provider.provide(provide_bot, scope=Scope.REQUEST)
+
+provider.provide(GreenLabelsRepository, scope=Scope.REQUEST)
+provider.provide(UserRepository, scope=Scope.REQUEST)
+provider.provide(UserService, scope=Scope.REQUEST)
+provider.provide(FilterRepository, scope=Scope.REQUEST)
+provider.provide(FilterService, scope=Scope.REQUEST)
 provider.provide(NotificationService, scope=Scope.REQUEST)
 provider.provide(UpdaterService, scope=Scope.REQUEST)
 

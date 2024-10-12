@@ -12,6 +12,7 @@ pytest_plugins = [
     "tests.fixtures.http_clients",
     "tests.fixtures.repositories",
     "tests.fixtures.services",
+    "tests.fixtures.entities",
 ]
 
 setup_logging()

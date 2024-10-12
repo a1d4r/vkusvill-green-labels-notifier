@@ -4,20 +4,10 @@ from aiogram.types import User as TelegramUser
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from tests.factories import AddressInfoFactory, LocationFactory, TelegramUserFactory, UserFactory
+from tests.factories import LocationFactory, UserFactory
 from vkusvill_green_labels.models.db import User
 from vkusvill_green_labels.models.vkusvill import AddressInfo
 from vkusvill_green_labels.services.user_service import UserService
-
-
-@pytest.fixture
-def telegram_user() -> TelegramUser:
-    return TelegramUserFactory.build()
-
-
-@pytest.fixture
-def address_info() -> AddressInfo:
-    return AddressInfoFactory.build()
 
 
 @pytest.fixture

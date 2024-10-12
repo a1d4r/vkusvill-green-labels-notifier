@@ -9,14 +9,21 @@ from aiogram.utils import formatting as fmt
 from dishka import FromDishka
 
 from vkusvill_green_labels.keyboards.filters import (
+    DeleteFilterCD,
     SelectFilterCD,
     SelectFilterTypeCD,
     back_to_filters_kb,
-    confirm_filter_creation,
+    confirm_filter_creation_kb,
     filters_kb_builder,
     select_filter_type_kb_builder,
+    view_filter_kb_builder,
 )
-from vkusvill_green_labels.models.filters import FilterType
+from vkusvill_green_labels.models.filters import (
+    FilterType,
+    TitleBlackListFilter,
+    TitleWhiteListFilter,
+)
+from vkusvill_green_labels.services.filter_service import FilterService
 from vkusvill_green_labels.services.user_service import UserService
 
 router = Router(name="filters_router")
@@ -32,21 +39,21 @@ class CreateFilter(StatesGroup):
 def get_filter_type_text(filter_type: FilterType) -> str:
     match filter_type:
         case FilterType.title_whitelist:
-            return "белый список"
+            return "⚪ белый список"
         case FilterType.title_blacklist:
-            return "чёрный список"
+            return "⚫ чёрный список"
         case _:
             assert_never(filter_type)
 
 
 @router.callback_query(F.data == "filters")
 async def filters_handler(
-    callback: CallbackQuery, state: FSMContext, user_service: FromDishka[UserService]
+    callback: CallbackQuery, state: FSMContext, user_service: FromDishka[FilterService]
 ) -> None:
     if not isinstance(callback.message, Message):
         return
     await state.clear()
-    filters = await user_service.get_user_filters(callback.from_user)
+    filters = await user_service.get_filters_by_telegram_user(callback.from_user)
     text = "У вас нет созданных фильтров." if not filters else "Ваши активные фильтры:"
     await callback.message.edit_text(text=text, reply_markup=filters_kb_builder(filters))
     await callback.answer()
@@ -113,7 +120,7 @@ async def confirm_handler(message: Message, state: FSMContext) -> None:
         fmt.as_key_value("Список слов", state_data["word_list"]),
         fmt.as_key_value("Название", state_data["filter_name"]),
     )
-    await message.answer(**text.as_kwargs(), reply_markup=confirm_filter_creation)
+    await message.answer(**text.as_kwargs(), reply_markup=confirm_filter_creation_kb)
 
 
 @router.callback_query(StateFilter(CreateFilter.confirm), F.data == "save_filter")
@@ -135,7 +142,52 @@ async def save_filter_handler(
 
 
 @router.callback_query(SelectFilterCD.filter())
-async def show_filter_info(callback: CallbackQuery) -> None:
+async def show_filter_info_handler(
+    callback: CallbackQuery,
+    callback_data: SelectFilterCD,
+    filter_service: FromDishka[FilterService],
+) -> None:
     if not isinstance(callback.message, Message):
         return
+    filter_ = await filter_service.get_filter_by_telegram_user_and_id(
+        callback.from_user, callback_data.filter_id
+    )
+    if not filter_:
+        await callback.message.edit_text("Фильтр не найден.")
+    else:
+        match filter_.definition:
+            case TitleWhiteListFilter():
+                filter_details = [
+                    fmt.as_key_value("Список слов", ", ".join(filter_.definition.whitelist))
+                ]
+            case TitleBlackListFilter():
+                filter_details = [
+                    fmt.as_key_value("Список слов", ", ".join(filter_.definition.blacklist))
+                ]
+            case _:
+                assert_never(filter_.definition.filter_type)
+        text = fmt.as_list(
+            "Информация о фильтре:\n",
+            fmt.as_key_value("Название", filter_.name or "Без названия"),
+            fmt.as_key_value("Тип", get_filter_type_text(filter_.definition.filter_type)),
+            *filter_details,
+        )
+        await callback.message.edit_text(
+            **text.as_kwargs(), reply_markup=view_filter_kb_builder(filter_)
+        )
+    await callback.answer()
+
+
+@router.callback_query(DeleteFilterCD.filter())
+async def delete_filter_handler(
+    callback: CallbackQuery,
+    callback_data: DeleteFilterCD,
+    filter_service: FromDishka[FilterService],
+) -> None:
+    if not isinstance(callback.message, Message):
+        return
+    await filter_service.delete_filter_by_telegram_user_and_id(
+        callback.from_user, callback_data.filter_id
+    )
+    await callback.message.edit_text("Фильтр успешно удален.", reply_markup=back_to_filters_kb)
     await callback.answer()

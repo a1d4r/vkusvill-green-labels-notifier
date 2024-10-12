@@ -15,20 +15,22 @@ class SelectFilterCD(CallbackData, prefix="select_filter"):
     filter_id: FilterID
 
 
+class DeleteFilterCD(CallbackData, prefix="delete_filter"):
+    filter_id: FilterID
+
+
 back_to_filters_kb = InlineKeyboardMarkup(
-    inline_keyboard=[[InlineKeyboardButton(text="↩️ Назад к фильтрам", callback_data="filters")]],
-    resize_keyboard=True,
+    inline_keyboard=[[InlineKeyboardButton(text="↩️ Назад к фильтрам", callback_data="filters")]]
 )
 
 enter_filter_name_kb = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="⏩ Пропустить", callback_data="skip_filter_name")],
         [InlineKeyboardButton(text="↩️ Назад к фильтрам", callback_data="filters")],
-    ],
-    resize_keyboard=True,
+    ]
 )
 
-confirm_filter_creation = InlineKeyboardMarkup(
+confirm_filter_creation_kb = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(text="✅ Сохранить", callback_data="save_filter"),
@@ -36,6 +38,14 @@ confirm_filter_creation = InlineKeyboardMarkup(
         ]
     ]
 )
+
+
+def view_filter_kb_builder(filter_: Filter) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(text="❌ Удалить", callback_data=DeleteFilterCD(filter_id=filter_.id))
+    builder.button(text="↩️ Назад к фильтрам", callback_data="filters")
+    builder.adjust(1, repeat=True)
+    return builder.as_markup()
 
 
 def filters_kb_builder(filters: list[Filter]) -> InlineKeyboardMarkup:
