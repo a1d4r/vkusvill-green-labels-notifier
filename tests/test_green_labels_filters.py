@@ -1,7 +1,6 @@
 import pytest
 
 from vkusvill_green_labels.models.filter_operators import (
-    AndOperator,
     TitleBlackListOperator,
     TitleWhiteListOperator,
 )
@@ -50,23 +49,3 @@ def test_title_blacklist_filter(green_labels_items: list[GreenLabelItem]):
         "Камбала стейк вяленый, 100 г",
         "Ряпушка вяленая, 200 г",
     ]
-
-
-def test_and_operator(green_labels_items: list[GreenLabelItem]):
-    # Arrange
-    filter_operator = AndOperator(
-        operands=[
-            TitleWhiteListOperator(whitelist=["лук", "капуста"]),
-            TitleBlackListOperator(blacklist=["репчатый"]),
-        ]
-    )
-
-    # Act
-    filtered_items_titles = [
-        green_label_item.title
-        for green_label_item in green_labels_items
-        if filter_operator.satisfies(green_label_item)
-    ]
-
-    # Assert
-    assert filtered_items_titles == ["Капуста белокочанная"]

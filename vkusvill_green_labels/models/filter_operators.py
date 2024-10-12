@@ -4,7 +4,7 @@ from abc import abstractmethod
 
 import pydantic
 
-from pydantic import BaseModel, Field, TypeAdapter, field_validator
+from pydantic import BaseModel, TypeAdapter, field_validator
 
 from vkusvill_green_labels.models.vkusvill import GreenLabelItem
 
@@ -16,18 +16,9 @@ class FilterOperatorBase(BaseModel):
     def satisfies(self, green_label_item: GreenLabelItem) -> bool: ...
 
 
-class AndOperator(FilterOperatorBase):
-    operator: Literal["and"] = "and"
-    operands: list[FilterOperatorBase] = Field(..., min_length=1)
-
-    @override
-    def satisfies(self, green_label_item: GreenLabelItem) -> bool:
-        return all(operand.satisfies(green_label_item) for operand in self.operands)
-
-
 class TitleWhiteListOperator(FilterOperatorBase):
     """
-    At least one word from `whitelist` must be in `green_label_item.title`.
+    Как минимум одно слово из белого списка должно быть в наименовании товара с зелённым ценником.
     """
 
     operator: Literal["name_whitelist"] = "name_whitelist"
@@ -36,7 +27,7 @@ class TitleWhiteListOperator(FilterOperatorBase):
     @field_validator("whitelist")
     @classmethod
     def make_whitelist_lowercase(cls, v: list[str]) -> list[str]:
-        """Convert all words to lowercase."""
+        """Привести все слова в нижний регистр."""
         return [word.lower() for word in v]
 
     @override
@@ -47,7 +38,7 @@ class TitleWhiteListOperator(FilterOperatorBase):
 
 class TitleBlackListOperator(FilterOperatorBase):
     """
-    None of the words from `blacklist` must be in `green_label_item.title`.
+    Ни одно из слов из черного списка не должно быть в наименовании товара с зелённым ценником.
     """
 
     operator: Literal["name_blacklist"] = "name_blacklist"
@@ -56,7 +47,7 @@ class TitleBlackListOperator(FilterOperatorBase):
     @field_validator("blacklist")
     @classmethod
     def make_blacklist_lowercase(cls, v: list[str]) -> list[str]:
-        """Convert all words to lowercase."""
+        """Привести все слова в нижний регистр."""
         return [word.lower() for word in v]
 
     @override
@@ -66,8 +57,7 @@ class TitleBlackListOperator(FilterOperatorBase):
 
 
 GreenLabelsFilterOperator = Annotated[
-    AndOperator | TitleWhiteListOperator | TitleBlackListOperator,
-    pydantic.Field(discriminator="operator"),
+    TitleWhiteListOperator | TitleBlackListOperator, pydantic.Field(discriminator="operator")
 ]
 green_labels_filter_adapter: TypeAdapter[GreenLabelsFilterOperator] = TypeAdapter(
     GreenLabelsFilterOperator

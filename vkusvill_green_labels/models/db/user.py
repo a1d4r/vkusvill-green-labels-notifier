@@ -13,6 +13,8 @@ if TYPE_CHECKING:
 
 
 class User(Base):
+    """Основная информация о пользователе."""
+
     __tablename__ = "users"
 
     id: Mapped[UserID] = mapped_column(UUID, default=uuid4, primary_key=True)
