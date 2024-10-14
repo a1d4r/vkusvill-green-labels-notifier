@@ -34,6 +34,25 @@ class VkusvillSettings(BaseModel):
 
 class TelegramSettings(BaseModel):
     bot_token: SecretStr = Field(..., description="Token from @BotFather")
+    base_webhook_url: str | None = Field(
+        None, description="Base URL for webhook (public DNS with HTTPS support)"
+    )
+    webhook_path: str | None = Field(
+        "/webhook", description="Path to webhook route, on which Telegram will send requests"
+    )
+    webhook_secret: SecretStr | None = Field(
+        None, description="Secret key to validate requests from Telegram"
+    )
+
+    @property
+    def webhook_settings_provided(self) -> bool:
+        return all((self.base_webhook_url, self.webhook_path, self.webhook_secret))
+
+    @property
+    def webhook_full_path(self) -> str | None:
+        if not self.base_webhook_url or not self.webhook_path:
+            return None
+        return f"{self.base_webhook_url}{self.webhook_path}"
 
 
 class DatabaseSettings(BaseSettings):
@@ -85,6 +104,11 @@ class SentrySettings(BaseSettings):
         return v
 
 
+class WebServerSettings(BaseSettings):
+    host: str = "127.0.0.1"
+    port: int = 8080
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
@@ -93,6 +117,7 @@ class Settings(BaseSettings):
     database: DatabaseSettings
     redis: RedisSettings
     sentry: SentrySettings
+    web_server: WebServerSettings
     log_level: str = "INFO"
     update_interval: int = Field(..., description="Update interval in seconds")
 
