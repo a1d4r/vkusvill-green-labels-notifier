@@ -95,3 +95,4 @@ COPY ./migrations /app/migrations
 COPY ./alembic.ini /app/alembic.ini
 WORKDIR /app
 CMD ["python", "-m", "vkusvill_green_labels.main"]
+EXPOSE 8080
