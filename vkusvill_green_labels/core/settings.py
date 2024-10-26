@@ -105,6 +105,8 @@ class SentrySettings(BaseSettings):
 
 
 class WebServerSettings(BaseSettings):
+    model_config = SettingsConfigDict(extra="ignore")
+
     host: str = "127.0.0.1"
     port: int = 8080
 
@@ -117,7 +119,7 @@ class Settings(BaseSettings):
     database: DatabaseSettings
     redis: RedisSettings
     sentry: SentrySettings
-    web_server: WebServerSettings
+    web_server: WebServerSettings = WebServerSettings()
     log_level: str = "INFO"
     update_interval: int = Field(..., description="Update interval in seconds")
 
