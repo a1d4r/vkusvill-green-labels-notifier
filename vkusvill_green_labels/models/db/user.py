@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from uuid import uuid4
 
-from sqlalchemy import UUID, ForeignKey
+from sqlalchemy import UUID, BigInteger, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from vkusvill_green_labels.models.db.base import Base
@@ -18,7 +18,7 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[UserID] = mapped_column(UUID, default=uuid4, primary_key=True)
-    tg_id: Mapped[int] = mapped_column(index=True, unique=True)
+    tg_id: Mapped[int] = mapped_column(BigInteger, index=True, unique=True)
     first_name: Mapped[str | None]
     last_name: Mapped[str | None]
     username: Mapped[str | None]

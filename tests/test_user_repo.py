@@ -70,7 +70,7 @@ async def test_create_users_with_settings(
     test_session: AsyncSession, user_repository: UserRepository
 ):
     # Arrange
-    tg_id = 1
+    tg_id = 8240784014
     user = User(
         tg_id=tg_id,
         settings=UserSettings(
