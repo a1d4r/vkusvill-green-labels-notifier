@@ -26,6 +26,8 @@ async def test_set_get_items(green_labels_repo: GreenLabelsRepository) -> None:
         rating="4.9",
         price=Decimal("100"),
         discount_price=Decimal("40"),
+        weight_type="Catalog.Item.Packing.Piece",
+        weight_unit="шт",
     )
 
     # Act
