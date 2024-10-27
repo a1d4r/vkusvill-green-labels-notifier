@@ -20,21 +20,42 @@ class NotificationService:
             text_items: list[fmt.Text] = []
 
             for item in items_batch:
-                lines = fmt.as_line(
-                    fmt.as_line(fmt.Text(fmt.Bold(item.title), " ", str(item.rating), "★")),
-                    fmt.as_line(
-                        fmt.Text(
-                            "Цена: ",
-                            fmt.Strikethrough(str(item.price)),
-                            " ",
-                            fmt.Italic(str(item.discount_price)),
-                        )
-                    ),
-                    fmt.as_line(fmt.Text("Доступно: ", str(item.amount))),
-                    "",
-                )
-                text_items.extend(lines)
+                text_items.extend(self._format_item_text(item))
 
             text = fmt.as_line(*text_items)
 
             await self.bot.send_message(user.tg_id, text.as_html())
+
+    @staticmethod
+    def _format_item_text(item: GreenLabelItem) -> fmt.Text:
+        item_line_elements: list[fmt.Text | list[fmt.Text]] = []
+
+        # Собираем заголовок (Наименование товара и оценка)
+        title_line_items: list[fmt.Text | str] = [fmt.Bold(item.title_display_string)]
+        if len(item.rating) < 4:
+            # Не выводить "Я новенький" и "Ждёт оценку", добавлять только оценки вида 4.5
+            title_line_items.extend([" ", str(item.rating), "★"])
+        title_line = fmt.as_line(*title_line_items)
+        item_line_elements.append(title_line)
+
+        # Добавляем информацию о весе
+        if item.weight_str:
+            weight_line = fmt.as_line("Вес: ", fmt.Italic(item.weight_str))
+            item_line_elements.append(weight_line)
+
+        # Собираем информацию о цене
+        price_line = fmt.as_line(
+            fmt.Text(
+                "Цена: ",
+                fmt.Strikethrough(str(item.price)),
+                " ",
+                fmt.Italic(f"{item.discount_price}₽/{item.weight_unit}"),
+            )
+        )
+        item_line_elements.append(price_line)
+
+        # Собираем информацию о доступности (остатки товара)
+        available_line = fmt.as_line(fmt.Text("Доступно: ", str(item.available_display_string)))
+        item_line_elements.append(available_line)
+
+        return fmt.as_line(*item_line_elements)

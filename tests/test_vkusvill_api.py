@@ -124,10 +124,28 @@ async def test_fetch_green_labels(
 
     # Assert
     assert len(green_labels_items) == 207
-    assert green_labels_items[0].item_id == 88860
-    assert green_labels_items[0].title == "Азу из филе грудки индейки, 500 г"
-    assert green_labels_items[0].amount == Decimal("1")
-    assert green_labels_items[0].weight_str == "500 г"
-    assert green_labels_items[0].rating == "4.9"
-    assert green_labels_items[0].price == Decimal("381")
-    assert green_labels_items[0].discount_price == Decimal("229")
+    piece_item = green_labels_items[0]
+    assert piece_item.item_id == 88860
+    assert piece_item.title == "Азу из филе грудки индейки, 500 г"
+    assert piece_item.amount == Decimal("1")
+    assert piece_item.weight_str == "500 г"
+    assert piece_item.weight_type == "Catalog.Item.Packing.Piece"
+    assert piece_item.weight_unit == "шт"
+    assert piece_item.rating == "4.9"
+    assert piece_item.price == Decimal("381")
+    assert piece_item.discount_price == Decimal("229")
+    assert piece_item.available_display_string == "1 шт"
+    assert piece_item.title_display_string == "Азу из филе грудки индейки"
+
+    packed_item = green_labels_items[8]
+    assert packed_item.item_id == 18580
+    assert packed_item.title == "Бедро цыпленка бройлера"
+    assert packed_item.amount == Decimal("2.54")
+    assert packed_item.weight_str == ""
+    assert packed_item.weight_type == "Catalog.Item.Packing.Packed"
+    assert packed_item.weight_unit == "кг"
+    assert packed_item.rating == "4.8"
+    assert packed_item.price == Decimal("358")
+    assert packed_item.discount_price == Decimal("215")
+    assert packed_item.available_display_string == "2.54 кг"
+    assert packed_item.title_display_string == "Бедро цыпленка бройлера"

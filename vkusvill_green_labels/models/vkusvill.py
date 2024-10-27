@@ -21,9 +21,21 @@ class GreenLabelItem(BaseModel):
     title: str
     amount: Decimal
     weight_str: str
+    weight_type: str = ""
+    weight_unit: str = ""
     rating: str
     price: Decimal
     discount_price: Decimal
+
+    @property
+    def available_display_string(self) -> str:
+        """Отображаемое доступное количество товара."""
+        return f"{self.amount} {self.weight_unit}"
+
+    @property
+    def title_display_string(self) -> str:
+        """Отображаемое название."""
+        return self.title.removesuffix(", " + self.weight_str)
 
 
 class TokenInfo(BaseModel):
