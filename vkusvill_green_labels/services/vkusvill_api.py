@@ -46,6 +46,7 @@ class GreenLabelItemResponse(GreenLabelItem):
     rating: str = Field(..., validation_alias=AliasPath("rating", "all"))
     price: Decimal = Field(..., validation_alias=AliasPath("price", "price"))
     discount_price: Decimal = Field(..., validation_alias=AliasPath("price", "discount_price"))
+    weight_unit: str = Field(..., validation_alias="unit")
 
 
 class ShopInfo(BaseModel):
