@@ -4,7 +4,6 @@ import httpx
 
 from aiogram.exceptions import TelegramForbiddenError
 from loguru import logger
-from pyrate_limiter import Limiter
 from sqlalchemy.orm.attributes import flag_modified
 
 from vkusvill_green_labels.core.settings import settings
@@ -21,7 +20,6 @@ class UpdaterService:
     green_labels_repo: GreenLabelsRepository
     user_repo: UserRepository
     notification_service: NotificationService
-    rate_limiter: Limiter
 
     async def update_green_labels(self) -> None:
         users = await self.user_repo.get_users_for_notifications()
@@ -51,9 +49,7 @@ class UpdaterService:
         location = user.settings.locations[0]
         if user.settings.vkusvill_settings is None:
             async with httpx.AsyncClient() as client:
-                vkusvill_api = VkusvillApi(
-                    client, settings.vkusvill, rate_limiter=self.rate_limiter
-                )
+                vkusvill_api = VkusvillApi(client, settings.vkusvill)
                 await vkusvill_api.authorize()
                 await vkusvill_api.update_cart(
                     latitude=location.latitude, longitude=location.longitude
@@ -63,12 +59,7 @@ class UpdaterService:
                 await self.user_repo.update_user(user)
         async with httpx.AsyncClient() as client:
             assert user.settings.vkusvill_settings is not None  # noqa: S101
-            vkusvill_api = VkusvillApi(
-                client=client,
-                settings=settings.vkusvill,
-                rate_limiter=self.rate_limiter,
-                user_settings=user.settings.vkusvill_settings,
-            )
+            vkusvill_api = VkusvillApi(client, settings.vkusvill, user.settings.vkusvill_settings)
             current_green_labels = await vkusvill_api.fetch_green_labels()
         previous_green_labels = await self.green_labels_repo.get_items(user.id)
         new_green_labels = self._get_items_difference(current_green_labels, previous_green_labels)
