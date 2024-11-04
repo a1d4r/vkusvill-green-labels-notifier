@@ -134,8 +134,8 @@ class WebServerSettings(BaseSettings):
 class RateLimitsSettings(BaseSettings):
     model_config = SettingsConfigDict(extra="ignore")
 
-    per_second: int = 1
-    per_minute: int = 2
+    per_second: int = 10
+    per_minute: int = 600
     max_delay_ms: int = 60 * 1000
 
     @property
