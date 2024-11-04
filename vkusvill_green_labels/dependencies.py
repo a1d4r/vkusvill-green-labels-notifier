@@ -4,13 +4,15 @@ import httpx
 
 from aiogram import Bot
 from dishka import Provider, Scope, make_async_container
+from pyrate_limiter import Limiter
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from vkusvill_green_labels.bot import bot
 from vkusvill_green_labels.core.database import async_session_factory
+from vkusvill_green_labels.core.rate_limits import get_redis_bucket, provide_rate_limiter
 from vkusvill_green_labels.core.redis import redis
-from vkusvill_green_labels.core.settings import settings
+from vkusvill_green_labels.core.settings import provide_settings, settings
 from vkusvill_green_labels.repositories.filter import FilterRepository
 from vkusvill_green_labels.repositories.green_labels import GreenLabelsRepository
 from vkusvill_green_labels.repositories.user import UserRepository
@@ -38,8 +40,8 @@ async def provide_redis() -> AsyncIterable[Redis]:
     await redis.aclose()
 
 
-async def provide_vkusvill_api(client: httpx.AsyncClient) -> VkusvillApi:
-    return VkusvillApi(client, settings.vkusvill)
+async def provide_vkusvill_api(client: httpx.AsyncClient, rate_limiter: Limiter) -> VkusvillApi:
+    return VkusvillApi(client=client, settings=settings.vkusvill, rate_limiter=rate_limiter)
 
 
 async def provide_vkusvill_service(vkusvill_api: VkusvillApi) -> VkusvillService:
@@ -53,6 +55,11 @@ async def provide_bot() -> Bot:
 
 
 provider = Provider()
+provider.provide(provide_settings, scope=Scope.APP)
+
+provider.provide(get_redis_bucket, scope=Scope.APP)
+provider.provide(provide_rate_limiter, scope=Scope.APP)
+
 provider.provide(provide_httpx_client, scope=Scope.REQUEST)
 provider.provide(provide_vkusvill_api, scope=Scope.REQUEST)
 provider.provide(provide_vkusvill_service, scope=Scope.REQUEST)

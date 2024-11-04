@@ -26,4 +26,9 @@ def authorized_vkusvill_api(
     vkusvill_settings: VkusvillSettings, http_client: httpx.AsyncClient
 ) -> VkusvillApi:
     user_settings = VkusvillUserSettings(device_id="test", user_number="test", token="test")
-    return VkusvillApi(http_client, vkusvill_settings, user_settings)
+    return VkusvillApi(
+        client=http_client,
+        settings=vkusvill_settings,
+        rate_limiter=None,
+        user_settings=user_settings,
+    )
