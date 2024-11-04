@@ -1,9 +1,12 @@
+import asyncio
+
 from dataclasses import dataclass
 
 import httpx
 
 from aiogram.exceptions import TelegramForbiddenError
 from loguru import logger
+from pyrate_limiter import Limiter
 from sqlalchemy.orm.attributes import flag_modified
 
 from vkusvill_green_labels.core.settings import settings
@@ -20,26 +23,29 @@ class UpdaterService:
     green_labels_repo: GreenLabelsRepository
     user_repo: UserRepository
     notification_service: NotificationService
+    rate_limiter: Limiter
 
     async def update_green_labels(self) -> None:
         users = await self.user_repo.get_users_for_notifications()
         if not users:
             logger.info("No users found for notifications")
             return
-        for user in users:
-            new_green_labels = await self.fetch_new_green_labels_for_user(user)
-            if not new_green_labels:
-                continue
-            try:
-                await self.notification_service.notify_about_new_green_labels(
-                    user, new_green_labels
-                )
-            except TelegramForbiddenError:
-                logger.info("User {} has blocked the bot. Disabling notifications.", user.tg_id)
-                user.settings.enable_notifications = False
-                await self.user_repo.update_user(user)
-            except Exception:  # noqa: BLE001
-                logger.exception("Failed to send notification to user {}", user.tg_id)
+
+        tasks = [asyncio.create_task(self.update_green_labels_for_user(user)) for user in users]
+        await asyncio.gather(*tasks)
+
+    async def update_green_labels_for_user(self, user: User) -> None:
+        new_green_labels = await self.fetch_new_green_labels_for_user(user)
+        if not new_green_labels:
+            return
+        try:
+            await self.notification_service.notify_about_new_green_labels(user, new_green_labels)
+        except TelegramForbiddenError:
+            logger.info("User {} has blocked the bot. Disabling notifications.", user.tg_id)
+            user.settings.enable_notifications = False
+            await self.user_repo.update_user(user)
+        except Exception:  # noqa: BLE001
+            logger.exception("Failed to send notification to user {}", user.tg_id)
 
     async def fetch_new_green_labels_for_user(self, user: User) -> list[GreenLabelItem]:
         logger.info("Fetching new green labels for user {}", user.tg_id)
@@ -49,7 +55,9 @@ class UpdaterService:
         location = user.settings.locations[0]
         if user.settings.vkusvill_settings is None:
             async with httpx.AsyncClient() as client:
-                vkusvill_api = VkusvillApi(client, settings.vkusvill)
+                vkusvill_api = VkusvillApi(
+                    client, settings.vkusvill, rate_limiter=self.rate_limiter
+                )
                 await vkusvill_api.authorize()
                 await vkusvill_api.update_cart(
                     latitude=location.latitude, longitude=location.longitude
@@ -59,7 +67,12 @@ class UpdaterService:
                 await self.user_repo.update_user(user)
         async with httpx.AsyncClient() as client:
             assert user.settings.vkusvill_settings is not None  # noqa: S101
-            vkusvill_api = VkusvillApi(client, settings.vkusvill, user.settings.vkusvill_settings)
+            vkusvill_api = VkusvillApi(
+                client=client,
+                settings=settings.vkusvill,
+                rate_limiter=self.rate_limiter,
+                user_settings=user.settings.vkusvill_settings,
+            )
             current_green_labels = await vkusvill_api.fetch_green_labels()
         previous_green_labels = await self.green_labels_repo.get_items(user.id)
         new_green_labels = self._get_items_difference(current_green_labels, previous_green_labels)
