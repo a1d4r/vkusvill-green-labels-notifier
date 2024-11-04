@@ -14,8 +14,7 @@ from uuid import uuid4
 import httpx
 
 from loguru import logger
-from pydantic import AliasPath, BaseModel, Field, HttpUrl, TypeAdapter, ValidationError
-from pyrate_limiter import Limiter
+from pydantic import AliasPath, BaseModel, Field, TypeAdapter, ValidationError
 
 from vkusvill_green_labels.core.settings import VkusvillSettings, settings
 from vkusvill_green_labels.models.vkusvill import (
@@ -72,7 +71,6 @@ class CartInfoResponse(BaseModel):
 class VkusvillApi:
     client: httpx.AsyncClient
     settings: VkusvillSettings
-    rate_limiter: Limiter | None = None
     user_settings: VkusvillUserSettings | None = None
 
     async def create_new_user_token(self, device_id: str | None = None) -> TokenInfo:
@@ -90,13 +88,16 @@ class VkusvillApi:
         params["device_id"] = device_id
         params["str_par"] = formatted_str_params
 
-        response = await self._request(
-            method="POST",
-            url=self.settings.create_token.url,
+        response = await self.client.post(
+            str(self.settings.create_token.url),
             params=params,
             headers=self.settings.create_token.headers,
             timeout=self.settings.create_token.timeout,
         )
+        logger.debug(
+            "{} {} - {} ", response.request.method, response.request.url, response.status_code
+        )
+        self._check_response_successful(response)
 
         try:
             return TokenInfo.model_validate(response.json())
@@ -124,13 +125,13 @@ class VkusvillApi:
         params["longitude"] = str(longitude)
         params["number"] = self.user_settings.user_number
 
-        response = await self._request(
-            method="GET",
-            url=self.settings.shop_info.url,
+        response = await self.client.get(
+            str(self.settings.shop_info.url),
             params=params,
             headers=headers,
             timeout=self.settings.shop_info.timeout,
         )
+        self._check_response_successful(response)
 
         try:
             shop_info_list = TypeAdapter(list[ShopInfo]).validate_python(response.json())
@@ -154,13 +155,13 @@ class VkusvillApi:
         params["longitude"] = str(longitude)
         params["number"] = self.user_settings.user_number
 
-        response = await self._request(
-            method="GET",
-            url=self.settings.address_info.url,
+        response = await self.client.get(
+            str(self.settings.address_info.url),
             params=params,
             headers=headers,
             timeout=self.settings.address_info.timeout,
         )
+        self._check_response_successful(response)
 
         try:
             response_address_info = AddressInfoResponse.model_validate(response.json())
@@ -181,18 +182,18 @@ class VkusvillApi:
         headers = self.settings.update_cart.headers.copy()
         headers["x-vkusvill-token"] = self.user_settings.token
 
-        data: dict[str, typing.Any] = self.settings.update_cart.query.copy()
-        data["number"] = self.user_settings.user_number
-        data["DateSupply"] = datetime.now(UTC).strftime("%Y%m%d")
-        data["coordinates"] = f"{latitude},{longitude}"
+        params: dict[str, typing.Any] = self.settings.update_cart.query.copy()
+        params["number"] = self.user_settings.user_number
+        params["DateSupply"] = datetime.now(UTC).strftime("%Y%m%d")
+        params["coordinates"] = f"{latitude},{longitude}"
 
-        response = await self._request(
-            method="POST",
-            url=self.settings.update_cart.url,
-            data=data,
+        response = await self.client.post(
+            str(self.settings.update_cart.url),
+            data=params,
             headers=headers,
             timeout=self.settings.update_cart.timeout,
         )
+        self._check_response_successful(response)
 
         try:
             cart_info = CartInfoResponse.model_validate(response.json())
@@ -219,13 +220,16 @@ class VkusvillApi:
         while True:
             params["offset"] = offset
             params["limit"] = limit
-            response = await self._request(
-                "GET",
-                self.settings.green_labels.url,
+            response = await self.client.get(
+                str(self.settings.green_labels.url),
                 params=params,
                 headers=headers,
                 timeout=self.settings.green_labels.timeout,
             )
+            logger.debug(
+                "{} {} - {} ", response.request.method, response.request.url, response.status_code
+            )
+            self._check_response_successful(response)
 
             try:
                 response_items = TypeAdapter(list[GreenLabelItemResponse]).validate_python(
@@ -240,29 +244,6 @@ class VkusvillApi:
                     break
                 offset += limit
         return all_items
-
-    async def _request(
-        self,
-        method: str,
-        url: HttpUrl,
-        params: dict[str, typing.Any] | None = None,
-        data: dict[str, typing.Any] | None = None,
-        headers: dict[str, str] | None = None,
-        timeout: float = 30,  # noqa: ASYNC109
-    ) -> httpx.Response:
-        if self.rate_limiter is not None:
-            try:
-                await self.rate_limiter.try_acquire(str(url))  # type: ignore[misc]
-            except TypeError:
-                logger.exception("Rate bucket expected to be async")
-        response = await self.client.request(
-            method=method, url=str(url), params=params, data=data, headers=headers, timeout=timeout
-        )
-        logger.debug(
-            "{} {} - {} ", response.request.method, response.request.url, response.status_code
-        )
-        self._check_response_successful(response)
-        return response
 
     def _check_response_successful(self, response: httpx.Response) -> None:
         if response.status_code != 200:

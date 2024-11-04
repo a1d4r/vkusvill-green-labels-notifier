@@ -1,21 +1,9 @@
-from typing import Self
-
 import sys
 
 from pathlib import Path
 
-from pydantic import (
-    BaseModel,
-    Field,
-    HttpUrl,
-    PositiveInt,
-    RedisDsn,
-    SecretStr,
-    field_validator,
-    model_validator,
-)
+from pydantic import BaseModel, Field, HttpUrl, PositiveInt, RedisDsn, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pyrate_limiter import Duration, Rate, validate_rate_list
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 
@@ -29,8 +17,6 @@ def load_vkusvill_settings() -> "VkusvillSettings":
 
 
 class EndpointSettings(BaseModel):
-    model_config = SettingsConfigDict(extra="ignore")
-
     headers: dict[str, str] = Field(..., description="Headers for the request")
     query: dict[str, str] = Field(..., description="Query parameters for the request")
     url: HttpUrl = Field(..., description="URL of the endpoint")
@@ -39,8 +25,6 @@ class EndpointSettings(BaseModel):
 
 
 class VkusvillSettings(BaseModel):
-    model_config = SettingsConfigDict(extra="ignore")
-
     green_labels: EndpointSettings
     create_token: EndpointSettings
     shop_info: EndpointSettings
@@ -49,8 +33,6 @@ class VkusvillSettings(BaseModel):
 
 
 class TelegramSettings(BaseModel):
-    model_config = SettingsConfigDict(extra="ignore")
-
     bot_token: SecretStr = Field(..., description="Token from @BotFather")
     base_webhook_url: str | None = Field(
         None, description="Base URL for webhook (public DNS with HTTPS support)"
@@ -74,8 +56,6 @@ class TelegramSettings(BaseModel):
 
 
 class DatabaseSettings(BaseSettings):
-    model_config = SettingsConfigDict(extra="ignore")
-
     dialect: str = "postgresql"
     driver: str = "asyncpg"
     username: SecretStr
@@ -131,24 +111,6 @@ class WebServerSettings(BaseSettings):
     port: int = 8080
 
 
-class RateLimitsSettings(BaseSettings):
-    model_config = SettingsConfigDict(extra="ignore")
-
-    per_second: int = 10
-    per_minute: int = 600
-    max_delay_ms: int = 60 * 1000
-
-    @property
-    def rates(self) -> list[Rate]:
-        return [Rate(self.per_second, Duration.SECOND), Rate(self.per_minute, Duration.MINUTE)]
-
-    @model_validator(mode="after")
-    def validate_rates(self) -> Self:
-        if not validate_rate_list(self.rates):
-            raise ValueError("Invalid rate list")
-        return self
-
-
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
@@ -158,7 +120,6 @@ class Settings(BaseSettings):
     redis: RedisSettings
     sentry: SentrySettings
     web_server: WebServerSettings = WebServerSettings()
-    rate_limits: RateLimitsSettings = RateLimitsSettings()
     log_level: str = "INFO"
     update_interval: int = Field(..., description="Update interval in seconds")
 
@@ -168,7 +129,3 @@ if "pytest" in sys.modules:
     env_file = PROJECT_ROOT / ".env.test"
 
 settings = Settings(vkusvill=load_vkusvill_settings(), _env_file=env_file)
-
-
-def provide_settings() -> Settings:
-    return settings
