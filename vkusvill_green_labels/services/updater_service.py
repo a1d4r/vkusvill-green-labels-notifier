@@ -1,5 +1,3 @@
-import asyncio
-
 from dataclasses import dataclass
 
 import httpx
@@ -30,22 +28,20 @@ class UpdaterService:
         if not users:
             logger.info("No users found for notifications")
             return
-
-        tasks = [asyncio.create_task(self.update_green_labels_for_user(user)) for user in users]
-        await asyncio.gather(*tasks)
-
-    async def update_green_labels_for_user(self, user: User) -> None:
-        new_green_labels = await self.fetch_new_green_labels_for_user(user)
-        if not new_green_labels:
-            return
-        try:
-            await self.notification_service.notify_about_new_green_labels(user, new_green_labels)
-        except TelegramForbiddenError:
-            logger.info("User {} has blocked the bot. Disabling notifications.", user.tg_id)
-            user.settings.enable_notifications = False
-            await self.user_repo.update_user(user)
-        except Exception:  # noqa: BLE001
-            logger.exception("Failed to send notification to user {}", user.tg_id)
+        for user in users:
+            new_green_labels = await self.fetch_new_green_labels_for_user(user)
+            if not new_green_labels:
+                continue
+            try:
+                await self.notification_service.notify_about_new_green_labels(
+                    user, new_green_labels
+                )
+            except TelegramForbiddenError:
+                logger.info("User {} has blocked the bot. Disabling notifications.", user.tg_id)
+                user.settings.enable_notifications = False
+                await self.user_repo.update_user(user)
+            except Exception:  # noqa: BLE001
+                logger.exception("Failed to send notification to user {}", user.tg_id)
 
     async def fetch_new_green_labels_for_user(self, user: User) -> list[GreenLabelItem]:
         logger.info("Fetching new green labels for user {}", user.tg_id)
