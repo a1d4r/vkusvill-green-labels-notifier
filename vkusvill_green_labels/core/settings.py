@@ -17,6 +17,8 @@ def load_vkusvill_settings() -> "VkusvillSettings":
 
 
 class EndpointSettings(BaseModel):
+    """Настройки конкретного API endpoint'а."""
+
     headers: dict[str, str] = Field(..., description="Headers for the request")
     query: dict[str, str] = Field(..., description="Query parameters for the request")
     url: HttpUrl = Field(..., description="URL of the endpoint")
@@ -25,14 +27,20 @@ class EndpointSettings(BaseModel):
 
 
 class VkusvillSettings(BaseModel):
+    """Настройки API Вкусвилла."""
+
     green_labels: EndpointSettings
     create_token: EndpointSettings
     shop_info: EndpointSettings
     address_info: EndpointSettings
     update_cart: EndpointSettings
+    token_lifetime_seconds: PositiveInt = 30 * 24 * 3600  # 30 дней
+    # Однако по наблюдениям реальное время жизни токена около 2 месяцев.
 
 
 class TelegramSettings(BaseModel):
+    """Настройки телеграм бота."""
+
     bot_token: SecretStr = Field(..., description="Token from @BotFather")
     base_webhook_url: str | None = Field(
         None, description="Base URL for webhook (public DNS with HTTPS support)"
@@ -56,6 +64,8 @@ class TelegramSettings(BaseModel):
 
 
 class DatabaseSettings(BaseSettings):
+    """Настройки подключения к базе данных."""
+
     dialect: str = "postgresql"
     driver: str = "asyncpg"
     username: SecretStr
@@ -80,7 +90,7 @@ class DatabaseSettings(BaseSettings):
 
 
 class RedisSettings(BaseSettings):
-    """Настройки Redis."""
+    """Настройки подключения к Redis."""
 
     model_config = SettingsConfigDict(extra="ignore")
 
@@ -88,6 +98,8 @@ class RedisSettings(BaseSettings):
 
 
 class SentrySettings(BaseSettings):
+    """Настройки Sentry."""
+
     model_config = SettingsConfigDict(extra="ignore")
 
     dsn: str | None = None
@@ -105,6 +117,8 @@ class SentrySettings(BaseSettings):
 
 
 class WebServerSettings(BaseSettings):
+    """Настройки веб-сервера."""
+
     model_config = SettingsConfigDict(extra="ignore")
 
     host: str = "127.0.0.1"
@@ -112,6 +126,8 @@ class WebServerSettings(BaseSettings):
 
 
 class Settings(BaseSettings):
+    """Все настройки приложения."""
+
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
     vkusvill: VkusvillSettings

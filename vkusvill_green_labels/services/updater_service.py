@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
 
 import httpx
 
@@ -22,6 +23,7 @@ class UpdaterService:
     notification_service: NotificationService
 
     async def update_green_labels(self) -> None:
+        """Обновить товары с зелёными ценниками для активных пользователей."""
         users = await self.user_repo.get_users_for_notifications()
         if not users:
             logger.info("No users found for notifications")
@@ -42,12 +44,13 @@ class UpdaterService:
                 logger.exception("Failed to send notification to user {}", user.tg_id)
 
     async def fetch_new_green_labels_for_user(self, user: User) -> list[GreenLabelItem]:
+        """Получить новые товары с зелеными ценники для заданного пользователя."""
         logger.info("Fetching new green labels for user {}", user.tg_id)
         if not user.settings.locations:
             logger.warning("No locations found for user {}", user.tg_id)
             return []
         location = user.settings.locations[0]
-        if user.settings.vkusvill_settings is None:
+        if self._need_to_authorize(user):
             async with httpx.AsyncClient() as client:
                 vkusvill_api = VkusvillApi(client, settings.vkusvill)
                 await vkusvill_api.authorize()
@@ -74,6 +77,17 @@ class UpdaterService:
             "Filtered {} new green labels for user {}", len(filtered_green_labels), user.tg_id
         )
         return filtered_green_labels
+
+    def _need_to_authorize(self, user: User) -> bool:
+        """Проверяет необходимость авторизации пользователя."""
+        if not user.settings.vkusvill_settings:
+            return True
+        # Если токен протух, то нужно также переавторизовать пользователя
+        # поскольку API не выдаёт ошибку в этом случае
+        token_expiration_date = user.settings.vkusvill_settings.created_at + timedelta(
+            seconds=settings.vkusvill.token_lifetime_seconds
+        )
+        return token_expiration_date < datetime.now(UTC)
 
     @staticmethod
     def _get_items_difference(

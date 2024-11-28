@@ -42,6 +42,8 @@ class VkusvillUnauthorizedError(VkusvillError):
 
 
 class GreenLabelItemResponse(GreenLabelItem):
+    """Информацию о товаре с зелённым ценником."""
+
     item_id: int = Field(..., validation_alias="id")
     rating: str = Field(..., validation_alias=AliasPath("rating", "all"))
     price: Decimal = Field(..., validation_alias=AliasPath("price", "price"))
@@ -69,11 +71,14 @@ class CartInfoResponse(BaseModel):
 
 @dataclass
 class VkusvillApi:
+    """Клиент для мобильного API Вкусвилла."""
+
     client: httpx.AsyncClient
     settings: VkusvillSettings
     user_settings: VkusvillUserSettings | None = None
 
     async def create_new_user_token(self, device_id: str | None = None) -> TokenInfo:
+        """Сгенерировать новый токен для анонимного пользователя."""
         if device_id is None:
             device_id = str(uuid4())
 
@@ -105,6 +110,7 @@ class VkusvillApi:
             raise VkusvillApiError("Could not validate response") from exc
 
     async def authorize(self) -> None:
+        """Авторизовать пользователя."""
         device_id = str(uuid4())
         user_token = await self.create_new_user_token(device_id)
         self.user_settings = VkusvillUserSettings(
@@ -114,6 +120,7 @@ class VkusvillApi:
     async def get_shop_info(
         self, latitude: decimal.Decimal, longitude: decimal.Decimal
     ) -> ShopInfo | None:
+        """Получить информацию о ближайшем магазине по его координатам."""
         if self.user_settings is None:
             raise VkusvillUnauthorizedError("User settings are not provided")
 
@@ -144,6 +151,7 @@ class VkusvillApi:
     async def get_address_info(
         self, latitude: decimal.Decimal, longitude: decimal.Decimal
     ) -> AddressInfo | None:
+        """Получить информацию об адресе по его координатам."""
         if self.user_settings is None:
             raise VkusvillUnauthorizedError("User settings are not provided")
 
@@ -176,6 +184,7 @@ class VkusvillApi:
     async def update_cart(
         self, latitude: decimal.Decimal, longitude: decimal.Decimal
     ) -> CartInfoResponse | None:
+        """Обновить информацию о корзине."""
         if self.user_settings is None:
             raise VkusvillUnauthorizedError("User settings are not provided")
 
@@ -205,6 +214,7 @@ class VkusvillApi:
             return cart_info
 
     async def fetch_green_labels(self) -> list[GreenLabelItem]:
+        """Получить все товары с зелёнными ценниками."""
         if self.user_settings is None:
             raise VkusvillUnauthorizedError("User settings are not provided")
 
@@ -246,6 +256,7 @@ class VkusvillApi:
         return all_items
 
     def _check_response_successful(self, response: httpx.Response) -> None:
+        """Проверить что запрос к API был успешен. В случае ошибки выбросить исключение."""
         if response.status_code != 200:
             try:
                 response_body = response.json()
