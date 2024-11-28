@@ -16,6 +16,7 @@ class NotificationService:
     _batch_size: ClassVar[int] = 20
 
     async def notify_about_new_green_labels(self, user: User, items: list[GreenLabelItem]) -> None:
+        """Отправить уведомления о новых товарах с зелёными ценниками."""
         for items_batch in batched(items, self._batch_size):
             text_items: list[fmt.Text] = []
 
@@ -28,6 +29,7 @@ class NotificationService:
 
     @staticmethod
     def _format_item_text(item: GreenLabelItem) -> fmt.Text:
+        """Сформировать текст уведомления."""
         item_line_elements: list[fmt.Text | list[fmt.Text]] = []
 
         # Собираем заголовок (Наименование товара и оценка)
