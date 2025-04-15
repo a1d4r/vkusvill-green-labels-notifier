@@ -19,7 +19,6 @@ class VkusvillUserSettings(BaseModel):
     device_id: str
     user_number: str
     token: str
-    notification_type: NotificationType = Field(default=NotificationType.detailed)
     created_at: datetime = Field(default_factory=partial(datetime.now, UTC))
 
 
