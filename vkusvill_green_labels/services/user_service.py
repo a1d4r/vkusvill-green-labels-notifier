@@ -13,7 +13,7 @@ from vkusvill_green_labels.models.filters import (
     TitleBlackListFilter,
     TitleWhiteListFilter,
 )
-from vkusvill_green_labels.models.vkusvill import AddressInfo
+from vkusvill_green_labels.models.vkusvill import AddressInfo, NotificationType
 from vkusvill_green_labels.repositories.user import UserRepository
 
 
@@ -50,6 +50,19 @@ class UserService:
     ) -> None:
         user = await self.get_or_create_user(telegram_user)
         user.settings.enable_notifications = enable
+        await self.user_repository.update_user(user)
+
+    async def get_user_notification_type(self, telegram_user: TelegramUser) -> NotificationType:
+        """Получить тип уведомлений пользователя."""
+        user = await self.get_or_create_user(telegram_user)
+        return user.settings.notification_type
+
+    async def update_user_notification_type(
+        self, telegram_user: TelegramUser, notification_type: NotificationType
+    ) -> None:
+        """Обновить тип уведомлений пользователя."""
+        user = await self.get_or_create_user(telegram_user)
+        user.settings.notification_type = notification_type
         await self.user_repository.update_user(user)
 
     async def save_location_for_user(

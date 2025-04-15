@@ -1,5 +1,6 @@
 from datetime import UTC, datetime
 from decimal import Decimal
+from enum import StrEnum, auto
 from functools import partial
 
 from pydantic import BaseModel, Field
@@ -7,10 +8,18 @@ from pydantic import BaseModel, Field
 from vkusvill_green_labels.models.types import Latitude, Longitude
 
 
+class NotificationType(StrEnum):
+    """Тип уведомлений."""
+
+    detailed = auto()  # Подробные уведомления с описанием товаров
+    only_quantity = auto()  # Только количество товаров
+
+
 class VkusvillUserSettings(BaseModel):
     device_id: str
     user_number: str
     token: str
+    notification_type: NotificationType = Field(default=NotificationType.detailed)
     created_at: datetime = Field(default_factory=partial(datetime.now, UTC))
 
 
