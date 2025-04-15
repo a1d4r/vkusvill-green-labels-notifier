@@ -3,6 +3,8 @@ import sys
 
 from logging.config import fileConfig
 
+import alembic_postgresql_enum  # noqa: F401
+
 from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
