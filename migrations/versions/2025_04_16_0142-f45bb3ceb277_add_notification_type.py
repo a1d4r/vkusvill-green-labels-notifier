@@ -1,8 +1,8 @@
 """Add notification type
 
-Revision ID: 8f594abdd128
+Revision ID: f45bb3ceb277
 Revises: 249977e15076
-Create Date: 2025-04-16 01:33:40.376584
+Create Date: 2025-04-16 01:42:44.398075
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "8f594abdd128"
+revision: str = "f45bb3ceb277"
 down_revision: str | None = "249977e15076"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -29,6 +29,7 @@ def upgrade() -> None:
             postgresql.ENUM(
                 "detailed", "only_quantity", name="notificationtype", create_type=False
             ),
+            server_default="detailed",
             nullable=False,
         ),
     )

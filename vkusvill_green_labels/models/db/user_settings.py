@@ -18,7 +18,9 @@ class UserSettings(Base):
 
     id: Mapped[UserSettingsID] = mapped_column(UUID, default=uuid4, primary_key=True)
     enable_notifications: Mapped[bool] = mapped_column(default=True)
-    notification_type: Mapped[NotificationType] = mapped_column(default=NotificationType.detailed)
+    notification_type: Mapped[NotificationType] = mapped_column(
+        default=NotificationType.detailed, server_default=NotificationType.detailed.value
+    )
     vkusvill_settings: Mapped[VkusvillUserSettings | None] = mapped_column(
         PydanticType(VkusvillUserSettings), nullable=True
     )
