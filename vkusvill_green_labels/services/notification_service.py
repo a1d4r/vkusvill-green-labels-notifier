@@ -27,6 +27,18 @@ class NotificationService:
 
             await self.bot.send_message(user.tg_id, text.as_html())
 
+    async def notify_about_green_labels_quantity(
+        self, user: User, old_count: int, new_count: int
+    ) -> None:
+        """Отправить уведомления о количестве товаров с зелёными ценниками."""
+        sign = "+" if new_count > old_count else ""
+        text = fmt.as_line(
+            fmt.Bold(
+                f"Всего товаров с зелёными ценниками: {new_count} ({sign}{new_count - old_count})"
+            )
+        )
+        await self.bot.send_message(user.tg_id, text.as_html())
+
     @staticmethod
     def _format_item_text(item: GreenLabelItem) -> fmt.Text:
         """Сформировать текст уведомления."""
