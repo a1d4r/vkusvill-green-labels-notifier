@@ -58,7 +58,8 @@ async def notification_type_handler(
     current_type = await user_service.get_user_notification_type(callback.from_user)
     text = "Выберите тип уведомлений:\n\n"
     text += "📋 Подробные - с описанием товаров и ценами\n"
-    text += "🔢 Только количество - уведомления об изменении количества товаров"
+    text += "🔢 Только количество - уведомления об изменении количества товаров\n"
+    text += "📈 Только добавление - уведомления приходят только при увеличении количества товаров"
     await callback.message.edit_text(
         text=text, reply_markup=toggle_notification_type_kb_builder(current_type)
     )
@@ -79,7 +80,9 @@ async def toggle_notification_type_handler(
     text = "Тип уведомлений изменен на "
     if callback_data.notification_type == NotificationType.detailed:
         text += "📋 Подробные"
-    else:
+    elif callback_data.notification_type == NotificationType.only_quantity:
         text += "🔢 Только количество"
+    else:
+        text += "📈 Только добавление"
     await callback.message.edit_text(text=text, reply_markup=back_to_menu_kb)
     await callback.answer()
