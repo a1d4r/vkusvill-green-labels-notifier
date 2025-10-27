@@ -30,7 +30,8 @@ class UpdaterService:
             return
         for user in users:
             try:
-                if user.settings.notification_type == NotificationType.detailed:
+                notification_type = user.settings.notification_type
+                if notification_type == NotificationType.detailed:
                     new_green_labels = await self.fetch_new_green_labels_for_user(user)
                     if not new_green_labels:
                         continue
@@ -40,6 +41,11 @@ class UpdaterService:
                 else:
                     old_count, new_count = await self.fetch_green_labels_counts_for_user(user)
                     if old_count == new_count:
+                        continue
+                    if (
+                        notification_type == NotificationType.only_increase
+                        and new_count < old_count
+                    ):
                         continue
                     await self.notification_service.notify_about_green_labels_quantity(
                         user, old_count, new_count

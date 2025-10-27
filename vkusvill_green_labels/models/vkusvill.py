@@ -13,6 +13,7 @@ class NotificationType(StrEnum):
 
     detailed = auto()  # Подробные уведомления с описанием товаров
     only_quantity = auto()  # Только количество товаров
+    only_increase = auto()  # Уведомления только об увеличении количества товаров
 
 
 class VkusvillUserSettings(BaseModel):

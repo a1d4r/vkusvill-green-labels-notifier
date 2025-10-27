@@ -52,6 +52,16 @@ def toggle_notification_type_kb_builder(current_type: NotificationType) -> Inlin
                     ).pack(),
                 )
             ],
+            [
+                InlineKeyboardButton(
+                    text="📈 Только добавление"
+                    if current_type != NotificationType.only_increase
+                    else "📈 Только добавление (выбрано)",
+                    callback_data=ToggleNotificationTypeCD(
+                        notification_type=NotificationType.only_increase
+                    ).pack(),
+                )
+            ],
             [InlineKeyboardButton(text="⬅️ Назад", callback_data="notifications")],
         ]
     )
